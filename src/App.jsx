@@ -588,6 +588,7 @@ export default function App() {
   const [sensations, setSensations] = useState([]);
   const [nsState, setNsState] = useState(null);
   const [ffffState, setFfffState] = useState(null);
+  const [etatExploration, setEtatExploration] = useState(null);
 
   // exercise flow
   const [activeExercise, setActiveExercise] = useState(null);
@@ -641,6 +642,7 @@ export default function App() {
     setSensations([]);
     setNsState(null);
     setFfffState(null);
+    setEtatExploration(null);
     setActiveExercise(null);
     setLibraryInitialEtat(null);
     setLibraryInitialProtection(null);
@@ -723,35 +725,53 @@ export default function App() {
 
         {screen === "home" && <Home c={c} theme={theme} toggleTheme={toggleTheme} goTo={goTo} />}
 
-        {screen === "checkin-1" && (
-          <CheckinIntensity c={c} onBack={goBackHome}
-            onSubmit={(v) => { setIntensity(v); if (v >= 9) { goTo("crisis"); } else { goTo("checkin-2"); } }} />
+        {screen === "checkin-state" && (
+          <CheckinState c={c} onBack={goBackHome} value={nsState}
+            onSelect={(s) => { setNsState(s); setEtatExploration(null); goTo("checkin-intensity"); }}
+            onUnknown={() => goTo("checkin-state-explore")} />
         )}
 
-        {screen === "checkin-2" && (
+        {screen === "checkin-state-explore" && (
+          <CheckinStateExplore c={c} onBack={() => goTo("checkin-state")}
+            onSelect={(reponse) => { setNsState(null); setEtatExploration(reponse); goTo("checkin-intensity"); }} />
+        )}
+
+        {screen === "checkin-intensity" && (
+          <CheckinIntensity c={c} onBack={() => goTo("checkin-state")} value={intensity}
+            onSubmit={(v) => { setIntensity(v); if (v !== null && v >= 9) { goTo("crisis"); } else { goTo("checkin-sensations"); } }} />
+        )}
+
+        {screen === "checkin-sensations" && (
           <CheckinSensations c={c} onBack={goBack} sensations={sensations} setSensations={setSensations}
-            onNext={() => goTo("checkin-3")} />
+            onNext={() => goTo("checkin-protection")} />
         )}
 
-        {screen === "checkin-3" && (
-          <CheckinState c={c} onBack={goBack}
-            onSelect={(s) => {
-              setNsState(s);
-              goTo("checkin-4");
-            }} />
-        )}
-
-        {screen === "checkin-4" && (
+        {screen === "checkin-protection" && (
           <CheckinFFFF c={c} onBack={goBack}
             onSelect={(f) => {
               setFfffState(f);
-              addEntry({ type: "check-in", intensite: intensity, sensations, etat: nsState, ffff: f });
+              if (["fight", "flight", "freeze", "fawn"].includes(f)) {
+                goTo("checkin-protection-confirm");
+              } else {
+                addEntry({ type: "check-in", intensite: intensity, sensations, etat: nsState, etatExploration, ffff: f });
+                goTo("checkin-done");
+              }
+            }} />
+        )}
+
+        {screen === "checkin-protection-confirm" && (
+          <CheckinProtectionConfirm c={c} ffff={ffffState} onBack={() => goTo("checkin-protection")}
+            onConfirm={(reponse) => {
+              const ffffFinal = reponse === "non" ? null : ffffState;
+              setFfffState(ffffFinal);
+              addEntry({ type: "check-in", intensite: intensity, sensations, etat: nsState, etatExploration, ffff: ffffFinal, ffffConfirmation: reponse });
               goTo("checkin-done");
             }} />
         )}
 
         {screen === "checkin-done" && (
-          <CheckinDone c={c} state={nsState} ffff={ffffState} goBackHome={goBackHome}
+          <CheckinDone c={c} state={nsState} ffff={ffffState} intensity={intensity} goBackHome={goBackHome}
+            onModify={() => goTo("checkin-state")}
             onExercises={() => {
               setExerciseSource("library");
               const ffffCat = ["fight", "flight", "freeze", "fawn"].includes(ffffState) ? ffffState : null;
@@ -887,7 +907,7 @@ function Home({ c, theme, toggleTheme, goTo }) {
       </Card>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <Btn c={c} variant="primary" onClick={() => goTo("checkin-1")}>
+        <Btn c={c} variant="primary" onClick={() => goTo("checkin-state")}>
           Comment je me sens maintenant ? <span>→</span>
         </Btn>
         <Btn c={c} variant="secondary" onClick={() => goTo("tolerance-zone")}>
@@ -919,42 +939,52 @@ function Home({ c, theme, toggleTheme, goTo }) {
   );
 }
 
-function CheckinIntensity({ c, onBack, onSubmit }) {
-  const [val, setVal] = useState(5);
+function CheckinIntensity({ c, onBack, onSubmit, value }) {
+  const [val, setVal] = useState(value ?? 5);
+  const [dontKnow, setDontKnow] = useState(false);
   const anchors = [
-    [0, "très calme, voire éteint·e ou coupé·e"],
-    [3, "activation faible ou état relativement stable"],
-    [6, "émotion présente, mais encore traversable"],
-    [8, "activation ou retrait important"],
-    [10, "débordement intense, impression de ne plus pouvoir gérer seul·e"],
+    [0, "à peine perceptible"],
+    [3, "présent, mais je garde mes capacités habituelles"],
+    [6, "difficile, mais encore traversable"],
+    [8, "très envahissant"],
+    [10, "j'ai l'impression de ne plus pouvoir gérer cela seul·e"],
   ];
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
-      <ScreenTitle c={c}>Sur une échelle de 0 à 10</ScreenTitle>
+      <BackRow c={c} onBack={onBack} label="← Modifier mon état" />
+      <ScreenTitle c={c}>À quel point cet état est-il présent maintenant ?</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 24 }}>
-        Comment évalueriez-vous votre niveau d'activation, de détresse ou de déconnexion maintenant ?
+        Il n'y a pas de bonne réponse. Cette échelle sert seulement de repère pour vous.
       </p>
 
-      <div style={{ textAlign: "center", fontFamily: fontDisplay, fontSize: 56, color: c.text, marginBottom: 6 }}>
-        {val}
-      </div>
-      <input
-        type="range" min={0} max={10} value={val}
-        onChange={(e) => setVal(Number(e.target.value))}
-        style={{ width: "100%", accentColor: c.sage, marginBottom: 22 }}
-      />
-
-      <Card c={c} style={{ marginBottom: 24 }}>
-        {anchors.map(([n, txt]) => (
-          <div key={n} style={{ display: "flex", gap: 10, marginBottom: 8, fontSize: 13, color: c.textSoft }}>
-            <span style={{ fontWeight: 700, color: c.text, minWidth: 46 }}>{n}</span>
-            <span>{txt}</span>
+      {!dontKnow && (
+        <>
+          <div style={{ textAlign: "center", fontFamily: fontDisplay, fontSize: 56, color: c.text, marginBottom: 6 }}>
+            {val}
           </div>
-        ))}
-      </Card>
+          <input
+            type="range" min={0} max={10} value={val}
+            onChange={(e) => setVal(Number(e.target.value))}
+            style={{ width: "100%", accentColor: c.sage, marginBottom: 22 }}
+          />
 
-      <Btn c={c} variant="primary" onClick={() => onSubmit(val)}>Continuer <span>→</span></Btn>
+          <Card c={c} style={{ marginBottom: 24 }}>
+            {anchors.map(([n, txt]) => (
+              <div key={n} style={{ display: "flex", gap: 10, marginBottom: 8, fontSize: 13, color: c.textSoft }}>
+                <span style={{ fontWeight: 700, color: c.text, minWidth: 24 }}>{n}</span>
+                <span>{txt}</span>
+              </div>
+            ))}
+          </Card>
+        </>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        {!dontKnow && <Btn c={c} variant="primary" onClick={() => onSubmit(val)}>Continuer <span>→</span></Btn>}
+        <Btn c={c} variant={dontKnow ? "primary" : "secondary"} onClick={() => { setDontKnow(true); onSubmit(null); }}>
+          Je ne sais pas l'évaluer
+        </Btn>
+      </div>
     </div>
   );
 }
@@ -964,7 +994,7 @@ function CheckinSensations({ c, onBack, sensations, setSensations, onNext }) {
     setSensations((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
+      <BackRow c={c} onBack={onBack} label="← Modifier l'intensité" />
       <ScreenTitle c={c}>Qu'est-ce que vous remarquez ?</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 18 }}>
         Dans votre corps, ou dans votre état intérieur. Choisissez ce qui résonne — il n'y a pas de bonne réponse.
@@ -989,24 +1019,63 @@ function CheckinSensations({ c, onBack, sensations, setSensations, onNext }) {
   );
 }
 
-function CheckinState({ c, onBack, onSelect }) {
+function CheckinState({ c, onBack, onSelect, onUnknown, value }) {
   return (
     <div>
       <BackRow c={c} onBack={onBack} />
-      <ScreenTitle c={c}>Où en êtes-vous ?</ScreenTitle>
+      <ScreenTitle c={c}>Où en êtes-vous maintenant ?</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 18 }}>
-        Choisissez ce qui vous semble le plus proche de votre état, maintenant.
+        Choisissez ce qui vous semble le plus proche de votre état en ce moment. Il n'est pas nécessaire d'être
+        totalement certain·e. Vous pourrez modifier votre réponse.
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {NS_STATES.map((s) => (
-          <button key={s.id} onClick={() => onSelect(s.id)}
-            style={{
-              textAlign: "left", padding: 18, borderRadius: 18, cursor: "pointer",
-              border: `1px solid ${c.border}`, background: c[s.color + "Soft"],
-            }}>
-            <div style={{ fontWeight: 700, color: c.text, marginBottom: 6 }}>{s.label}</div>
-            <div style={{ fontSize: 13, color: c.textSoft, lineHeight: 1.5 }}>{s.desc}</div>
-          </button>
+        {NS_STATES.map((s) => {
+          const selected = value === s.id;
+          return (
+            <button key={s.id} onClick={() => onSelect(s.id)}
+              style={{
+                textAlign: "left", padding: 18, borderRadius: 18, cursor: "pointer",
+                border: `2px solid ${selected ? c.sage : "transparent"}`, background: c[s.color + "Soft"],
+              }}>
+              <div style={{ fontWeight: 700, color: c.text, marginBottom: 6 }}>{s.label}</div>
+              <div style={{ fontSize: 13, color: c.textSoft, lineHeight: 1.5 }}>{s.desc}</div>
+            </button>
+          );
+        })}
+        <button onClick={onUnknown}
+          style={{ textAlign: "left", padding: 18, borderRadius: 18, cursor: "pointer", border: `1px dashed ${c.border}`, background: "transparent" }}>
+          <div style={{ fontWeight: 700, color: c.text, marginBottom: 4 }}>Je ne sais pas</div>
+          <div style={{ fontSize: 13, color: c.textSoft }}>C'est difficile à identifier pour l'instant.</div>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+const ETAT_EXPLORATION_OPTIONS = [
+  { id: "energie", label: "Mon niveau d'énergie" },
+  { id: "bouger", label: "Mon envie de bouger ou de rester immobile" },
+  { id: "penser", label: "Ma capacité à penser" },
+  { id: "corps", label: "Ce que je sens dans mon corps" },
+  { id: "proximite", label: "Ma proximité avec ce qui m'entoure" },
+  { id: "rien", label: "Rien de tout cela" },
+  { id: "ne_sait_pas", label: "Je ne sais pas" },
+];
+
+function CheckinStateExplore({ c, onBack, onSelect }) {
+  return (
+    <div>
+      <BackRow c={c} onBack={onBack} label="← Modifier mon état" />
+      <ScreenTitle c={c}>C'est parfois difficile de savoir ce qui se passe à l'intérieur.</ScreenTitle>
+      <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 8 }}>
+        Nous pouvons commencer autrement.
+      </p>
+      <p style={{ color: c.text, fontSize: 15, fontWeight: 600, marginBottom: 16 }}>
+        Que remarquez-vous le plus facilement maintenant ?
+      </p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {ETAT_EXPLORATION_OPTIONS.map((o) => (
+          <Btn key={o.id} c={c} variant="secondary" onClick={() => onSelect(o.id)}>{o.label}</Btn>
         ))}
       </div>
     </div>
@@ -1016,7 +1085,7 @@ function CheckinState({ c, onBack, onSelect }) {
 function CheckinFFFF({ c, onBack, onSelect }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
+      <BackRow c={c} onBack={onBack} label="← Retour" />
       <ScreenTitle c={c}>Une réaction de protection, peut-être ?</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 6 }}>
         Cette étape est facultative. Est-ce que vous reconnaissez une réaction de protection en ce moment ?
@@ -1030,32 +1099,90 @@ function CheckinFFFF({ c, onBack, onSelect }) {
   );
 }
 
-function CheckinDone({ c, state, ffff, goBackHome, onExercises }) {
+function CheckinProtectionConfirm({ c, ffff, onBack, onConfirm }) {
+  const f = FFFF_INFO.find((x) => x.id === ffff);
+  if (!f) return null;
+  return (
+    <div>
+      <BackRow c={c} onBack={onBack} label="← Modifier ma réponse" />
+      <ScreenTitle c={c}>Une réponse de protection que vous reconnaissez peut-être</ScreenTitle>
+      <Card c={c} style={{ background: c[f.color + "Soft"], border: "none", marginBottom: 14 }}>
+        <div style={{ fontWeight: 700, color: c.text, marginBottom: 6 }}>{f.label}</div>
+        <p style={{ margin: 0, fontSize: 13, color: c.textSoft, lineHeight: 1.6 }}>
+          Cette réaction peut avoir eu du sens dans l'histoire de votre système de protection. Il ne s'agit pas
+          de la juger ni de la faire disparaître à tout prix, mais de remarquer ce qui se passe et de voir ce qui
+          pourrait vous aider maintenant.
+        </p>
+      </Card>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <Btn c={c} variant="secondary" onClick={() => onConfirm("oui")}>Cela me correspond</Btn>
+        <Btn c={c} variant="secondary" onClick={() => onConfirm("non")}>Cela ne me correspond pas</Btn>
+        <Btn c={c} variant="secondary" onClick={() => onConfirm("ne_sait_pas")}>Je ne sais pas</Btn>
+      </div>
+    </div>
+  );
+}
+
+function CheckinDone({ c, state, ffff, intensity, goBackHome, onModify, onExercises }) {
   const s = NS_STATES.find((x) => x.id === state);
   const f = FFFF_INFO.find((x) => x.id === ffff);
   return (
     <div>
-      <ScreenTitle c={c}>Merci.</ScreenTitle>
-      <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 20 }}>
-        Merci d'avoir pris le temps d'observer cela. Il n'y a rien à réussir ici. L'objectif est simplement de
-        mieux comprendre ce qui se passe pour vous maintenant.
+      <ScreenTitle c={c}>Merci d'avoir pris ce temps.</ScreenTitle>
+      <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 22 }}>
+        Observer ce qui se passe est déjà une information. Il n'y a rien à réussir ici, et vous n'avez pas
+        besoin d'être certain·e de vos réponses.
       </p>
-      {s && (
+
+      <div style={{ fontSize: 12.5, color: c.textSoft, textTransform: "uppercase", letterSpacing: 0.3, marginBottom: 8 }}>
+        Ce que vous avez repéré
+      </div>
+
+      <div style={{ fontSize: 12, color: c.textSoft, marginBottom: 6 }}>Votre état actuel</div>
+      {s ? (
         <Card c={c} style={{ background: c[s.color + "Soft"], border: "none", marginBottom: 14 }}>
-          <div style={{ fontWeight: 700, color: c.text }}>{s.label}</div>
+          <div style={{ fontWeight: 700, color: c.text, marginBottom: 4 }}>{s.label}</div>
+          <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft }}>
+            Ce que vous avez sélectionné se rapproche actuellement de cet état.
+          </p>
+        </Card>
+      ) : (
+        <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 14 }}>
+          <p style={{ margin: 0, fontSize: 13, color: c.textSoft, lineHeight: 1.6 }}>
+            Ce n'était pas facile à identifier maintenant, et c'est tout à fait normal. Ce que vous avez remarqué
+            reste une information utile.
+          </p>
         </Card>
       )}
+
+      {intensity !== null && intensity !== undefined && (
+        <>
+          <div style={{ fontSize: 12, color: c.textSoft, marginBottom: 6 }}>Intensité repérée</div>
+          <Card c={c} style={{ marginBottom: 14 }}>
+            <div style={{ fontWeight: 700, color: c.text }}>{intensity}/10</div>
+          </Card>
+        </>
+      )}
+
+      <Btn c={c} variant="ghost" onClick={onModify} style={{ marginBottom: 22 }}>Modifier mes réponses</Btn>
+
       {f && (
-        <Card c={c} style={{ background: c[f.color + "Soft"], border: "none", marginBottom: 24 }}>
-          <div style={{ fontWeight: 700, color: c.text, marginBottom: 6 }}>{f.label}</div>
-          <div style={{ fontSize: 13, color: c.textSoft, lineHeight: 1.6 }}>
-            Cette réaction peut avoir du sens dans l'histoire de votre système nerveux. L'objectif n'est pas de
-            la juger, mais de voir ce qui pourrait vous aider maintenant.
+        <>
+          <div style={{ fontSize: 12.5, color: c.textSoft, textTransform: "uppercase", letterSpacing: 0.3, marginBottom: 8 }}>
+            Une réponse de protection que vous reconnaissez peut-être
           </div>
-        </Card>
+          <Card c={c} style={{ background: c[f.color + "Soft"], border: "none", marginBottom: 24 }}>
+            <div style={{ fontWeight: 700, color: c.text, marginBottom: 6 }}>{f.label}</div>
+            <div style={{ fontSize: 13, color: c.textSoft, lineHeight: 1.6 }}>
+              Cette réaction peut avoir du sens dans l'histoire de votre système de protection. L'objectif n'est
+              pas de la juger, mais de voir ce qui pourrait vous aider maintenant.
+            </div>
+          </Card>
+        </>
       )}
+
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <Btn c={c} variant="primary" onClick={onExercises}>Voir des exercices adaptés <span>→</span></Btn>
+        <Btn c={c} variant="primary" onClick={onExercises}>Voir ce qui pourrait m'aider maintenant <span>→</span></Btn>
         <Btn c={c} variant="ghost" onClick={goBackHome}>Revenir à l'accueil</Btn>
       </div>
     </div>
