@@ -782,12 +782,50 @@ export default function App() {
         )}
 
         {screen === "crisis" && (
-          <Crisis c={c} onBack={goBackHome}
-            onQuickExercise={() => { setActiveExercise(CRISIS_EXERCISE); setExerciseSource("crisis"); goTo("exercise"); }}
-            onSafety={() => goTo("safety")}
-            onContacts={() => goTo("safety")}
+          <AideImmediate c={c} onBack={goBackHome}
+            onDanger={() => goTo("aide-danger")}
+            onPeur={() => goTo("aide-peur")}
+            onDebord={() => goTo("aide-debord-q1")}
             onUrgence={() => goTo("urgence")}
           />
+        )}
+
+        {screen === "aide-danger" && <AideDanger c={c} onBack={goBack} />}
+
+        {screen === "aide-peur" && (
+          <AidePeur c={c} onBack={goBack} safetyPlan={safetyPlan} onContacts={() => goTo("safety")} />
+        )}
+
+        {screen === "aide-debord-q1" && (
+          <AideDebordQ1 c={c} onBack={goBack}
+            onOui={() => goTo("aide-debord-q2")}
+            onNeSaitPas={() => goTo("aide-debord-q2")}
+            onNon={() => goTo("aide-debord-nonsur")}
+          />
+        )}
+
+        {screen === "aide-debord-nonsur" && (
+          <AideDebordNonSur c={c} onBack={goBack}
+            onAppeler={() => goTo("aide-danger")}
+            onContacter={() => goTo("safety")}
+            onNumeros={() => goTo("urgence")}
+          />
+        )}
+
+        {screen === "aide-debord-q2" && (
+          <AideDebordQ2 c={c} onBack={goBack}
+            onChoix={(choix) => {
+              const map = {
+                regarder: "regard-explore", appui: "sentir-support",
+                bouger: "plus-petit-mouvement", ecouter: "voix-qui-revient",
+              };
+              if (choix === "contacter") { goTo("safety"); return; }
+              const exId = map[choix];
+              const ex = exId ? EXERCISES.find((e) => e.id === exId) : CRISIS_EXERCISE;
+              setActiveExercise(ex || CRISIS_EXERCISE);
+              setExerciseSource("crisis");
+              goTo("exercise");
+            }} />
         )}
 
         {screen === "urgence" && <Urgence c={c} onBack={goBack} />}
@@ -1189,40 +1227,184 @@ function CheckinDone({ c, state, ffff, intensity, goBackHome, onModify, onExerci
   );
 }
 
-function Crisis({ c, onBack, onQuickExercise, onSafety, onContacts, onUrgence }) {
+function TriageCard({ c, titre, sousTexte, onClick, variant = "soft" }) {
+  const bg = variant === "warn" ? c.terracottaSoft : c.card;
+  return (
+    <button onClick={onClick} style={{
+      textAlign: "left", cursor: "pointer", width: "100%", padding: 18, borderRadius: 18,
+      border: `1px solid ${c.border}`, background: bg,
+    }}>
+      <div style={{ fontWeight: 700, color: c.text, marginBottom: 6, fontSize: 15.5 }}>{titre}</div>
+      <div style={{ fontSize: 13, color: c.textSoft, lineHeight: 1.55 }}>{sousTexte}</div>
+    </button>
+  );
+}
+
+function TelButton({ c, label, num, display, big }) {
+  return (
+    <a href={`tel:${num}`} style={{
+      display: "flex", justifyContent: "space-between", alignItems: "center",
+      padding: big ? "18px 18px" : "14px 16px", borderRadius: 16, textDecoration: "none",
+      border: `1px solid ${c.border}`, background: c.card,
+    }}>
+      <span style={{ color: c.text, fontSize: big ? 15.5 : 14.5, fontWeight: 600, paddingRight: 10 }}>{label}</span>
+      <span style={{ color: c.terracotta, fontSize: big ? 19 : 15.5, fontWeight: 700, whiteSpace: "nowrap" }}>
+        {display || num} ☎
+      </span>
+    </a>
+  );
+}
+
+function AideImmediate({ c, onBack, onDanger, onPeur, onDebord, onUrgence }) {
   return (
     <div>
-      <ScreenTitle c={c}>Ce que vous vivez semble très intense.</ScreenTitle>
-      <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 26 }}>
-        L'objectif n'est pas de gérer cela seul·e. Vous pouvez essayer un exercice très simple d'orientation,
-        contacter une personne ressource ou utiliser vos repères de sécurité. Si vous êtes en danger, contactez
-        immédiatement les services d'urgence.
+      <ScreenTitle c={c}>Vous n'avez pas à traverser cela seul·e.</ScreenTitle>
+      <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 22 }}>
+        Choisissez ce qui se rapproche le plus de votre situation maintenant.
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}>
-        <Btn c={c} variant="primary" onClick={onQuickExercise}>Faire un exercice très court <span>→</span></Btn>
-        <Btn c={c} variant="soft" onClick={onSafety}>Voir mes repères de sécurité <span>→</span></Btn>
-        <Btn c={c} variant="soft" onClick={onContacts}>Contacter une personne ressource <span>→</span></Btn>
-        <Btn c={c} variant="warn" onClick={onUrgence}>Je suis en danger / aide urgente <span>☎</span></Btn>
+        <TriageCard c={c} variant="warn" onClick={onDanger}
+          titre="Je suis en danger immédiat"
+          sousTexte="Ma sécurité ou celle de quelqu'un d'autre est menacée maintenant, ou j'ai besoin d'une aide médicale urgente." />
+        <TriageCard c={c} variant="warn" onClick={onPeur}
+          titre="J'ai peur de me faire du mal ou de ne pas rester en sécurité"
+          sousTexte="J'ai des pensées suicidaires, peur de passer à l'acte, ou je ne me sens pas capable de rester seul·e avec ce qui se passe." />
+        <TriageCard c={c} onClick={onDebord}
+          titre="Je ne suis pas en danger immédiat, mais je suis très débordé·e"
+          sousTexte="J'ai besoin d'aide pour traverser les prochaines minutes." />
       </div>
-      <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 20 }}>
-        <p style={{ margin: 0, fontSize: 13, color: c.textSoft, lineHeight: 1.6 }}>
-          Vous n'avez pas à traverser cela seul·e. Pour toute urgence médicale immédiate : 15 (SAMU) ou 112.
-        </p>
-      </Card>
+      <Btn c={c} variant="secondary" onClick={onUrgence} style={{ marginBottom: 20 }}>
+        Voir tous les numéros d'aide <span>→</span>
+      </Btn>
       <Btn c={c} variant="ghost" onClick={onBack}>Revenir à l'accueil</Btn>
     </div>
   );
 }
 
+function AideDanger({ c, onBack }) {
+  return (
+    <div>
+      <BackRow c={c} onBack={onBack} />
+      <ScreenTitle c={c}>Je suis en danger immédiat</ScreenTitle>
+      <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 20 }}>
+        Appuyez sur un numéro pour appeler directement.
+      </p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 18 }}>
+        <TelButton c={c} big label="Urgence médicale (SAMU)" num="15" />
+        <TelButton c={c} big label="Urgence — numéro européen" num="112" />
+        <TelButton c={c} big label="Police / Gendarmerie" num="17" />
+        <TelButton c={c} big label="Pompiers" num="18" />
+      </div>
+      <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 20 }}>
+        <p style={{ margin: 0, fontSize: 13, color: c.textSoft, lineHeight: 1.6 }}>
+          Pour les personnes sourdes, malentendantes, aphasiques ou dysphasiques : le <strong>114</strong> est
+          accessible par SMS, fax ou tchat.
+        </p>
+      </Card>
+      <Btn c={c} variant="ghost" onClick={onBack}>Retour</Btn>
+    </div>
+  );
+}
+
+function AidePeur({ c, onBack, safetyPlan, onContacts }) {
+  const aUnePersonne = safetyPlan && safetyPlan.personnes && safetyPlan.personnes.trim().length > 0;
+  return (
+    <div>
+      <BackRow c={c} onBack={onBack} />
+      <ScreenTitle c={c}>Vous n'êtes pas seul·e avec ça.</ScreenTitle>
+      <div style={{ marginBottom: 18 }}>
+        <TelButton c={c} big label="Numéro national de prévention du suicide" num="3114" display="3114" />
+      </div>
+      <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 20 }}>
+        Ce numéro est gratuit, confidentiel, et disponible 24h/24 et 7j/7.
+      </p>
+      {aUnePersonne && (
+        <Btn c={c} variant="soft" onClick={onContacts} style={{ marginBottom: 20 }}>
+          Contacter une personne de mes repères de sécurité <span>→</span>
+        </Btn>
+      )}
+      <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 20 }}>
+        <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+          Cette application ne surveille pas votre état. Personne n'est automatiquement alerté par ce que vous
+          indiquez ici.
+        </p>
+      </Card>
+      <Btn c={c} variant="ghost" onClick={onBack}>Retour</Btn>
+    </div>
+  );
+}
+
+function AideDebordQ1({ c, onBack, onOui, onNeSaitPas, onNon }) {
+  return (
+    <div>
+      <BackRow c={c} onBack={onBack} />
+      <ScreenTitle c={c}>Êtes-vous dans un endroit suffisamment sûr pour les prochaines minutes ?</ScreenTitle>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 10 }}>
+        <Btn c={c} variant="secondary" onClick={onOui}>Oui</Btn>
+        <Btn c={c} variant="secondary" onClick={onNeSaitPas}>Je ne sais pas</Btn>
+        <Btn c={c} variant="secondary" onClick={onNon}>Non</Btn>
+      </div>
+    </div>
+  );
+}
+
+function AideDebordNonSur({ c, onBack, onAppeler, onContacter, onNumeros }) {
+  return (
+    <div>
+      <BackRow c={c} onBack={onBack} />
+      <ScreenTitle c={c}>La priorité, maintenant</ScreenTitle>
+      <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 22 }}>
+        La priorité est de vous éloigner du danger si cela est possible et de contacter une aide extérieure.
+      </p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <Btn c={c} variant="warn" onClick={onAppeler}>Appeler les secours <span>☎</span></Btn>
+        <Btn c={c} variant="soft" onClick={onContacter}>Contacter quelqu'un <span>→</span></Btn>
+        <Btn c={c} variant="secondary" onClick={onNumeros}>Accéder aux numéros d'aide <span>→</span></Btn>
+      </div>
+    </div>
+  );
+}
+
+const AIDE_DEBORD_CHOIX = [
+  { id: "regarder", label: "Regarder quelque chose autour de moi" },
+  { id: "appui", label: "Sentir un appui" },
+  { id: "bouger", label: "Bouger un peu" },
+  { id: "ecouter", label: "Écouter une voix ou un son" },
+  { id: "contacter", label: "Contacter quelqu'un" },
+  { id: "ne_sait_pas", label: "Je ne sais pas" },
+];
+
+function AideDebordQ2({ c, onBack, onChoix }) {
+  return (
+    <div>
+      <BackRow c={c} onBack={onBack} />
+      <ScreenTitle c={c}>Que serait-il le plus facile de faire maintenant ?</ScreenTitle>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 10 }}>
+        {AIDE_DEBORD_CHOIX.map((o) => (
+          <Btn key={o.id} c={c} variant="secondary" onClick={() => onChoix(o.id)}>{o.label}</Btn>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const EMERGENCY_NUMBERS = [
-  { groupe: "Urgence médicale immédiate", items: [
-    { label: "Urgence médicale", num: "15" },
+  { groupe: "Urgences immédiates", items: [
+    { label: "Urgence médicale (SAMU)", num: "15" },
+    { label: "Urgence — numéro européen", num: "112" },
+    { label: "Police / Gendarmerie", num: "17" },
+    { label: "Pompiers", num: "18" },
   ] },
-  { groupe: "Écoute et soutien", items: [
+  { groupe: "Prévention du suicide et détresse", items: [
+    { label: "Numéro national de prévention du suicide", num: "3114", display: "3114" },
     { label: "SOS Amitié", num: "0972394050", display: "09 72 39 40 50" },
     { label: "Suicide Écoute", num: "0145394000", display: "01 45 39 40 00" },
+  ] },
+  { groupe: "Consommations", items: [
     { label: "Écoute Cannabis", num: "0811912020", display: "0811 912 020" },
     { label: "Écoute Alcool", num: "0811913030", display: "0811 913 030" },
+  ] },
+  { groupe: "Ados, parents, familles", items: [
     { label: "Cap Écoute (ados et parents en difficulté)", num: "0472333435", display: "04 72 33 34 35" },
   ] },
   { groupe: "Violences", items: [
@@ -1235,7 +1417,8 @@ const EMERGENCY_NUMBERS = [
 function Urgence({ c, onBack }) {
   return (
     <div>
-      <ScreenTitle c={c}>Vous n'avez pas à traverser cela seul·e.</ScreenTitle>
+      <BackRow c={c} onBack={onBack} label="← Retour" />
+      <ScreenTitle c={c}>Tous les numéros d'aide</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 22 }}>
         Appuyez sur un numéro pour appeler directement.
       </p>
