@@ -766,8 +766,11 @@ export default function App() {
             onQuickExercise={() => { setActiveExercise(CRISIS_EXERCISE); setExerciseSource("crisis"); goTo("exercise"); }}
             onSafety={() => goTo("safety")}
             onContacts={() => goTo("safety")}
+            onUrgence={() => goTo("urgence")}
           />
         )}
+
+        {screen === "urgence" && <Urgence c={c} onBack={goBack} />}
 
         {screen === "library" && (
           <Library c={c} onBack={goBack}
@@ -1059,7 +1062,7 @@ function CheckinDone({ c, state, ffff, goBackHome, onExercises }) {
   );
 }
 
-function Crisis({ c, onBack, onQuickExercise, onSafety, onContacts }) {
+function Crisis({ c, onBack, onQuickExercise, onSafety, onContacts, onUrgence }) {
   return (
     <div>
       <ScreenTitle c={c}>Ce que vous vivez semble très intense.</ScreenTitle>
@@ -1072,15 +1075,66 @@ function Crisis({ c, onBack, onQuickExercise, onSafety, onContacts }) {
         <Btn c={c} variant="primary" onClick={onQuickExercise}>Faire un exercice très court <span>→</span></Btn>
         <Btn c={c} variant="soft" onClick={onSafety}>Voir mes repères de sécurité <span>→</span></Btn>
         <Btn c={c} variant="soft" onClick={onContacts}>Contacter une personne ressource <span>→</span></Btn>
-        <Btn c={c} variant="warn" onClick={() => {}}>Je suis en danger / aide urgente <span>☎</span></Btn>
+        <Btn c={c} variant="warn" onClick={onUrgence}>Je suis en danger / aide urgente <span>☎</span></Btn>
       </div>
       <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 20 }}>
         <p style={{ margin: 0, fontSize: 13, color: c.textSoft, lineHeight: 1.6 }}>
-          Vous n'avez pas à traverser cela seul·e. En France : 15 (SAMU), 3114 (numéro national de prévention du
-          suicide, 24h/24), 112 (urgence en Europe).
+          Vous n'avez pas à traverser cela seul·e. Pour toute urgence médicale immédiate : 15 (SAMU) ou 112.
         </p>
       </Card>
       <Btn c={c} variant="ghost" onClick={onBack}>Revenir à l'accueil</Btn>
+    </div>
+  );
+}
+
+const EMERGENCY_NUMBERS = [
+  { groupe: "Urgence médicale immédiate", items: [
+    { label: "Urgence médicale", num: "15" },
+  ] },
+  { groupe: "Écoute et soutien", items: [
+    { label: "SOS Amitié", num: "0972394050", display: "09 72 39 40 50" },
+    { label: "Suicide Écoute", num: "0145394000", display: "01 45 39 40 00" },
+    { label: "Écoute Cannabis", num: "0811912020", display: "0811 912 020" },
+    { label: "Écoute Alcool", num: "0811913030", display: "0811 913 030" },
+    { label: "Cap Écoute (ados et parents en difficulté)", num: "0472333435", display: "04 72 33 34 35" },
+  ] },
+  { groupe: "Violences", items: [
+    { label: "Aide aux victimes", num: "116006", display: "116 006" },
+    { label: "Femmes victimes de violences et leur entourage", num: "3919", display: "3919" },
+    { label: "Enfants en danger", num: "119", display: "119" },
+  ] },
+];
+
+function Urgence({ c, onBack }) {
+  return (
+    <div>
+      <ScreenTitle c={c}>Vous n'avez pas à traverser cela seul·e.</ScreenTitle>
+      <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 22 }}>
+        Appuyez sur un numéro pour appeler directement.
+      </p>
+      {EMERGENCY_NUMBERS.map((group) => (
+        <div key={group.groupe} style={{ marginBottom: 20 }}>
+          <div style={{ fontSize: 12.5, color: c.textSoft, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.3 }}>
+            {group.groupe}
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {group.items.map((it) => (
+              <a key={it.num} href={`tel:${it.num}`}
+                style={{
+                  display: "flex", justifyContent: "space-between", alignItems: "center",
+                  padding: "14px 16px", borderRadius: 16, textDecoration: "none",
+                  border: `1px solid ${c.border}`, background: c.card,
+                }}>
+                <span style={{ color: c.text, fontSize: 14.5, fontWeight: 600, paddingRight: 10 }}>{it.label}</span>
+                <span style={{ color: c.terracotta, fontSize: 15.5, fontWeight: 700, whiteSpace: "nowrap" }}>
+                  {it.display || it.num} ☎
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+      <Btn c={c} variant="ghost" onClick={onBack}>Retour</Btn>
     </div>
   );
 }
