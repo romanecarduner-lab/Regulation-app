@@ -75,6 +75,8 @@ const BESOINS_LIST = [
   { id: "lien", label: "Être moins seul·e" },
   { id: "lieu_ressource", label: "Un lieu ressource" },
   { id: "tolerance_renforcer", label: "Mieux me connaître" },
+  { id: "honte", label: "Un peu de recul face à la honte" },
+  { id: "transition", label: "Faire une transition" },
 ];
 
 const CANAUX_LIST = [
@@ -292,6 +294,164 @@ const EXERCISES = [
   { id: "menu-regulation", titre: "Mon menu de régulation", etats: ["tolerance"], besoins: ["tolerance_renforcer"], protection: [], canaux: ["cognitif"], duree: "10min", materiel: null,
     objectif: "Préparer à l'avance ce qui peut aider à différents niveaux d'intensité.",
     etapes: ["Notez, pour chaque niveau : quand je vais plutôt bien (ce qui entretient mon équilibre) ; quand je commence à être activé·e (ce qui m'aide tôt) ; quand c'est très intense (ce qui est simple) ; quand je ne peux plus gérer seul·e (qui contacter)."],
+    precaution: null, sensible: [] },
+
+  { id: "detective-changements", titre: "Le détective des changements", etats: ["dissociation", "hyperactivation"], besoins: ["orienter"], protection: [], canaux: ["visuel"], duree: "2min", materiel: null,
+    tags: ["orientation_exterieure", "vue"],
+    objectif: "Remettre doucement l'attention en contact avec l'environnement actuel.",
+    etapes: ["Regardez autour de vous sans chercher à tout observer. Trouvez trois choses qui n'étaient pas exactement comme cela hier, la dernière fois que vous êtes venu·e ici, ou quelques heures plus tôt — une lumière différente, un objet déplacé, un bruit nouveau.", "Choisissez un seul de ces changements et regardez-le quelques secondes.", "Si vous ne connaissez pas le lieu : cherchez plutôt trois indices qui permettent de deviner l'heure, la saison ou l'activité qui se déroule autour de vous."],
+    precaution: null, sensible: [] },
+  { id: "chasse-aux-formes", titre: "La chasse aux formes", etats: ["hyperactivation", "mixte"], besoins: ["orienter"], protection: [], canaux: ["visuel"], duree: "30s", materiel: null,
+    tags: ["vue", "jeu"],
+    objectif: "Occuper doucement le regard par une recherche simple et ludique.",
+    etapes: ["Cherchez autour de vous : un cercle, un rectangle, une ligne, quelque chose d'irrégulier.", "Choisissez la forme que vos yeux trouvent la plus facile à regarder aujourd'hui.", "Version créative : inventez une cinquième catégorie — une forme qui ressemble à une vague, une montagne, un visage, une lettre."],
+    precaution: null, sensible: [] },
+  { id: "generique-du-present", titre: "Le générique du présent", etats: ["dissociation"], besoins: ["orienter", "dissocie"], protection: [], canaux: ["visuel", "cognitif"], duree: "2min", materiel: null,
+    tags: ["orientation_exterieure", "langage", "creativite"],
+    objectif: "Ancrer l'attention dans le décor actuel, sous une forme un peu ludique.",
+    etapes: ["Si cette pièce était le décor d'un film qui se déroule exactement aujourd'hui, quels seraient les cinq éléments que la caméra devrait montrer pour que le spectateur comprenne où et quand nous sommes ?", "Quel serait le titre de cette scène ?"],
+    precaution: null, sensible: [] },
+  { id: "meteo-de-la-piece", titre: "La météo de la pièce", etats: ["hyperactivation", "hypoactivation", "dissociation"], besoins: ["orienter", "sens"], protection: [], canaux: ["visuel", "tactile", "auditif"], duree: "30s", materiel: null,
+    tags: ["vue", "audition", "odorat"],
+    objectif: "Chercher le neutre plutôt que le positif, pour observer l'environnement sans pression de ressentir quelque chose de précis.",
+    etapes: ["Quelle est la météo concrète de l'endroit où vous êtes ? Observez la lumière, la température, l'air, les sons, les odeurs.", "Quelle est la chose la plus neutre que vous remarquez ?"],
+    precaution: null, sensible: [] },
+  { id: "reduire-le-monde", titre: "Réduire le monde d'un cran", etats: ["hyperactivation"], besoins: ["appuis", "contenir"], protection: [], canaux: ["moteur", "tactile"], duree: "30s", materiel: null,
+    tags: ["appuis", "choix"],
+    objectif: "Diminuer légèrement la charge sensorielle, sans chercher à tout régler d'un coup.",
+    etapes: ["Vous n'avez pas besoin de tout régler. Cherchez simplement ce qui pourrait diminuer la charge de 5 % : diminuer légèrement la lumière, couper une notification, s'éloigner d'un bruit, desserrer un vêtement, poser un objet, fermer une porte."],
+    precaution: null, sensible: [] },
+  { id: "endroit-le-moins-mauvais", titre: "L'endroit le moins mauvais", etats: ["hyperactivation", "mixte"], besoins: ["appuis", "mouvement"], protection: [], canaux: ["moteur", "visuel"], duree: "30s", materiel: null,
+    tags: ["orientation_exterieure", "choix"],
+    objectif: "Chercher un endroit un peu plus supportable, sans viser la perfection.",
+    etapes: ["Sans chercher l'endroit parfait, regardez autour de vous. Quel endroit semble 5 % plus facile que les autres ? (une chaise, une fenêtre, dos contre un mur, plus loin d'une personne, dehors…)", "Pouvez-vous vous en rapprocher légèrement ?"],
+    precaution: null, sensible: ["mouvement"] },
+  { id: "dix-secondes-inutiles", titre: "Les dix secondes inutiles", etats: ["hyperactivation", "tolerance"], besoins: ["mental", "limites"], protection: ["fawn"], canaux: ["cognitif"], duree: "30s", materiel: null,
+    tags: ["choix", "rythme"],
+    objectif: "Se donner un très court répit avant de devoir décider ou répondre à quelqu'un.",
+    etapes: ["Pendant dix secondes, vous n'avez aucune décision à prendre.", "Puis : avez-vous besoin de dix secondes de plus ? (oui / non / je ne sais pas)"],
+    precaution: null, sensible: [] },
+  { id: "bouton-volume", titre: "Le bouton volume", etats: ["hypoactivation"], besoins: ["mouvement", "choix"], protection: [], canaux: ["cognitif", "moteur"], duree: "30s", materiel: null,
+    tags: ["proprioception", "choix"],
+    objectif: "Chercher une toute petite augmentation d'énergie, plutôt qu'un grand changement.",
+    etapes: ["Si votre niveau d'énergie avait un bouton de volume, où serait-il maintenant ?", "Il ne s'agit pas de passer de 1 à 10 : serait-il possible de passer de 1 à 1,5 ?", "Choisissez une micro-action correspondant à ce tout petit mouvement de curseur."],
+    precaution: null, sensible: [] },
+  { id: "rapide-et-lent", titre: "Une chose rapide, une chose lente", etats: ["mixte"], besoins: ["orienter"], protection: [], canaux: ["visuel"], duree: "30s", materiel: null,
+    tags: ["vue", "rythme"],
+    objectif: "Donner une place aux deux rythmes qui peuvent coexister dans un état mixte.",
+    etapes: ["Cherchez autour de vous une chose qui bouge rapidement.", "Puis cherchez une chose immobile ou très lente.", "Alternez doucement le regard entre les deux."],
+    precaution: null, sensible: [] },
+  { id: "corps-dit-deux-choses", titre: "Mon corps dit deux choses", etats: ["mixte"], besoins: ["corps"], protection: [], canaux: ["cognitif", "tactile"], duree: "2min", materiel: null,
+    tags: ["proprioception", "langage"],
+    objectif: "Reconnaître que plusieurs états peuvent coexister, sans avoir à en choisir un seul.",
+    etapes: ["Complétez deux colonnes : « Une partie de moi remarque… » et « Une autre partie de moi remarque… » — par exemple : « mon cœur va vite » / « mes jambes semblent lourdes ».", "Plusieurs états peuvent coexister — ce n'est pas contradictoire."],
+    precaution: null, sensible: [] },
+  { id: "chaud-froid-neutre", titre: "Chaud / froid / neutre", etats: ["mixte", "hyperactivation"], besoins: ["sens"], protection: [], canaux: ["tactile"], duree: "30s", materiel: null,
+    tags: ["toucher"],
+    objectif: "Explorer trois sensations de température très douces, en incluant le neutre.",
+    etapes: ["Cherchez quelque chose de légèrement chaud, quelque chose de légèrement frais, puis quelque chose de neutre.", "Le neutre est tout aussi important que les deux autres."],
+    precaution: "Pas de froid extrême ni de source de chaleur qui pourrait brûler — des températures très douces seulement.", sensible: [] },
+  { id: "le-journaliste", titre: "Le journaliste", etats: ["dissociation"], besoins: ["dissocie", "orienter"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: null,
+    tags: ["langage", "orientation_exterieure"],
+    objectif: "Revenir vers des faits concrets plutôt que vers le ressenti, dans un premier temps.",
+    etapes: ["Imaginez que vous deviez transmettre les faits à quelqu'un qui n'est pas là : Où suis-je ? Quel jour sommes-nous ? Qu'est-ce qui se passe concrètement ? Qui est avec moi ? Quelle est la prochaine chose prévue ?"],
+    precaution: "Cet exercice commence volontairement par les faits plutôt que par « comment vous sentez-vous ? ».", sensible: [] },
+  { id: "jeu-des-erreurs", titre: "Le jeu des erreurs du présent", etats: ["dissociation"], besoins: ["dissocie"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: null,
+    tags: ["jeu", "humour"],
+    objectif: "Soutenir l'orientation temporelle sous une forme légère et facultative.",
+    etapes: ["Une phrase volontairement absurde : « Nous sommes en 1997, vous êtes dans une gare et il neige dans la pièce. »", "Qu'est-ce qui ne correspond pas à la réalité actuelle ?"],
+    precaution: "Exercice facultatif, à proposer seulement si un ton un peu ludique vous convient aujourd'hui.", sensible: [] },
+  { id: "meteo-impossible", titre: "Fabriquer une météo impossible", etats: ["tolerance", "hyperactivation"], besoins: ["douceur", "mental"], protection: [], canaux: ["imaginatif", "cognitif"], duree: "2min", materiel: null,
+    tags: ["creativite", "humour", "imagination"],
+    objectif: "Mobiliser l'imagination et la flexibilité, sans passer par un lieu ressource ou un souvenir.",
+    etapes: ["Inventez une météo qui n'existe pas : pluie tiède de confettis, brouillard à rayures, vent carré…", "Aucune bonne réponse : l'idée est simplement de jouer un instant avec l'impossible."],
+    precaution: null, sensible: ["imagination"] },
+  { id: "gribouillage", titre: "Le gribouillage qui s'arrête quand je décide", etats: ["tolerance", "hyperactivation", "hypoactivation"], besoins: ["choix", "mouvement"], protection: [], canaux: ["cognitif", "moteur"], duree: "5min", materiel: "Une feuille et un stylo, ou une surface tactile.",
+    tags: ["creativite", "ecriture", "choix"],
+    objectif: "Entraîner le fait de commencer, interrompre, reprendre et terminer une action volontairement.",
+    etapes: ["Commencez à dessiner où vous voulez, sans objectif esthétique.", "Arrêtez-vous quand vous voulez. Reprenez si vous voulez.", "Le dessin lui-même n'a aucune importance : ce qui compte, c'est de décider du début et de la fin."],
+    precaution: null, sensible: ["ecrire"] },
+
+  { id: "pousser-relacher-choisir", titre: "Pousser / relâcher / choisir", etats: ["hyperactivation"], besoins: ["mobiliser_fight"], protection: ["fight"], canaux: ["moteur"], duree: "2min", materiel: "Un mur ou un objet stable.",
+    tags: ["mouvement", "choix"],
+    objectif: "Donner à une énergie de lutte une action contenue, où le choix reste central.",
+    etapes: ["Poussez contre un mur ou un objet stable, avec la force que vous choisissez.", "Arrêtez.", "Décidez volontairement si vous recommencez ou non — c'est cette décision qui est le cœur de l'exercice, pas la force employée."],
+    precaution: null, sensible: ["mouvement"] },
+  { id: "phrase-interdite", titre: "La phrase interdite", etats: ["hyperactivation"], besoins: ["mobiliser_fight", "mental"], protection: ["fight"], canaux: ["cognitif"], duree: "2min", materiel: "Optionnel : de quoi écrire.",
+    tags: ["ecriture", "langage"],
+    objectif: "Donner une forme à une colère ou une frustration, sans obligation de l'envoyer à qui que ce soit.",
+    etapes: ["Écrivez la phrase que vous n'êtes pas obligé·e d'envoyer à personne — une phrase, trois mots, un titre, ou même une suite de signes.", "Puis décidez ce que vous voulez en faire : la garder, l'effacer, la modifier, ou ne pas décider maintenant."],
+    precaution: null, sensible: ["ecrire"] },
+
+  { id: "sortie-existe", titre: "La sortie existe", etats: ["hyperactivation"], besoins: ["mobiliser_flight", "orienter"], protection: ["flight"], canaux: ["visuel", "cognitif"], duree: "30s", materiel: null,
+    tags: ["orientation_exterieure", "vue"],
+    objectif: "Rappeler que des options de mouvement existent, sans obligation de les utiliser.",
+    etapes: ["Où se trouve la sortie la plus proche ? Existe-t-il une autre sortie ?", "Où pourriez-vous vous déplacer si vous aviez besoin de plus d'espace ?", "Vous n'êtes pas obligé·e de partir — le but est seulement de savoir que des options existent."],
+    precaution: null, sensible: [] },
+
+  { id: "ce-qui-peut-choisir", titre: "Trouver ce qui peut encore choisir", etats: ["hypoactivation"], besoins: ["choix"], protection: ["freeze"], canaux: ["cognitif"], duree: "30s", materiel: null,
+    tags: ["choix"],
+    objectif: "Repérer un espace de choix minuscule quand beaucoup de choses semblent bloquées.",
+    etapes: ["Beaucoup de choses semblent peut-être bloquées. Y a-t-il une chose minuscule que vous pouvez encore choisir ? Regarder à gauche ou à droite, garder l'écran ou le poser, bouger ou ne pas bouger, continuer ou arrêter.", "Vous venez de faire un choix — sans qu'il ait besoin d'être important."],
+    precaution: null, sensible: [] },
+  { id: "mouvement-prepare", titre: "Le mouvement préparé mais non réalisé", etats: ["hypoactivation"], besoins: ["mouvement"], protection: ["freeze"], canaux: ["cognitif", "moteur"], duree: "30s", materiel: null,
+    tags: ["proprioception"],
+    objectif: "Explorer un mouvement uniquement en pensée, sans obligation de l'exécuter.",
+    etapes: ["Imaginez seulement que votre main pourrait bouger. Vous n'avez pas besoin de la bouger.", "Si elle voulait commencer, quel serait le premier millimètre du mouvement ?"],
+    precaution: null, sensible: ["imagination"] },
+  { id: "oui-non-yeux", titre: "Oui / non avec les yeux", etats: ["hypoactivation"], besoins: ["choix"], protection: ["freeze"], canaux: ["visuel"], duree: "30s", materiel: null,
+    tags: ["vue", "choix"],
+    objectif: "Retrouver un moyen de répondre simple quand parler est difficile.",
+    etapes: ["Choisissez deux directions du regard : gauche = oui, droite = non.", "Répondez ainsi à des questions simples : continuer ? faire une pause ? changer d'exercice ?"],
+    precaution: null, sensible: [] },
+
+  { id: "reponse-pas-encore-due", titre: "La réponse qui n'est pas encore due", etats: ["tolerance", "hyperactivation"], besoins: ["limites"], protection: ["fawn"], canaux: ["relationnel", "cognitif"], duree: "30s", materiel: null,
+    tags: ["langage", "limites"],
+    objectif: "Se rappeler qu'une réponse immédiate n'est pas toujours obligatoire.",
+    etapes: ["Vous n'avez peut-être pas besoin de répondre maintenant.", "Choisissez une phrase, ou créez la vôtre : « Je vais y réfléchir. », « Je te répondrai plus tard. », « Je ne sais pas encore. », « Je préfère ne pas répondre maintenant. »"],
+    precaution: null, sensible: [] },
+  { id: "delai-personnalise", titre: "Le délai personnalisé", etats: ["tolerance", "hyperactivation"], besoins: ["limites"], protection: ["fawn"], canaux: ["cognitif"], duree: "2min", materiel: null,
+    tags: ["choix", "rythme"],
+    objectif: "Choisir à l'avance le délai qui vous convient face à une pression à répondre vite.",
+    etapes: ["Quand je ressens une forte pression pour répondre, j'essaie d'attendre… : 30 secondes ; 5 minutes ; une nuit ; le temps d'en parler à quelqu'un ; une durée personnalisée.", "Ce n'est pas une obligation, seulement une option que vous gardez disponible."],
+    precaution: null, sensible: [] },
+  { id: "thermometre-oui", titre: "Le thermomètre du « oui »", etats: ["tolerance", "hyperactivation"], besoins: ["limites"], protection: ["fawn"], canaux: ["cognitif"], duree: "2min", materiel: null,
+    tags: ["langage", "choix"],
+    objectif: "Nuancer un oui ou un non qui semble parfois tout ou rien.",
+    etapes: ["Situez-vous sur une échelle : oui clair, plutôt oui, je ne sais pas, plutôt non, non clair.", "Qu'est-ce qui ferait bouger le curseur, dans un sens ou dans l'autre ?"],
+    precaution: null, sensible: [] },
+
+  { id: "regard-exterieur-alternatif", titre: "Le regard extérieur alternatif", etats: ["tolerance", "hyperactivation"], besoins: ["honte", "douceur"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: null,
+    tags: ["langage"],
+    objectif: "Prendre un peu de recul sur un jugement sévère envers soi-même, sans forcer l'auto-compassion.",
+    etapes: ["Si quelqu'un de suffisamment bienveillant connaissait seulement les faits, sans connaître vos jugements sur vous-même, que pourrait-il observer ? Les faits ; le contexte ; ce qui était difficile ; ce que vous essayiez de faire."],
+    precaution: "Cet exercice ne cherche pas à imposer l'auto-compassion — seulement à élargir un peu le point de vue.", sensible: [] },
+  { id: "tribunal-ferme", titre: "Le tribunal fermé pour aujourd'hui", etats: ["tolerance", "hyperactivation"], besoins: ["honte"], protection: [], canaux: ["cognitif", "ecriture"], duree: "2min", materiel: "Optionnel : de quoi écrire.",
+    tags: ["ecriture", "langage"],
+    objectif: "Suspendre temporairement le jugement sur soi-même, sans l'effacer ni le nier.",
+    etapes: ["Pendant deux minutes, aucun verdict n'est autorisé.", "Vous pouvez seulement écrire : ce qui s'est passé ; ce qui a été ressenti ; ce qui manque comme information.", "Le tribunal peut rester fermé plus longtemps si vous le souhaitez."],
+    precaution: null, sensible: ["ecrire"] },
+
+  { id: "trois-facons", titre: "Trois façons", etats: ["tolerance"], besoins: ["choix"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: null,
+    tags: ["choix", "jeu"],
+    objectif: "Réintroduire un peu de variété et de choix dans un geste répété machinalement.",
+    etapes: ["Choisissez une action quotidienne (boire, s'asseoir…) et trouvez trois façons différentes de la faire.", "Par exemple, boire : dans un verre, une tasse, une bouteille. S'asseoir : sur une chaise, un lit, le sol."],
+    precaution: null, sensible: [] },
+  { id: "aujourdhui-je-decide", titre: "Aujourd'hui je décide", etats: ["tolerance", "hypoactivation"], besoins: ["choix"], protection: [], canaux: ["cognitif"], duree: "30s", materiel: null,
+    tags: ["choix"],
+    objectif: "Se rappeler qu'une petite décision reste entièrement la vôtre.",
+    etapes: ["Choisissez une micro-décision : quelle tasse, quelle musique, quelle place, quelle lumière, dans quel ordre faire deux choses.", "Cette décision vous appartient."],
+    precaution: null, sensible: [] },
+
+  { id: "entre-deux-mondes", titre: "Entre deux mondes", etats: ["tolerance", "hyperactivation"], besoins: ["transition"], protection: [], canaux: ["cognitif", "moteur"], duree: "2min", materiel: null,
+    tags: ["orientation_exterieure", "mouvement"],
+    objectif: "Marquer une transition consciente après une séance, le travail, une visite ou un événement difficile.",
+    etapes: ["Que quittez-vous ? Puis : vers quoi allez-vous maintenant ?", "Choisissez une action de transition : changer de vêtement, marcher, boire quelque chose, changer de musique, se laver les mains, ouvrir une fenêtre."],
+    precaution: null, sensible: ["mouvement"] },
+  { id: "sas-90-secondes", titre: "Le sas de 90 secondes", etats: ["tolerance", "hyperactivation"], besoins: ["transition"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: "Un minuteur (téléphone, montre).",
+    tags: ["rythme"],
+    objectif: "S'accorder un court sas neutre entre deux moments, sans obligation de comprendre quoi que ce soit pendant ce temps.",
+    etapes: ["Réglez un minuteur sur 90 secondes.", "Pendant ce temps : rien à comprendre. Vous pouvez regarder, marcher, rester immobile, ou écouter — comme vous préférez."],
     precaution: null, sensible: [] },
 ];
 
@@ -862,6 +1022,8 @@ export default function App() {
         {screen === "exercise" && activeExercise && (
           <Exercise c={c} exercise={activeExercise}
             onStop={goBackHome}
+            onRevenirListe={goBack}
+            onEssayerAutreChose={() => goTo("library")}
             onFinish={(effet, remarque) => {
               addEntry({ type: "exercice", exercice: activeExercise.titre, effet, remarque, intensite: intensity, etat: nsState });
               saveExoFeedback(activeExercise.id, effet);
@@ -944,25 +1106,43 @@ function Home({ c, theme, toggleTheme, goTo }) {
         </p>
       </Card>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 8 }}>
         <Btn c={c} variant="primary" onClick={() => goTo("checkin-state")}>
           Comment je me sens maintenant ? <span>→</span>
         </Btn>
+        <p style={{ color: c.textSoft, fontSize: 12.5, margin: "-4px 2px 2px" }}>
+          Observer mon état et trouver ce qui pourrait m'aider.
+        </p>
+        <Btn c={c} variant="soft" onClick={() => goTo("library")}>
+          J'aimerais essayer quelque chose <span>→</span>
+        </Btn>
+        <p style={{ color: c.textSoft, fontSize: 12.5, margin: "-4px 2px 2px" }}>
+          Accéder directement aux exercices.
+        </p>
+      </div>
+
+      <div style={{ fontSize: 12, color: c.textSoft, textTransform: "uppercase", letterSpacing: 0.4, margin: "22px 2px 10px" }}>
+        Comprendre
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 8 }}>
         <Btn c={c} variant="secondary" onClick={() => goTo("tolerance-zone")}>
-          Comprendre ma zone de tolérance <span>→</span>
+          Ma zone de tolérance <span>→</span>
         </Btn>
         <Btn c={c} variant="secondary" onClick={() => goTo("nervous-system")}>
-          Comprendre mon système nerveux <span>→</span>
+          Mon système nerveux <span>→</span>
         </Btn>
         <Btn c={c} variant="secondary" onClick={() => goTo("protection")}>
-          Reconnaître mes réponses de protection <span>→</span>
-        </Btn>
-        <Btn c={c} variant="secondary" onClick={() => goTo("library")}>
-          Faire un exercice <span>→</span>
+          Mes réponses de protection <span>→</span>
         </Btn>
         <Btn c={c} variant="secondary" onClick={() => goTo("psychoed")}>
           Psychoéducation <span>→</span>
         </Btn>
+      </div>
+
+      <div style={{ fontSize: 12, color: c.textSoft, textTransform: "uppercase", letterSpacing: 0.4, margin: "22px 2px 10px" }}>
+        Mon espace
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <Btn c={c} variant="secondary" onClick={() => goTo("safety")}>
           Mes repères de sécurité <span>→</span>
         </Btn>
@@ -1471,17 +1651,35 @@ function FacetRow({ title, options, value, onToggle, c }) {
   );
 }
 
-function matchesExercise(ex, f) {
-  if (f.etat && ex.etats.length && !ex.etats.includes(f.etat)) return false;
-  if (f.besoin && !ex.besoins.includes(f.besoin)) return false;
-  if (f.protection && !ex.protection.includes(f.protection)) return false;
-  if (f.canal && !ex.canaux.includes(f.canal)) return false;
-  if (f.duree) {
+function activeCriteriaOf(f) {
+  const list = [];
+  if (f.etat) list.push({ type: "etat", value: f.etat, label: ETATS_LIST.find((x) => x.id === f.etat)?.label });
+  if (f.besoin) list.push({ type: "besoin", value: f.besoin, label: BESOINS_LIST.find((x) => x.id === f.besoin)?.label });
+  if (f.protection) list.push({ type: "protection", value: f.protection, label: FFFF_INFO.find((x) => x.id === f.protection)?.label.split(" — ")[0] });
+  if (f.canal) list.push({ type: "canal", value: f.canal, label: CANAUX_LIST.find((x) => x.id === f.canal)?.label });
+  if (f.duree) list.push({ type: "duree", value: f.duree, label: DUREE_LIST.find((x) => x.id === f.duree)?.label });
+  return list;
+}
+
+function matchesCriterion(ex, crit) {
+  if (crit.type === "etat") return ex.etats.length === 0 || ex.etats.includes(crit.value);
+  if (crit.type === "besoin") return ex.besoins.includes(crit.value);
+  if (crit.type === "protection") return ex.protection.includes(crit.value);
+  if (crit.type === "canal") return ex.canaux.includes(crit.value);
+  if (crit.type === "duree") {
     const order = ["30s", "2min", "5min", "10min"];
-    if (order.indexOf(ex.duree) > order.indexOf(f.duree)) return false;
+    return order.indexOf(ex.duree) <= order.indexOf(crit.value);
   }
-  if (f.avoid && f.avoid.length && ex.sensible.some((s) => f.avoid.includes(s))) return false;
-  return true;
+  return false;
+}
+
+function scoreExercise(ex, criteria) {
+  return criteria.filter((crit) => matchesCriterion(ex, crit)).length;
+}
+
+function sortByFeedback(list, feedback) {
+  const rank = { "Beaucoup": 0, "Un peu": 1, "Cela dépend": 2, "Pas vraiment": 3 };
+  return [...list].sort((a, b) => (rank[feedback[a.id]] ?? 1.5) - (rank[feedback[b.id]] ?? 1.5));
 }
 
 function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedback, customExercises, onPick, onGoPreferences, onGoCreate }) {
@@ -1490,17 +1688,34 @@ function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedba
   const [showAvoidPanel, setShowAvoidPanel] = useState(false);
 
   const allExercises = [...EXERCISES, ...customExercises];
-  let list = allExercises.filter((ex) => matchesExercise(ex, f));
+  const notAvoided = allExercises.filter((ex) =>
+    feedback[ex.id] !== "Je préfère l'éviter" &&
+    !(f.avoid && f.avoid.length && ex.sensible.some((s) => f.avoid.includes(s)))
+  );
 
-  // Trie : ce qui aide "beaucoup" en premier, ce que l'utilisateur préfère éviter en dernier / masqué
-  list = list
-    .filter((ex) => feedback[ex.id] !== "Je préfère l'éviter")
-    .sort((a, b) => {
-      const rank = { "Beaucoup": 0, "Un peu": 1, "Cela dépend": 2, "Pas vraiment": 3 };
-      const ra = rank[feedback[a.id]] ?? 1.5;
-      const rb = rank[feedback[b.id]] ?? 1.5;
-      return ra - rb;
-    });
+  const criteria = activeCriteriaOf(f);
+  let list = [];
+  let banner = null;
+  let perCriterion = null;
+
+  if (criteria.length === 0) {
+    list = sortByFeedback(notAvoided, feedback);
+  } else {
+    const scored = notAvoided.map((ex) => ({ ex, score: scoreExercise(ex, criteria) }));
+    const fullMatches = scored.filter((s) => s.score === criteria.length).map((s) => s.ex);
+    if (fullMatches.length > 0) {
+      list = sortByFeedback(fullMatches, feedback);
+    } else {
+      const maxScore = Math.max(0, ...scored.map((s) => s.score));
+      if (maxScore > 0) {
+        list = sortByFeedback(scored.filter((s) => s.score === maxScore).map((s) => s.ex), feedback);
+        banner = "partial";
+      } else {
+        perCriterion = criteria.map((crit) => ({ crit, exercise: notAvoided.find((ex) => matchesCriterion(ex, crit)) || null }));
+        banner = "per-criterion";
+      }
+    }
+  }
 
   return (
     <div>
@@ -1551,15 +1766,50 @@ function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedba
         </Card>
       )}
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
-        {list.length === 0 && (
-          <Card c={c} style={{ background: c.bgAlt, border: "none" }}>
-            <p style={{ margin: 0, fontSize: 14, color: c.textSoft }}>
-              Aucun exercice ne correspond exactement à cette combinaison. Vous pouvez élargir vos filtres ou
-              créer votre propre exercice.
+      {banner === "partial" && (
+        <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 14 }}>
+          <p style={{ margin: 0, fontSize: 13.5, color: c.textSoft, lineHeight: 1.6 }}>
+            Aucun exercice ne correspond exactement à tout ce que vous décrivez en même temps. Voici ce qui
+            correspond au mieux à votre combinaison.
+          </p>
+        </Card>
+      )}
+
+      {banner === "per-criterion" && (
+        <div style={{ marginBottom: 16 }}>
+          <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 12 }}>
+            <p style={{ margin: 0, fontSize: 13.5, color: c.textSoft, lineHeight: 1.6 }}>
+              Aucun exercice ne correspond exactement à tout ce que vous décrivez en même temps. En revanche,
+              pour chacun de ces éléments pris séparément, voici ce que vous pouvez essayer :
             </p>
           </Card>
-        )}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {perCriterion.map(({ crit, exercise }) => (
+              <div key={crit.type + crit.value}>
+                <div style={{ fontSize: 12, color: c.textSoft, marginBottom: 5 }}>Pour {crit.label} :</div>
+                {exercise ? (
+                  <button onClick={() => onPick(exercise)}
+                    style={{ textAlign: "left", cursor: "pointer", border: `1px solid ${c.border}`, background: c.card, borderRadius: 16, padding: 14, width: "100%" }}>
+                    <span style={{ fontWeight: 700, color: c.text }}>{exercise.titre}</span>
+                  </button>
+                ) : (
+                  <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft, fontStyle: "italic" }}>
+                    Rien ne correspond directement à cela pour le moment.
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {(banner === "partial" || banner === "per-criterion") && (
+        <Btn c={c} variant="ghost" onClick={() => setF({ etat: null, besoin: null, protection: null, canal: null, duree: null, avoid: f.avoid })} style={{ marginBottom: 14 }}>
+          Réinitialiser mes critères
+        </Btn>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
         {list.map((ex) => (
           <button key={ex.id} onClick={() => onPick(ex)}
             style={{ textAlign: "left", cursor: "pointer", border: `1px solid ${c.border}`, background: c.card, borderRadius: 18, padding: 16 }}>
@@ -1580,9 +1830,25 @@ function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedba
   );
 }
 
-function Exercise({ c, exercise, onStop, onFinish }) {
-  const [step, setStep] = useState("do"); // do | remarque | continuer | feedback
+function Exercise({ c, exercise, onStop, onRevenirListe, onEssayerAutreChose, onFinish }) {
+  const [step, setStep] = useState("do"); // do | pas-maintenant | remarque | continuer | feedback
   const [remarque, setRemarque] = useState(null);
+
+  if (step === "pas-maintenant") {
+    return (
+      <div>
+        <ScreenTitle c={c}>Vous avez arrêté cet exercice.</ScreenTitle>
+        <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 26 }}>
+          C'est une possibilité prévue.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <Btn c={c} variant="secondary" onClick={onRevenirListe}>Revenir à la liste</Btn>
+          <Btn c={c} variant="secondary" onClick={onEssayerAutreChose}>Essayer autre chose</Btn>
+          <Btn c={c} variant="ghost" onClick={onStop}>Retourner à l'accueil</Btn>
+        </div>
+      </div>
+    );
+  }
 
   if (step === "remarque") {
     return (
@@ -1646,8 +1912,9 @@ function Exercise({ c, exercise, onStop, onFinish }) {
         </Card>
       )}
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <Btn c={c} variant="primary" onClick={() => setStep("remarque")}>J'ai terminé <span>✓</span></Btn>
-        <Btn c={c} variant="ghost" onClick={onStop}>Arrêter l'exercice</Btn>
+        <Btn c={c} variant="primary" onClick={() => setStep("remarque")}>Continuer <span>✓</span></Btn>
+        <Btn c={c} variant="secondary" onClick={onEssayerAutreChose}>Faire autrement</Btn>
+        <Btn c={c} variant="ghost" onClick={() => setStep("pas-maintenant")}>Pas maintenant</Btn>
       </div>
     </div>
   );
