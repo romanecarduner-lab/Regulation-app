@@ -18,6 +18,12 @@ const palette = {
     terracottaSoft: "#F1DFD4",
     stone: "#8C8577",
     stoneSoft: "#E7E3DB",
+    ocre: "#93762C",
+    ocreSoft: "#F0E4C4",
+    violet: "#7A5FA0",
+    violetSoft: "#E6DEF0",
+    force: "#A9612E",
+    forceSoft: "#EAD9C6",
     border: "#E7E0D5",
   },
   dark: {
@@ -34,6 +40,12 @@ const palette = {
     terracottaSoft: "#4A3A30",
     stone: "#A69F90",
     stoneSoft: "#3E3A33",
+    ocre: "#E0C57A",
+    ocreSoft: "#4A4530",
+    violet: "#C7ADE8",
+    violetSoft: "#3E3650",
+    force: "#E0925A",
+    forceSoft: "#4A3626",
     border: "#454037",
   },
 };
@@ -158,6 +170,9 @@ const EXERCISES = [
   { id: "pousser-mur", titre: "Pousser le mur", etats: ["hyperactivation"], besoins: ["mobiliser_fight"], protection: ["fight"], canaux: ["moteur"], duree: "2min", materiel: null,
     objectif: "Donner à l'énergie de lutte une action contenue et contrôlée.",
     etapes: ["Vérifiez d'abord que le mur est stable et que votre corps vous permet cet exercice.", "Placez les mains contre le mur. Choisissez vous-même la force.", "Poussez quelques secondes, sentez la résistance, puis diminuez progressivement. Vous pouvez recommencer une ou deux fois."],
+    variantes: [
+      { label: "Avec un objet, en insistant sur le choix", etapes: ["Poussez contre un mur ou un objet stable, avec la force que vous choisissez.", "Arrêtez.", "Décidez volontairement si vous recommencez ou non — c'est cette décision qui est le cœur de cette version, pas la force employée."] },
+    ],
     precaution: null, sensible: ["mouvement"] },
   { id: "tordre-tissu", titre: "Tordre sans détruire", etats: ["hyperactivation"], besoins: ["mobiliser_fight"], protection: ["fight"], canaux: ["moteur", "tactile"], duree: "2min", materiel: "Une serviette ou un tissu solide.",
     objectif: "Donner une action contenue à une énergie de colère, sans escalade.",
@@ -227,9 +242,12 @@ const EXERCISES = [
     objectif: "Retrouver une sensation de limite et de résistance, avec vos propres mains.",
     etapes: ["Placez vos paumes l'une contre l'autre. Laissez une main pousser légèrement l'autre, puis laissez l'autre répondre.", "Vous choisissez la force. Remarquez : « il y a une limite, il y a une résistance. »"],
     precaution: null, sensible: ["toucher_corps"] },
-  { id: "dossier-a-reprendre", titre: "Le dossier à reprendre", etats: ["hyperactivation", "tolerance"], besoins: ["contenir"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: null,
+  { id: "dossier-a-reprendre", titre: "Le dossier à reprendre", etats: ["hyperactivation", "tolerance"], besoins: ["contenir"], protection: [], canaux: ["cognitif", "relationnel"], duree: "2min", materiel: "Selon le choix : carnet, note sur le téléphone, boîte, enveloppe.",
     objectif: "Mettre de côté une pensée ou un souvenir sans que cela signifie l'abandonner ou le nier.",
     etapes: ["Notez : « Ce que je mets de côté… », « Je souhaite y revenir : seul·e / avec mon thérapeute / avec une personne de confiance / plus tard », et éventuellement une date pour y revenir."],
+    variantes: [
+      { label: "Choisir un support extérieur réel", etapes: ["Choisissez un support : un carnet, une note sur votre téléphone, une boîte, une enveloppe, une personne, ou un·e professionnel·le.", "Confiez-y ce que vous souhaitez mettre de côté pour l'instant — ce n'est pas résolu, seulement posé ailleurs pour un moment."] },
+    ],
     precaution: null, sensible: [] },
   { id: "lieu-ressource", titre: "Construire un lieu ressource", etats: ["tolerance", "hyperactivation"], besoins: ["lieu_ressource"], protection: [], canaux: ["imaginatif"], duree: "10min", materiel: null,
     objectif: "Construire progressivement un lieu ressource — réel, imaginaire, ou inspiré de plusieurs endroits — sur lequel vous gardez le contrôle.",
@@ -242,6 +260,10 @@ const EXERCISES = [
   { id: "phrase-temps", titre: "La phrase qui crée du temps", etats: ["tolerance", "hyperactivation"], besoins: ["limites"], protection: ["fawn"], canaux: ["relationnel", "cognitif"], duree: "30s", materiel: null,
     objectif: "Se donner un peu de temps avant de répondre à quelqu'un.",
     etapes: ["Choisissez ou enregistrez en favori une phrase : « J'ai besoin d'y réfléchir. », « Je ne peux pas répondre maintenant. », « Je préfère arrêter cette conversation pour l'instant. »", "Vous pouvez aussi créer votre propre phrase."],
+    variantes: [
+      { label: "Se rappeler qu'une réponse immédiate n'est pas obligatoire", etapes: ["Vous n'avez peut-être pas besoin de répondre maintenant.", "Choisissez une phrase, ou créez la vôtre : « Je vais y réfléchir. », « Je te répondrai plus tard. », « Je ne sais pas encore. », « Je préfère ne pas répondre maintenant. »"] },
+      { label: "Choisir la durée du délai à l'avance", etapes: ["Quand je ressens une forte pression pour répondre, j'essaie d'attendre… : 30 secondes ; 5 minutes ; une nuit ; le temps d'en parler à quelqu'un ; une durée personnalisée.", "Ce n'est pas une obligation, seulement une option que vous gardez disponible."] },
+    ],
     precaution: null, sensible: [] },
   { id: "moi-et-lautre", titre: "Moi et l'autre", etats: ["tolerance", "hyperactivation"], besoins: ["limites"], protection: ["fawn"], canaux: ["cognitif"], duree: "2min", materiel: null,
     objectif: "Distinguer ce qui vous appartient de ce qui appartient à l'autre personne.",
@@ -282,6 +304,9 @@ const EXERCISES = [
   { id: "message-prepare", titre: "Le message préparé", etats: ["tolerance", "hyperactivation", "hypoactivation"], besoins: ["lien"], protection: [], canaux: ["relationnel"], duree: "2min", materiel: null,
     objectif: "Préparer à l'avance des messages simples pour les moments où parler est difficile.",
     etapes: ["Vous pouvez préparer et enregistrer des messages comme : « Je ne vais pas très bien. Je n'ai pas besoin de solution, juste de présence. », « Peux-tu rester avec moi quelques minutes ? »"],
+    variantes: [
+      { label: "Version très courte, en un tap", etapes: ["Choisissez un message à envoyer tel quel : « Peux-tu rester avec moi ? », « Je n'ai pas besoin de parler. », « Peux-tu m'appeler ? », « J'ai besoin d'un peu d'espace. », « Je te répondrai plus tard. », « Je ne sais pas ce dont j'ai besoin, mais je ne veux pas être seul·e. »"] },
+    ],
     precaution: null, sensible: [] },
   { id: "cartographie-perso", titre: "Ma cartographie personnelle", etats: ["tolerance"], besoins: ["tolerance_renforcer"], protection: [], canaux: ["cognitif"], duree: "10min", materiel: null,
     objectif: "Mieux connaître votre propre fonctionnement, en dehors des moments de crise.",
@@ -372,11 +397,7 @@ const EXERCISES = [
     etapes: ["Commencez à dessiner où vous voulez, sans objectif esthétique.", "Arrêtez-vous quand vous voulez. Reprenez si vous voulez.", "Le dessin lui-même n'a aucune importance : ce qui compte, c'est de décider du début et de la fin."],
     precaution: null, sensible: ["ecrire"] },
 
-  { id: "pousser-relacher-choisir", titre: "Pousser / relâcher / choisir", etats: ["hyperactivation"], besoins: ["mobiliser_fight"], protection: ["fight"], canaux: ["moteur"], duree: "2min", materiel: "Un mur ou un objet stable.",
-    tags: ["mouvement", "choix"],
-    objectif: "Donner à une énergie de lutte une action contenue, où le choix reste central.",
-    etapes: ["Poussez contre un mur ou un objet stable, avec la force que vous choisissez.", "Arrêtez.", "Décidez volontairement si vous recommencez ou non — c'est cette décision qui est le cœur de l'exercice, pas la force employée."],
-    precaution: null, sensible: ["mouvement"] },
+
   { id: "phrase-interdite", titre: "La phrase interdite", etats: ["hyperactivation"], besoins: ["mobiliser_fight", "mental"], protection: ["fight"], canaux: ["cognitif"], duree: "2min", materiel: "Optionnel : de quoi écrire.",
     tags: ["ecriture", "langage"],
     objectif: "Donner une forme à une colère ou une frustration, sans obligation de l'envoyer à qui que ce soit.",
@@ -403,17 +424,6 @@ const EXERCISES = [
     tags: ["vue", "choix"],
     objectif: "Retrouver un moyen de répondre simple quand parler est difficile.",
     etapes: ["Choisissez deux directions du regard : gauche = oui, droite = non.", "Répondez ainsi à des questions simples : continuer ? faire une pause ? changer d'exercice ?"],
-    precaution: null, sensible: [] },
-
-  { id: "reponse-pas-encore-due", titre: "La réponse qui n'est pas encore due", etats: ["tolerance", "hyperactivation"], besoins: ["limites"], protection: ["fawn"], canaux: ["relationnel", "cognitif"], duree: "30s", materiel: null,
-    tags: ["langage", "limites"],
-    objectif: "Se rappeler qu'une réponse immédiate n'est pas toujours obligatoire.",
-    etapes: ["Vous n'avez peut-être pas besoin de répondre maintenant.", "Choisissez une phrase, ou créez la vôtre : « Je vais y réfléchir. », « Je te répondrai plus tard. », « Je ne sais pas encore. », « Je préfère ne pas répondre maintenant. »"],
-    precaution: null, sensible: [] },
-  { id: "delai-personnalise", titre: "Le délai personnalisé", etats: ["tolerance", "hyperactivation"], besoins: ["limites"], protection: ["fawn"], canaux: ["cognitif"], duree: "2min", materiel: null,
-    tags: ["choix", "rythme"],
-    objectif: "Choisir à l'avance le délai qui vous convient face à une pression à répondre vite.",
-    etapes: ["Quand je ressens une forte pression pour répondre, j'essaie d'attendre… : 30 secondes ; 5 minutes ; une nuit ; le temps d'en parler à quelqu'un ; une durée personnalisée.", "Ce n'est pas une obligation, seulement une option que vous gardez disponible."],
     precaution: null, sensible: [] },
   { id: "thermometre-oui", titre: "Le thermomètre du « oui »", etats: ["tolerance", "hyperactivation"], besoins: ["limites"], protection: ["fawn"], canaux: ["cognitif"], duree: "2min", materiel: null,
     tags: ["langage", "choix"],
@@ -447,7 +457,10 @@ const EXERCISES = [
     tags: ["orientation_exterieure", "mouvement"],
     objectif: "Marquer une transition consciente après une séance, le travail, une visite ou un événement difficile.",
     etapes: ["Que quittez-vous ? Puis : vers quoi allez-vous maintenant ?", "Choisissez une action de transition : changer de vêtement, marcher, boire quelque chose, changer de musique, se laver les mains, ouvrir une fenêtre."],
-    precaution: null, sensible: ["mouvement"] },
+    variantes: [
+      { label: "Spécifiquement après une séance de thérapie", etapes: ["Une séance peut laisser des choses en mouvement, même après qu'elle soit terminée.", "Que quittez-vous en sortant de cette séance ? Vers quoi allez-vous maintenant ?", "Choisissez une action de transition : marcher quelques minutes, boire quelque chose, changer de pièce, écouter une musique différente."] },
+    ],
+    precaution: "Si quelque chose reste très inconfortable après une séance, il est possible d'en reparler avec votre thérapeute au rendez-vous suivant, ou plus tôt si besoin.", sensible: ["mouvement"] },
   { id: "sas-90-secondes", titre: "Le sas de 90 secondes", etats: ["tolerance", "hyperactivation"], besoins: ["transition"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: "Un minuteur (téléphone, montre).",
     tags: ["rythme"],
     objectif: "S'accorder un court sas neutre entre deux moments, sans obligation de comprendre quoi que ce soit pendant ce temps.",
@@ -517,17 +530,35 @@ const EXERCISES = [
     objectif: "Clarifier, pour vous-même d'abord, ce qui aiderait dans le contact avec une autre personne.",
     etapes: ["Choisissez parmi : qu'il/elle parle ; qu'il/elle ne parle pas ; qu'il/elle reste proche ; qu'il/elle s'éloigne ; qu'il/elle m'aide concrètement ; qu'il/elle m'écoute ; qu'il/elle ne me touche pas ; je ne sais pas.", "Vous pouvez ensuite formuler : « Là, ce qui m'aiderait le plus serait… »"],
     precaution: null, sensible: [] },
-  { id: "message-minimal", titre: "Le message minimal", etats: ["tolerance", "hyperactivation", "hypoactivation"], besoins: ["lien"], protection: [], canaux: ["relationnel"], duree: "30s", materiel: null,
-    tags: ["relation", "langage"],
-    objectif: "Avoir sous la main des messages tout prêts pour les moments où formuler une demande est difficile.",
-    etapes: ["Choisissez un message à envoyer tel quel : « Peux-tu rester avec moi ? », « Je n'ai pas besoin de parler. », « Peux-tu m'appeler ? », « J'ai besoin d'un peu d'espace. », « Je te répondrai plus tard. », « Je ne sais pas ce dont j'ai besoin, mais je ne veux pas être seul·e. »"],
+
+  { id: "figure-soutenante", titre: "Une présence qui pourrait soutenir", etats: ["tolerance", "hyperactivation"], besoins: ["lieu_ressource", "douceur"], protection: [], canaux: ["imaginatif", "cognitif"], duree: "5min", materiel: null,
+    tags: ["imagination"],
+    objectif: "Explorer, si cela vous convient, l'idée d'une présence soutenante à laquelle revenir.",
+    etapes: ["Vérifiez d'abord si l'imagination vous convient aujourd'hui. Si non, vous pouvez penser directement à une personne réelle, un animal, ou un objet qui représente pour vous une présence rassurante.", "Pensez à une présence qui pourrait sembler un peu soutenante : une personne réelle, un personnage, un animal, une figure qui a du sens pour vous, ou une présence inventée.", "Cette présence n'a pas besoin d'être parfaite ni de tout résoudre. Que ferait-elle ou dirait-elle, simplement, si elle était là maintenant ?", "Vous pouvez associer cette présence à une posture, un geste, une phrase ou une image, pour pouvoir y revenir plus facilement."],
+    precaution: "Certaines personnes ne trouvent aucune présence soutenante, et ce n'est pas un problème — vous pouvez choisir un objet ou un lieu à la place. Si cet exercice augmente la détresse, mieux vaut s'arrêter et revenir à un exercice plus concret et sensoriel.", sensible: ["imagination"] },
+  { id: "cercle-des-ressources", titre: "Le cercle des ressources", etats: ["tolerance"], besoins: ["tolerance_renforcer", "lieu_ressource"], protection: [], canaux: ["cognitif", "imaginatif"], duree: "5min", materiel: "Optionnel : de quoi dessiner.",
+    tags: ["creativite"],
+    objectif: "Rassembler progressivement, dans un même espace, ce qui peut représenter un appui pour vous.",
+    etapes: ["Imaginez ou dessinez un cercle autour de vous.", "Placez-y, un par un, ce qui pourrait représenter un appui : une personne, un animal, un lieu, un objet, une phrase, une qualité que vous reconnaissez en vous.", "Un seul élément suffit pour commencer — vous n'avez pas besoin de le remplir aujourd'hui.", "Vous pouvez consulter ce cercle à tout moment, et le modifier au fil du temps."],
+    precaution: null, sensible: ["ecrire"] },
+
+  { id: "non-progressif", titre: "Le non progressif", etats: ["tolerance", "hyperactivation"], besoins: ["limites"], protection: ["fawn"], canaux: ["cognitif", "relationnel"], duree: "2min", materiel: null,
+    tags: ["langage", "limites"],
+    objectif: "Trouver une façon de dire non qui soit accessible aujourd'hui, sans viser la version la plus directe d'emblée.",
+    etapes: ["Dire non directement n'est pas toujours facile tout de suite. Vous pouvez commencer par une version plus douce : « Je ne suis pas sûr·e, laisse-moi y réfléchir. »", "Si cela vous convient, une version plus claire : « Non, je ne peux pas. »", "Les deux versions sont valables — choisissez celle qui vous semble accessible aujourd'hui."],
     precaution: null, sensible: [] },
 
-  { id: "confier-support-exterieur", titre: "Confier à un support extérieur", etats: ["tolerance", "hyperactivation"], besoins: ["contenir"], protection: [], canaux: ["cognitif", "relationnel"], duree: "2min", materiel: "Selon le choix : carnet, note sur le téléphone, boîte, enveloppe.",
-    tags: ["ecriture", "relation"],
-    objectif: "Déposer temporairement une préoccupation dans un contenant réel, choisi par vous.",
-    etapes: ["Choisissez un support : un carnet, une note sur votre téléphone, une boîte, une enveloppe, une personne, ou un·e professionnel·le.", "Confiez-y ce que vous souhaitez mettre de côté pour l'instant — ce n'est pas résolu, seulement posé ailleurs pour un moment."],
-    precaution: null, sensible: ["ecrire"] },
+  { id: "avant-rendez-vous-difficile", titre: "Se préparer avant un moment difficile", etats: ["tolerance", "hyperactivation"], besoins: ["transition", "limites"], protection: [], canaux: ["cognitif"], duree: "5min", materiel: null,
+    tags: ["langage"],
+    objectif: "Anticiper un peu ce qui pourrait être soutenant avant un rendez-vous ou une situation redoutée.",
+    etapes: ["Qu'est-ce qui pourrait être difficile dans ce moment à venir ?", "De quoi auriez-vous besoin pour vous sentir un peu plus soutenu·e : une personne prévenue, une phrase préparée, une limite de temps, une sortie possible ?", "Quelle est une phrase ou une action que vous pourriez utiliser si cela devient difficile pendant ce moment ?"],
+    precaution: null, sensible: [] },
+
+  { id: "heure-fermeture-ruminations", titre: "Une heure de fermeture pour les ruminations", etats: ["tolerance", "hyperactivation"], besoins: ["mental"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: null,
+    tags: ["langage"],
+    objectif: "Poser une limite horaire souple face à des pensées qui reviennent en boucle.",
+    etapes: ["Choisissez une heure de « fermeture » pour les ruminations d'aujourd'hui — par exemple 21h.", "Si une pensée revient après cette heure, vous pouvez simplement noter : « Reprise demain, à l'heure d'ouverture. »", "Ce n'est pas toujours facile à tenir, mais poser une limite horaire peut aider à retrouver un peu de structure."],
+    precaution: null, sensible: [] },
 ];
 
 /* ---------------------------------------------------------------
@@ -812,6 +843,14 @@ function BackRow({ onBack, c, label = "Retour à l'accueil" }) {
 /* ---------------------------------------------------------------
    MAIN APP
 --------------------------------------------------------------- */
+function raisonTexte(matchLevel, criteria) {
+  if (!criteria || criteria.length === 0) return null;
+  if (matchLevel === 3) return criteria.length === 1 ? `Correspond à : ${criteria[0].label}.` : "Correspond à l'ensemble de vos critères sélectionnés.";
+  if (matchLevel === 2) return "Cette proposition correspond à plusieurs éléments de votre sélection, sans les couvrir tous.";
+  if (matchLevel === 1) return `Proposé en lien avec : ${criteria[0].label}.`;
+  return null;
+}
+
 export default function App() {
   const [theme, setTheme] = useState("light");
   const [screen, setScreen] = useState("home");
@@ -827,6 +866,7 @@ export default function App() {
 
   // exercise flow
   const [activeExercise, setActiveExercise] = useState(null);
+  const [activeExerciseRaison, setActiveExerciseRaison] = useState(null);
   const [exerciseSource, setExerciseSource] = useState(null); // 'library' | 'crisis'
   const [libraryInitialEtat, setLibraryInitialEtat] = useState(null);
   const [libraryInitialProtection, setLibraryInitialProtection] = useState(null);
@@ -879,6 +919,7 @@ export default function App() {
     setFfffState(null);
     setEtatExploration(null);
     setActiveExercise(null);
+    setActiveExerciseRaison(null);
     setLibraryInitialEtat(null);
     setLibraryInitialProtection(null);
   }, []);
@@ -1069,7 +1110,11 @@ export default function App() {
           <Library c={c} onBack={goBack}
             initialEtat={libraryInitialEtat} initialProtection={libraryInitialProtection}
             avoidPrefs={avoidPrefs} feedback={exoFeedback} customExercises={customExercises}
-            onPick={(ex) => { setActiveExercise(ex); goTo("exercise"); }}
+            onPick={(ex, matchLevel, criteria) => {
+              setActiveExercise(ex);
+              setActiveExerciseRaison(raisonTexte(matchLevel, criteria));
+              goTo("exercise");
+            }}
             onGoPreferences={() => goTo("preferences")}
             onGoCreate={() => goTo("exo-create")} />
         )}
@@ -1095,7 +1140,7 @@ export default function App() {
         {screen === "psychoed" && <Psychoeducation c={c} onBack={goBackHome} />}
 
         {screen === "exercise" && activeExercise && (
-          <Exercise c={c} exercise={activeExercise}
+          <Exercise c={c} exercise={activeExercise} raison={activeExerciseRaison}
             onStop={goBackHome}
             onRevenirListe={goBack}
             onEssayerAutreChose={() => goTo("library")}
@@ -1726,6 +1771,8 @@ function FacetRow({ title, options, value, onToggle, c }) {
   );
 }
 
+const TAG_LABELS = { creativite: "quelque chose de créatif", jeu: "quelque chose de ludique", humour: "un peu d'humour" };
+
 function activeCriteriaOf(f) {
   const list = [];
   if (f.etat) list.push({ type: "etat", value: f.etat, label: ETATS_LIST.find((x) => x.id === f.etat)?.label });
@@ -1733,6 +1780,7 @@ function activeCriteriaOf(f) {
   if (f.protection) list.push({ type: "protection", value: f.protection, label: FFFF_INFO.find((x) => x.id === f.protection)?.label.split(" — ")[0] });
   if (f.canal) list.push({ type: "canal", value: f.canal, label: CANAUX_LIST.find((x) => x.id === f.canal)?.label });
   if (f.duree) list.push({ type: "duree", value: f.duree, label: DUREE_LIST.find((x) => x.id === f.duree)?.label });
+  if (f.tag) list.push({ type: "tag", value: f.tag, label: TAG_LABELS[f.tag] || f.tag });
   return list;
 }
 
@@ -1741,6 +1789,7 @@ function matchesCriterion(ex, crit) {
   if (crit.type === "besoin") return ex.besoins.includes(crit.value);
   if (crit.type === "protection") return ex.protection.includes(crit.value);
   if (crit.type === "canal") return ex.canaux.includes(crit.value);
+  if (crit.type === "tag") return !!(ex.tags && ex.tags.includes(crit.value));
   if (crit.type === "duree") {
     const order = ["30s", "2min", "5min", "10min"];
     return order.indexOf(ex.duree) <= order.indexOf(crit.value);
@@ -1757,15 +1806,146 @@ function sortByFeedback(list, feedback) {
   return [...list].sort((a, b) => (rank[feedback[a.id]] ?? 1.5) - (rank[feedback[b.id]] ?? 1.5));
 }
 
+function addAvoid(arr, tag) { return arr.includes(tag) ? arr : [...arr, tag]; }
+
+const THEMES = [
+  { id: "court", label: "J'ai moins de 30 secondes", apply: (f) => ({ ...f, duree: "30s" }) },
+  { id: "sans_yeux", label: "Je ne veux pas fermer les yeux", apply: (f) => ({ ...f, avoid: addAvoid(f.avoid, "yeux_fermes") }) },
+  { id: "sans_corps", label: "Je ne veux pas me concentrer sur mon corps", apply: (f) => ({ ...f, avoid: addAvoid(addAvoid(f.avoid, "interoception"), "toucher_corps") }) },
+  { id: "bouger", label: "Je veux bouger", apply: (f) => ({ ...f, canal: "moteur" }) },
+  { id: "sans_bouger", label: "Je ne peux pas bouger beaucoup", apply: (f) => ({ ...f, avoid: addAvoid(f.avoid, "mouvement") }) },
+  { id: "limites", label: "J'ai besoin de retrouver mes limites", apply: (f) => ({ ...f, besoin: "limites" }) },
+  { id: "repondre", label: "Je dois répondre à quelqu'un", apply: (f) => ({ ...f, besoin: "limites", protection: "fawn" }) },
+  { id: "seul", label: "Je suis seul·e", apply: (f) => ({ ...f, excludeRelational: true }) },
+  { id: "avec_autres", label: "Je suis avec d'autres personnes", apply: (f) => ({ ...f, canal: "relationnel", excludeRelational: false }) },
+  { id: "travail", label: "Je suis au travail", apply: (f) => ({ ...f, avoid: addAvoid(addAvoid(f.avoid, "yeux_fermes"), "mouvement") }) },
+  { id: "lieu_public", label: "Je suis dans un lieu public", apply: (f) => ({ ...f, avoid: addAvoid(addAvoid(f.avoid, "yeux_fermes"), "mouvement") }) },
+  { id: "lit", label: "Je suis au lit", apply: (f) => ({ ...f, avoid: addAvoid(f.avoid, "mouvement") }) },
+  { id: "creatif", label: "J'ai envie de quelque chose de créatif", apply: (f) => ({ ...f, tag: "creativite" }) },
+  { id: "ne_sait_pas", label: "Je ne sais pas ce dont j'ai besoin", apply: (f) => ({ ...f, etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null }) },
+];
+
+function pickSurprise(pool, feedback, etat, excludeId) {
+  let candidates = pool;
+  if (etat === "dissociation") {
+    const restreint = candidates.filter((ex) => !ex.sensible.some((s) => ["yeux_fermes", "interoception", "imagination"].includes(s)));
+    if (restreint.length > 0) candidates = restreint;
+  }
+  // Éviter de retirer immédiatement le même exercice deux fois de suite, si le choix le permet
+  if (excludeId && candidates.length > 1) {
+    const sansRepetition = candidates.filter((ex) => ex.id !== excludeId);
+    if (sansRepetition.length > 0) candidates = sansRepetition;
+  }
+  return candidates.length > 0 ? candidates[Math.floor(Math.random() * candidates.length)] : null;
+}
+
+/* ---------------------------------------------------------------
+   SYSTÈME D'ÉTIQUETTES VISUELLES
+   Une couleur = une fonction de l'exercice, jamais un état psychologique.
+--------------------------------------------------------------- */
+const FAMILIES = {
+  orientation: { label: "Revenir au présent", color: "sage" },
+  espace: { label: "Créer de l'espace", color: "blue" },
+  energie: { label: "Énergie / mobilisation", color: "ocre" },
+  limites: { label: "Limites / relation", color: "terracotta" },
+  creativite: { label: "Créatif / imaginaire", color: "violet" },
+  contenant: { label: "Contenant / pause", color: "stone" },
+  force: { label: "Force / protection", color: "force" },
+};
+
+const BESOIN_TO_FAMILY = {
+  orienter: "orientation", appuis: "orientation", corps: "orientation", sens: "energie",
+  dissocie: "orientation", tolerance_renforcer: "orientation",
+  mouvement: "energie", choix: "limites",
+  contenir: "contenant", douceur: "contenant", honte: "contenant",
+  mobiliser_fight: "force",
+  mobiliser_flight: "espace", mental: "espace", transition: "espace",
+  limites: "limites", lien: "limites",
+  lieu_ressource: "creativite",
+};
+const PROTECTION_TO_FAMILY = { fight: "force", flight: "espace", freeze: "orientation", fawn: "limites" };
+
+const CANAL_MODALITE = {
+  visuel: "Vue", auditif: "Sons", tactile: "Toucher", moteur: "Mouvement",
+  cognitif: "Paroles", imaginatif: "Imagination", relationnel: "Relation",
+};
+
+function exerciseFamily(ex) {
+  if (ex.besoins && ex.besoins[0] && BESOIN_TO_FAMILY[ex.besoins[0]]) return BESOIN_TO_FAMILY[ex.besoins[0]];
+  if (ex.protection && ex.protection[0] && PROTECTION_TO_FAMILY[ex.protection[0]]) return PROTECTION_TO_FAMILY[ex.protection[0]];
+  return "orientation";
+}
+
+function exerciseModalites(ex) {
+  return (ex.canaux || []).slice(0, 2).map((cn) => CANAL_MODALITE[cn]).filter(Boolean);
+}
+
+function ExoTag({ family, c, children, small }) {
+  const fam = FAMILIES[family];
+  const bg = fam ? c[fam.color + "Soft"] : c.bgAlt;
+  const fg = fam ? c.text : c.textSoft;
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", background: bg, color: fg,
+      padding: small ? "3px 9px" : "5px 11px", borderRadius: 999,
+      fontSize: small ? 11 : 12, fontWeight: 600, whiteSpace: "nowrap",
+    }}>
+      {children}
+    </span>
+  );
+}
+
+function ModaliteTag({ c, children }) {
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", background: c.bgAlt, color: c.textSoft,
+      padding: "3px 9px", borderRadius: 999, fontSize: 11, fontWeight: 500, whiteSpace: "nowrap",
+    }}>
+      {children}
+    </span>
+  );
+}
+
+function MatchDots({ c, level }) {
+  if (!level) return null;
+  return (
+    <span style={{ display: "inline-flex", gap: 3, alignItems: "center" }} title="Niveau de correspondance">
+      {[1, 2, 3].map((i) => (
+        <span key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: i <= level ? c.text : c.border }} />
+      ))}
+    </span>
+  );
+}
+
+function ExerciseCardTags({ ex, c, feedback, customExercises }) {
+  const fam = exerciseFamily(ex);
+  const modalites = exerciseModalites(ex);
+  const isPerso = customExercises && customExercises.some((e) => e.id === ex.id);
+  const dejaEssaye = feedback && feedback[ex.id];
+  return (
+    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginTop: 6 }}>
+      <ExoTag family={fam} c={c} small>{FAMILIES[fam].label}</ExoTag>
+      {modalites.map((m) => <ModaliteTag key={m} c={c}>{m}</ModaliteTag>)}
+      {isPerso && <ModaliteTag c={c}>Mon exercice</ModaliteTag>}
+      {dejaEssaye && <ModaliteTag c={c}>Déjà essayé · {dejaEssaye}</ModaliteTag>}
+    </div>
+  );
+}
+
 function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedback, customExercises, onPick, onGoPreferences, onGoCreate }) {
-  const [f, setF] = useState({ etat: initialEtat || null, besoin: null, protection: initialProtection || null, canal: null, duree: null, avoid: avoidPrefs || [] });
+  const [f, setF] = useState({ etat: initialEtat || null, besoin: null, protection: initialProtection || null, canal: null, duree: null, tag: null, excludeRelational: false, avoid: avoidPrefs || [] });
   const [showFacets, setShowFacets] = useState(false);
   const [showAvoidPanel, setShowAvoidPanel] = useState(false);
+  const [showThemes, setShowThemes] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [showJeNeSaisPas, setShowJeNeSaisPas] = useState(false);
+  const [lastSurpriseId, setLastSurpriseId] = useState(null);
 
   const allExercises = [...EXERCISES, ...customExercises];
   const notAvoided = allExercises.filter((ex) =>
     feedback[ex.id] !== "Je préfère l'éviter" &&
-    !(f.avoid && f.avoid.length && ex.sensible.some((s) => f.avoid.includes(s)))
+    !(f.avoid && f.avoid.length && ex.sensible.some((s) => f.avoid.includes(s))) &&
+    !(f.excludeRelational && ex.canaux.length === 1 && ex.canaux[0] === "relationnel")
   );
 
   const criteria = activeCriteriaOf(f);
@@ -1792,14 +1972,44 @@ function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedba
     }
   }
 
+  const matchLevel = criteria.length === 0 ? 0 : (banner === "partial" ? 2 : banner === "per-criterion" ? 1 : 3);
+
   return (
     <div>
       <BackRow c={c} onBack={onBack} />
-      <ScreenTitle c={c}>Faire un exercice</ScreenTitle>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+        <ScreenTitle c={c}>Faire un exercice</ScreenTitle>
+        <button onClick={() => setShowHelp((s) => !s)} aria-label="Comment fonctionnent les filtres ?" style={{
+          width: 22, height: 22, borderRadius: "50%", border: `1px solid ${c.border}`, background: c.card,
+          color: c.textSoft, fontSize: 12, cursor: "pointer", flexShrink: 0, marginTop: -10,
+        }}>?</button>
+      </div>
       <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 14 }}>
         Vous pouvez arrêter à tout moment. Il n'existe pas un exercice qui convient à tout le monde — l'objectif
         est de découvrir progressivement ce qui vous aide, ce qui vous aide parfois, et ce que vous préférez éviter.
       </p>
+
+      {showHelp && (
+        <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 16 }}>
+          <div style={{ fontWeight: 700, color: c.text, marginBottom: 8, fontSize: 14 }}>Comment fonctionnent les filtres ?</div>
+          <p style={{ fontSize: 12.5, color: c.textSoft, lineHeight: 1.6, margin: "0 0 8px" }}>
+            Les filtres vous aident à trouver des exercices qui se rapprochent de ce que vous vivez et de ce qui
+            vous convient aujourd'hui. Vous pouvez sélectionner plusieurs éléments à la fois. Vous n'avez pas
+            besoin de tout sélectionner — plus vous ajoutez de critères, plus la recherche devient précise.
+          </p>
+          <p style={{ fontSize: 12.5, color: c.textSoft, lineHeight: 1.6, margin: "0 0 8px" }}>
+            <strong>Si plusieurs exercices correspondent à tout ce que vous avez choisi</strong>, ils seront
+            proposés en priorité. <strong>Si aucun ne correspond exactement à toute votre sélection</strong>,
+            l'application cherche d'abord ceux qui correspondent au plus grand nombre d'éléments. <strong>Si votre
+            combinaison est très spécifique</strong>, des exercices pourront être proposés séparément pour
+            différentes parties de ce que vous traversez.
+          </p>
+          <p style={{ fontSize: 12.5, color: c.text, lineHeight: 1.6, margin: 0, fontWeight: 600 }}>
+            Vous ne serez jamais obligé·e de tout choisir ni de trouver la « bonne » combinaison. Vous pourrez
+            modifier vos filtres à tout moment.
+          </p>
+        </Card>
+      )}
 
       <div style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
         <button onClick={() => setShowFacets((s) => !s)} style={{ fontSize: 12.5, color: c.text, background: c.bgAlt, border: "none", borderRadius: 999, padding: "8px 13px", cursor: "pointer" }}>
@@ -1811,7 +2021,64 @@ function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedba
         <button onClick={onGoPreferences} style={{ fontSize: 12.5, color: c.textSoft, background: "none", border: `1px solid ${c.border}`, borderRadius: 999, padding: "8px 13px", cursor: "pointer" }}>
           Mes préférences
         </button>
+        <button onClick={() => setShowThemes((s) => !s)} style={{ fontSize: 12.5, color: c.text, background: c.blueSoft, border: "none", borderRadius: 999, padding: "8px 13px", cursor: "pointer" }}>
+          Parcours thématiques
+        </button>
+        <button onClick={() => setShowJeNeSaisPas((s) => !s)} style={{ fontSize: 12.5, color: c.textSoft, background: "none", border: `1px dashed ${c.border}`, borderRadius: 999, padding: "8px 13px", cursor: "pointer" }}>
+          Je ne sais pas quoi choisir
+        </button>
       </div>
+
+      {showJeNeSaisPas && (
+        <Card c={c} style={{ marginBottom: 14, background: c.bgAlt, border: "none" }}>
+          <p style={{ fontSize: 12.5, color: c.textSoft, margin: "0 0 10px", lineHeight: 1.6 }}>
+            C'est possible. Vous pouvez commencer sans filtre, répondre à quelques questions, ou choisir ce qui
+            vous attire le moins difficilement aujourd'hui.
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <Btn c={c} variant="secondary" onClick={() => { setF({ etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null, excludeRelational: false, avoid: f.avoid }); setShowFacets(true); setShowJeNeSaisPas(false); }}>Me poser quelques questions</Btn>
+            <Btn c={c} variant="secondary" onClick={() => { setF({ etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null, excludeRelational: false, avoid: f.avoid }); setShowJeNeSaisPas(false); }}>Me montrer différents types d'exercices</Btn>
+            <Btn c={c} variant="secondary" onClick={() => { setF((prev) => ({ ...prev, duree: "30s" })); setShowJeNeSaisPas(false); }}>Me proposer quelque chose de très court</Btn>
+            <Btn c={c} variant="ghost" onClick={() => setShowJeNeSaisPas(false)}>Retour</Btn>
+          </div>
+        </Card>
+      )}
+
+      {criteria.length > 0 && (
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
+          {criteria.map((crit) => (
+            <span key={crit.type} style={{
+              display: "inline-flex", alignItems: "center", gap: 6, background: c.card,
+              border: `1px solid ${c.border}`, borderRadius: 999, padding: "5px 6px 5px 12px", fontSize: 12, color: c.text,
+            }}>
+              {crit.label}
+              <button onClick={() => setF((prev) => ({ ...prev, [crit.type]: null }))}
+                aria-label={`Retirer le filtre ${crit.label}`}
+                style={{ background: c.bgAlt, border: "none", borderRadius: "50%", width: 18, height: 18, color: c.textSoft, cursor: "pointer", fontSize: 11, lineHeight: "18px" }}>×</button>
+            </span>
+          ))}
+          <button onClick={() => setF((prev) => ({ ...prev, etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null }))}
+            style={{ fontSize: 12, color: c.textSoft, background: "none", border: "none", textDecoration: "underline", cursor: "pointer" }}>
+            Effacer tous les filtres
+          </button>
+        </div>
+      )}
+
+      {showThemes && (
+        <Card c={c} style={{ marginBottom: 14, background: c.bgAlt, border: "none" }}>
+          <p style={{ fontSize: 12.5, color: c.textSoft, margin: "0 0 10px" }}>
+            Choisissez ce qui correspond le mieux à votre situation maintenant :
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {THEMES.map((th) => (
+              <button key={th.id} onClick={() => { setF((prev) => th.apply(prev)); setShowThemes(false); }}
+                style={{ textAlign: "left", fontSize: 13, color: c.text, background: c.card, border: `1px solid ${c.border}`, borderRadius: 12, padding: "10px 12px", cursor: "pointer" }}>
+                {th.label}
+              </button>
+            ))}
+          </div>
+        </Card>
+      )}
 
       {showAvoidPanel && (
         <Card c={c} style={{ marginBottom: 14, background: c.bgAlt, border: "none" }}>
@@ -1841,6 +2108,17 @@ function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedba
         </Card>
       )}
 
+      <Btn c={c} variant="soft" onClick={() => {
+        const pool = list.length > 0 ? list : notAvoided;
+        const surprise = pickSurprise(pool, feedback, f.etat, lastSurpriseId);
+        if (surprise) {
+          setLastSurpriseId(surprise.id);
+          onPick(surprise);
+        }
+      }} style={{ marginBottom: 16 }}>
+        🎲 Proposez-moi quelque chose de différent
+      </Btn>
+
       {banner === "partial" && (
         <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 14 }}>
           <p style={{ margin: 0, fontSize: 13.5, color: c.textSoft, lineHeight: 1.6 }}>
@@ -1858,14 +2136,17 @@ function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedba
               pour chacun de ces éléments pris séparément, voici ce que vous pouvez essayer :
             </p>
           </Card>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {perCriterion.map(({ crit, exercise }) => (
               <div key={crit.type + crit.value}>
-                <div style={{ fontSize: 12, color: c.textSoft, marginBottom: 5 }}>Pour {crit.label} :</div>
+                <div style={{ fontSize: 12, color: c.textSoft, marginBottom: 6, fontWeight: 700 }}>Pour {crit.label} :</div>
                 {exercise ? (
-                  <button onClick={() => onPick(exercise)}
+                  <button onClick={() => onPick(exercise, 1, [crit])}
                     style={{ textAlign: "left", cursor: "pointer", border: `1px solid ${c.border}`, background: c.card, borderRadius: 16, padding: 14, width: "100%" }}>
-                    <span style={{ fontWeight: 700, color: c.text }}>{exercise.titre}</span>
+                    <div style={{ marginBottom: 6 }}>
+                      <ExoTag family={exerciseFamily(exercise)} c={c} small>{crit.label}</ExoTag>
+                    </div>
+                    <span style={{ fontWeight: 700, color: c.text }}>→ {exercise.titre}</span>
                   </button>
                 ) : (
                   <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft, fontStyle: "italic" }}>
@@ -1886,16 +2167,16 @@ function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedba
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
         {list.map((ex) => (
-          <button key={ex.id} onClick={() => onPick(ex)}
+          <button key={ex.id} onClick={() => onPick(ex, matchLevel, criteria)}
             style={{ textAlign: "left", cursor: "pointer", border: `1px solid ${c.border}`, background: c.card, borderRadius: 18, padding: 16 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, gap: 8 }}>
               <span style={{ fontWeight: 700, color: c.text }}>{ex.titre}</span>
-              <span style={{ fontSize: 12, color: c.textSoft, whiteSpace: "nowrap" }}>{DUREE_LIST.find((d) => d.id === ex.duree)?.label}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <MatchDots c={c} level={matchLevel} />
+                <span style={{ fontSize: 12, color: c.textSoft, whiteSpace: "nowrap" }}>{DUREE_LIST.find((d) => d.id === ex.duree)?.label}</span>
+              </div>
             </div>
-            <div style={{ fontSize: 13, color: c.textSoft, lineHeight: 1.5 }}>{ex.objectif}</div>
-            {feedback[ex.id] && (
-              <div style={{ fontSize: 11, color: c.sage, marginTop: 6 }}>Vous aviez noté : {feedback[ex.id]}</div>
-            )}
+            <ExerciseCardTags ex={ex} c={c} feedback={feedback} customExercises={customExercises} />
           </button>
         ))}
       </div>
@@ -1905,9 +2186,12 @@ function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedba
   );
 }
 
-function Exercise({ c, exercise, onStop, onRevenirListe, onEssayerAutreChose, onFinish }) {
+function Exercise({ c, exercise, raison, onStop, onRevenirListe, onEssayerAutreChose, onFinish }) {
   const [step, setStep] = useState("do"); // do | pas-maintenant | remarque | continuer | feedback
   const [remarque, setRemarque] = useState(null);
+  const [varianteIdx, setVarianteIdx] = useState(0); // 0 = version principale
+  const versions = [{ label: "Version principale", etapes: exercise.etapes }, ...(exercise.variantes || [])];
+  const etapesAffichees = versions[varianteIdx]?.etapes || exercise.etapes;
 
   if (step === "pas-maintenant") {
     return (
@@ -1966,18 +2250,40 @@ function Exercise({ c, exercise, onStop, onRevenirListe, onEssayerAutreChose, on
 
   return (
     <div>
-      <div style={{ display: "flex", gap: 8, marginBottom: 6, flexWrap: "wrap" }}>
-        <span style={{ fontSize: 12, color: c.textSoft }}>{DUREE_LIST.find((d) => d.id === exercise.duree)?.label}</span>
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10, alignItems: "center" }}>
+        <ExoTag family={exerciseFamily(exercise)} c={c}>{FAMILIES[exerciseFamily(exercise)].label}</ExoTag>
+        {exerciseModalites(exercise).map((m) => <ModaliteTag key={m} c={c}>{m}</ModaliteTag>)}
+        <span style={{ fontSize: 12, color: c.textSoft }}>⏱ {DUREE_LIST.find((d) => d.id === exercise.duree)?.label}</span>
       </div>
       <ScreenTitle c={c}>{exercise.titre}</ScreenTitle>
+      {raison && (
+        <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 12 }}>
+          <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 2 }}>Pourquoi cette proposition ?</div>
+          <div style={{ fontSize: 12.5, color: c.text }}>{raison}</div>
+        </Card>
+      )}
       <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 14, fontStyle: "italic" }}>{exercise.objectif}</p>
       {exercise.materiel && (
         <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 14 }}>
           <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft }}>Matériel utile : {exercise.materiel}</p>
         </Card>
       )}
+      {versions.length > 1 && (
+        <div style={{ display: "flex", gap: 7, flexWrap: "wrap", marginBottom: 14 }}>
+          {versions.map((v, i) => (
+            <button key={i} onClick={() => setVarianteIdx(i)}
+              style={{
+                padding: "7px 12px", borderRadius: 999, fontSize: 12, cursor: "pointer",
+                border: `1px solid ${varianteIdx === i ? c.sage : c.border}`,
+                background: varianteIdx === i ? c.sageSoft : c.card, color: c.text,
+              }}>
+              {v.label}
+            </button>
+          ))}
+        </div>
+      )}
       <Card c={c} style={{ marginBottom: 16 }}>
-        {exercise.etapes.map((et, i) => (
+        {etapesAffichees.map((et, i) => (
           <p key={i} style={{ margin: i === 0 ? 0 : "10px 0 0", fontSize: 15.5, lineHeight: 1.65, color: c.text }}>{et}</p>
         ))}
       </Card>
@@ -2041,31 +2347,96 @@ function Preferences({ c, onBack, avoidPrefs, onSave }) {
 }
 
 function CreateExercise({ c, onBack, onSave }) {
-  const [form, setForm] = useState({ titre: "", quandAide: "", duree: "2min", materiel: "", etapesText: "", aEviter: "", personne: "" });
+  const [form, setForm] = useState({
+    titre: "", quandAide: "", duree: "2min", materiel: "", etapesText: "", aEviter: "", personne: "",
+    etats: [], besoins: [], canaux: [], protection: [], sensible: [],
+  });
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+  const toggleIn = (k, id) => setForm((f) => ({
+    ...f, [k]: f[k].includes(id) ? f[k].filter((x) => x !== id) : [...f[k], id],
+  }));
   const inputStyle = { width: "100%", borderRadius: 12, border: `1px solid ${c.border}`, background: c.card, color: c.text, padding: 10, fontFamily: fontBody, fontSize: 14, resize: "vertical" };
   const submit = () => {
     if (!form.titre.trim()) return;
     onSave({
       id: "perso-" + Date.now(),
       titre: form.titre,
-      etats: [], besoins: [], protection: [], canaux: [], duree: form.duree, materiel: form.materiel || null,
+      etats: form.etats, besoins: form.besoins, protection: form.protection, canaux: form.canaux,
+      duree: form.duree, materiel: form.materiel || null,
       objectif: form.quandAide || "Exercice personnalisé.",
       etapes: form.etapesText.split("\n").filter(Boolean),
       precaution: form.aEviter ? `À éviter : ${form.aEviter}` : null,
-      sensible: [], perso: true, personneRessource: form.personne,
+      sensible: form.sensible, perso: true, personneRessource: form.personne,
     });
   };
   return (
     <div>
       <BackRow c={c} onBack={onBack} />
-      <ScreenTitle c={c}>Créer mon exercice</ScreenTitle>
+      <ScreenTitle c={c}>Construire quelque chose qui me ressemble</ScreenTitle>
+      <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 18 }}>
+        Vous pouvez le nommer, l'enregistrer, le modifier ou le supprimer plus tard. Rien n'est obligatoire ici,
+        chaque champ peut rester vide.
+      </p>
+
       {[
         ["titre", "Nom de mon exercice", 1],
         ["quandAide", "Ce qui m'aide / quand je l'utilise", 2],
+      ].map(([key, label, rows]) => (
+        <div key={key} style={{ marginBottom: 14 }}>
+          <label style={{ fontSize: 13, color: c.textSoft, display: "block", marginBottom: 6 }}>{label}</label>
+          <textarea value={form[key]} onChange={(e) => set(key, e.target.value)} rows={rows} style={inputStyle} />
+        </div>
+      ))}
+
+      <div style={{ marginBottom: 16 }}>
+        <label style={{ fontSize: 13, color: c.textSoft, display: "block", marginBottom: 6 }}>Quand est-ce que cela pourrait m'aider ? (optionnel)</label>
+        <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>
+          {ETATS_LIST.map((e) => (
+            <Chip key={e.id} c={c} active={form.etats.includes(e.id)} onClick={() => toggleIn("etats", e.id)}>{e.label}</Chip>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
+        <label style={{ fontSize: 13, color: c.textSoft, display: "block", marginBottom: 6 }}>À quoi ça répond ? (optionnel)</label>
+        <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>
+          {BESOINS_LIST.map((b) => (
+            <Chip key={b.id} c={c} active={form.besoins.includes(b.id)} onClick={() => toggleIn("besoins", b.id)}>{b.label}</Chip>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
+        <label style={{ fontSize: 13, color: c.textSoft, display: "block", marginBottom: 6 }}>Qu'est-ce que je préfère utiliser ? (optionnel)</label>
+        <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>
+          {CANAUX_LIST.map((cn) => (
+            <Chip key={cn.id} c={c} active={form.canaux.includes(cn.id)} onClick={() => toggleIn("canaux", cn.id)}>{cn.label}</Chip>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
+        <label style={{ fontSize: 13, color: c.textSoft, display: "block", marginBottom: 6 }}>Une réponse de protection concernée ? (optionnel)</label>
+        <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>
+          {FFFF_INFO.map((p) => (
+            <Chip key={p.id} c={c} active={form.protection.includes(p.id)} onClick={() => toggleIn("protection", p.id)}>{p.label.split(" — ")[0]}</Chip>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
+        <label style={{ fontSize: 13, color: c.textSoft, display: "block", marginBottom: 6 }}>Qu'est-ce que je préfère éviter avec cet exercice ? (optionnel)</label>
+        <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>
+          {EVITER_LIST.map((ev) => (
+            <Chip key={ev.id} c={c} active={form.sensible.includes(ev.id)} onClick={() => toggleIn("sensible", ev.id)}>{ev.label}</Chip>
+          ))}
+        </div>
+      </div>
+
+      {[
         ["materiel", "Matériel (optionnel)", 1],
         ["etapesText", "Les étapes (une par ligne)", 4],
-        ["aEviter", "Ce que je préfère éviter avec cet exercice", 2],
+        ["aEviter", "Précautions ou notes complémentaires (optionnel)", 2],
         ["personne", "La personne qui peut m'aider (optionnel)", 1],
       ].map(([key, label, rows]) => (
         <div key={key} style={{ marginBottom: 14 }}>
