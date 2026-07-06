@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { jsPDF } from "jspdf";
 
 /* ---------------------------------------------------------------
    DESIGN TOKENS
@@ -821,22 +822,24 @@ function ScreenTitle({ children, c }) {
   );
 }
 
-function BackRow({ onBack, c, label = "Retour à l'accueil" }) {
+function BackRow({ onBack, c, label = "Retour", onHome }) {
   return (
-    <button
-      onClick={onBack}
-      style={{
-        background: "none",
-        border: "none",
-        color: c.textSoft,
-        fontFamily: fontBody,
-        fontSize: 13,
-        cursor: "pointer",
-        padding: "4px 0 12px",
-      }}
-    >
-      ← {label}
-    </button>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "4px 0 12px" }}>
+      <button
+        onClick={onBack}
+        style={{ background: "none", border: "none", color: c.textSoft, fontFamily: fontBody, fontSize: 13, cursor: "pointer", padding: 0 }}
+      >
+        ← {label}
+      </button>
+      {onHome && (
+        <button
+          onClick={onHome}
+          style={{ background: "none", border: "none", color: c.textSoft, fontFamily: fontBody, fontSize: 12.5, cursor: "pointer", padding: 0, opacity: 0.8 }}
+        >
+          Accueil
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -879,6 +882,10 @@ export default function App() {
     signes: "", personnes: "", lieux: "", eviter: "", phrases: "", numeros: "",
   });
   const [entries, setEntries] = useState([]);
+  const [exportChamps, setExportChamps] = useState({ dates: true, etats: true, intensites: true, protection: true, exercices: true, retours: true });
+  const [exportPeriode, setExportPeriode] = useState("30");
+  const [rdvPeriode, setRdvPeriode] = useState("30");
+  const [rdvQuestion, setRdvQuestion] = useState("");
   const [zonePerso, setZonePerso] = useState({
     hyper: "", hypo: "", tolerance: "", signes: "",
   });
@@ -1156,12 +1163,56 @@ export default function App() {
         )}
 
         {screen === "safety" && (
-          <SafetyPlan c={c} onBack={goBackHome} plan={safetyPlan} onChange={updateSafetyPlan} onSave={persistSafetyPlan} />
+          <SafetyPlan c={c} onBack={goBack} plan={safetyPlan} onChange={updateSafetyPlan} onSave={persistSafetyPlan} />
         )}
 
         {screen === "nervous-system" && <NervousSystem c={c} onBack={goBackHome} />}
 
-        {screen === "journal" && <Journal c={c} onBack={goBackHome} entries={entries} />}
+        {screen === "journal" && (
+          <Journal c={c} onBack={goBackHome} entries={entries}
+            onGoExport={() => goTo("journal-export")}
+            onGoRdv={() => goTo("rdv-export")} />
+        )}
+
+        {screen === "journal-export" && (
+          <JournalExportSelect c={c} onBack={goBack}
+            champs={exportChamps} setChamps={setExportChamps}
+            periode={exportPeriode} setPeriode={setExportPeriode}
+            onNext={() => goTo("journal-export-preview")} />
+        )}
+
+        {screen === "journal-export-preview" && (
+          <JournalExportPreview c={c} onBack={goBack}
+            champs={exportChamps} periode={exportPeriode} entries={entries}
+            onCreate={() => {
+              const filtrees = entriesDansPeriode(entries, exportPeriode);
+              const periodeLabel = PERIODES_JOURNAL.find((p) => p.id === exportPeriode)?.label || "";
+              const doc = genererPdfJournal(filtrees, exportChamps, periodeLabel);
+              telechargerOuPartagerPdf(doc, "mon-journal-de-suivi.pdf");
+              goTo("journal");
+            }}
+            onCancel={() => goTo("journal")} />
+        )}
+
+        {screen === "rdv-export" && (
+          <RdvExportSelect c={c} onBack={goBack}
+            periode={rdvPeriode} setPeriode={setRdvPeriode}
+            question={rdvQuestion} setQuestion={setRdvQuestion}
+            onNext={() => goTo("rdv-export-preview")} />
+        )}
+
+        {screen === "rdv-export-preview" && (
+          <RdvExportPreview c={c} onBack={goBack}
+            periode={rdvPeriode} entries={entries} question={rdvQuestion}
+            onCreate={() => {
+              const filtrees = entriesDansPeriode(entries, rdvPeriode);
+              const periodeLabel = PERIODES_JOURNAL.find((p) => p.id === rdvPeriode)?.label || "";
+              const doc = genererPdfRendezVous(filtrees, periodeLabel, rdvQuestion);
+              telechargerOuPartagerPdf(doc, "preparer-mon-rendez-vous.pdf");
+              goTo("journal");
+            }}
+            onCancel={() => goTo("journal")} />
+        )}
 
         {screen === "settings" && (
           <Settings c={c} theme={theme} toggleTheme={toggleTheme} onBack={goBackHome} onWipe={wipeAllData} />
@@ -1289,7 +1340,7 @@ function CheckinIntensity({ c, onBack, onSubmit, value }) {
   ];
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="← Modifier mon état" />
+      <BackRow c={c} onBack={onBack} label="Modifier mon état" />
       <ScreenTitle c={c}>À quel point cet état est-il présent maintenant ?</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 24 }}>
         Il n'y a pas de bonne réponse. Cette échelle sert seulement de repère pour vous.
@@ -1332,7 +1383,7 @@ function CheckinSensations({ c, onBack, sensations, setSensations, onNext }) {
     setSensations((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="← Modifier l'intensité" />
+      <BackRow c={c} onBack={onBack} label="Modifier l'intensité" />
       <ScreenTitle c={c}>Qu'est-ce que vous remarquez ?</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 18 }}>
         Dans votre corps, ou dans votre état intérieur. Choisissez ce qui résonne — il n'y a pas de bonne réponse.
@@ -1360,7 +1411,7 @@ function CheckinSensations({ c, onBack, sensations, setSensations, onNext }) {
 function CheckinState({ c, onBack, onSelect, onUnknown, value }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
+      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
       <ScreenTitle c={c}>Où en êtes-vous maintenant ?</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 18 }}>
         Choisissez ce qui vous semble le plus proche de votre état en ce moment. Il n'est pas nécessaire d'être
@@ -1403,7 +1454,7 @@ const ETAT_EXPLORATION_OPTIONS = [
 function CheckinStateExplore({ c, onBack, onSelect }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="← Modifier mon état" />
+      <BackRow c={c} onBack={onBack} label="Modifier mon état" />
       <ScreenTitle c={c}>C'est parfois difficile de savoir ce qui se passe à l'intérieur.</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 8 }}>
         Nous pouvons commencer autrement.
@@ -1423,7 +1474,7 @@ function CheckinStateExplore({ c, onBack, onSelect }) {
 function CheckinFFFF({ c, onBack, onSelect }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="← Retour" />
+      <BackRow c={c} onBack={onBack} label="Retour" />
       <ScreenTitle c={c}>Une réaction de protection, peut-être ?</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 6 }}>
         Cette étape est facultative. Est-ce que vous reconnaissez une réaction de protection en ce moment ?
@@ -1442,7 +1493,7 @@ function CheckinProtectionConfirm({ c, ffff, onBack, onConfirm }) {
   if (!f) return null;
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="← Modifier ma réponse" />
+      <BackRow c={c} onBack={onBack} label="Modifier ma réponse" />
       <ScreenTitle c={c}>Une réponse de protection que vous reconnaissez peut-être</ScreenTitle>
       <Card c={c} style={{ background: c[f.color + "Soft"], border: "none", marginBottom: 14 }}>
         <div style={{ fontWeight: 700, color: c.text, marginBottom: 6 }}>{f.label}</div>
@@ -1717,7 +1768,7 @@ const EMERGENCY_NUMBERS = [
 function Urgence({ c, onBack }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="← Retour" />
+      <BackRow c={c} onBack={onBack} label="Retour" />
       <ScreenTitle c={c}>Tous les numéros d'aide</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 22 }}>
         Appuyez sur un numéro pour appeler directement.
@@ -2502,7 +2553,7 @@ function SafetyPlan({ c, onBack, plan, onChange, onSave }) {
 function NervousSystem({ c, onBack }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
+      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
       <ScreenTitle c={c}>Comprendre les réactions de mon système nerveux</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 20 }}>
         Vos réactions face au stress, à la peur, au conflit ou au trauma ne sont pas des choix conscients ni des
@@ -2537,7 +2588,7 @@ function ToleranceZone({ c, onBack, perso, onChange, onSave }) {
   ];
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
+      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
       <ScreenTitle c={c}>Comprendre ma zone de tolérance</ScreenTitle>
 
       <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 16 }}>
@@ -2606,7 +2657,7 @@ function Protection({ c, onBack, onExercises }) {
   const [open, setOpen] = useState(null);
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
+      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
       <ScreenTitle c={c}>Fight, Flight, Freeze, Fawn</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 20 }}>
         Face à une menace réelle ou perçue, notre système nerveux peut déclencher des réponses automatiques de
@@ -2675,7 +2726,7 @@ function Psychoeducation({ c, onBack }) {
   const [open, setOpen] = useState(null);
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
+      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
       <ScreenTitle c={c}>Psychoéducation</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 20 }}>
         Des fiches courtes, lisibles en moins de deux minutes chacune.
@@ -2713,15 +2764,204 @@ function Psychoeducation({ c, onBack }) {
   );
 }
 
-function Journal({ c, onBack, entries }) {
+/* ---------------------------------------------------------------
+   EXPORT DU JOURNAL — utilitaires
+--------------------------------------------------------------- */
+const PERIODES_JOURNAL = [
+  { id: "7", label: "Les 7 derniers jours", jours: 7 },
+  { id: "30", label: "Les 30 derniers jours", jours: 30 },
+  { id: "90", label: "Les 3 derniers mois", jours: 90 },
+  { id: "all", label: "Toutes mes données", jours: null },
+];
+
+const CHAMPS_EXPORT = [
+  { id: "dates", label: "Dates et heures" },
+  { id: "etats", label: "États repérés" },
+  { id: "intensites", label: "Intensités" },
+  { id: "protection", label: "Réponses de protection reconnues" },
+  { id: "exercices", label: "Exercices essayés" },
+  { id: "retours", label: "Retours après les exercices" },
+];
+
+function entriesDansPeriode(entries, periodeId) {
+  const p = PERIODES_JOURNAL.find((x) => x.id === periodeId);
+  if (!p || p.jours === null) return entries;
+  const cutoff = Date.now() - p.jours * 86400000;
+  return entries.filter((e) => new Date(e.date).getTime() >= cutoff);
+}
+
+function formatDateFr(d) {
+  return new Date(d).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+}
+
+function genererPdfJournal(entriesFiltrees, champs, periodeLabel) {
+  const doc = new jsPDF();
+  const marge = 15;
+  let y = 20;
+
+  doc.setFontSize(18);
+  doc.text("Mon journal de suivi", marge, y); y += 10;
+  doc.setFontSize(11);
+  doc.setTextColor(110, 100, 90);
+  doc.text(`Période : ${periodeLabel}`, marge, y); y += 8;
+  doc.setFontSize(9);
+  const disclaimer = "Ce document rassemble les informations que vous avez choisi d'enregistrer et d'exporter depuis l'application. Il ne constitue pas un diagnostic ni une évaluation clinique.";
+  const disclaimerLines = doc.splitTextToSize(disclaimer, 180);
+  doc.text(disclaimerLines, marge, y); y += disclaimerLines.length * 5 + 8;
+  doc.setTextColor(40, 38, 34);
+
+  const sorted = [...entriesFiltrees].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  sorted.forEach((e) => {
+    if (y > 265) { doc.addPage(); y = 20; }
+    doc.setFontSize(11);
+    doc.setFont(undefined, "bold");
+    const dateLabel = champs.dates
+      ? new Date(e.date).toLocaleString("fr-FR", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })
+      : "Entrée";
+    doc.text(dateLabel, marge, y); y += 7;
+    doc.setFont(undefined, "normal");
+    doc.setFontSize(10);
+
+    if (e.type === "check-in") {
+      if (champs.etats && e.etat) {
+        const lbl = NS_STATES.find((s) => s.id === e.etat)?.label;
+        if (lbl) { doc.text(`État repéré : ${lbl}`, marge, y); y += 6; }
+      }
+      if (champs.intensites && e.intensite !== null && e.intensite !== undefined) {
+        doc.text(`Intensité indiquée : ${e.intensite}/10`, marge, y); y += 6;
+      }
+      if (champs.protection && e.ffff) {
+        const flbl = FFFF_INFO.find((f) => f.id === e.ffff)?.label;
+        if (flbl) { doc.text(`Réponse de protection reconnue : ${flbl}`, marge, y); y += 6; }
+      }
+    } else {
+      if (champs.exercices) { doc.text(`Exercice essayé : ${e.exercice}`, marge, y); y += 6; }
+      if (champs.retours && e.effet) { doc.text(`Retour après l'exercice : ${e.effet}`, marge, y); y += 6; }
+      if (champs.retours && e.remarque) { doc.text(`Ce qui a été remarqué : ${e.remarque}`, marge, y); y += 6; }
+    }
+    y += 4;
+  });
+
+  if (sorted.length === 0) {
+    doc.setFontSize(11);
+    doc.text("Aucune entrée sur cette période.", marge, y);
+  }
+
+  return doc;
+}
+
+function telechargerOuPartagerPdf(doc, nomFichier) {
+  const blob = doc.output("blob");
+  const file = new File([blob], nomFichier, { type: "application/pdf" });
+  if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({ files: [file], title: nomFichier }).catch(() => doc.save(nomFichier));
+  } else {
+    doc.save(nomFichier);
+  }
+}
+
+function calculerResumeRendezVous(entriesFiltrees) {
+  const etatCounts = {};
+  const exoCounts = {};
+  const effetParExo = {};
+  entriesFiltrees.forEach((e) => {
+    if (e.type === "check-in" && e.etat) etatCounts[e.etat] = (etatCounts[e.etat] || 0) + 1;
+    if (e.type === "exercice") {
+      exoCounts[e.exercice] = (exoCounts[e.exercice] || 0) + 1;
+      if (e.effet) {
+        effetParExo[e.exercice] = effetParExo[e.exercice] || [];
+        effetParExo[e.exercice].push(e.effet);
+      }
+    }
+  });
+  const topEtat = Object.entries(etatCounts).sort((a, b) => b[1] - a[1])[0];
+  const topExos = Object.entries(exoCounts).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  const aides = Object.entries(effetParExo)
+    .filter(([, effets]) => effets.some((x) => x === "Beaucoup" || x === "Un peu"))
+    .map(([titre]) => titre).slice(0, 3);
+  const moinsAides = Object.entries(effetParExo)
+    .filter(([, effets]) => effets.some((x) => x === "Pas vraiment" || x === "Je préfère l'éviter"))
+    .map(([titre]) => titre).slice(0, 3);
+  return { topEtat, topExos, aides, moinsAides };
+}
+
+function genererPdfRendezVous(entriesFiltrees, periodeLabel, question) {
+  const doc = new jsPDF();
+  const marge = 15;
+  let y = 20;
+  const resume = calculerResumeRendezVous(entriesFiltrees);
+
+  doc.setFontSize(18);
+  doc.text("Préparer mon prochain rendez-vous", marge, y); y += 10;
+  doc.setFontSize(11);
+  doc.setTextColor(110, 100, 90);
+  doc.text(`Période : ${periodeLabel}`, marge, y); y += 10;
+  doc.setTextColor(40, 38, 34);
+  doc.setFontSize(9);
+  const disclaimer = "Ce document ne constitue pas un diagnostic ni une évaluation clinique. Il rassemble des tendances observées à partir de ce que la personne a choisi d'enregistrer.";
+  const dLines = doc.splitTextToSize(disclaimer, 180);
+  doc.text(dLines, marge, y); y += dLines.length * 5 + 10;
+
+  const section = (titre, texte) => {
+    if (y > 260) { doc.addPage(); y = 20; }
+    doc.setFontSize(12);
+    doc.setFont(undefined, "bold");
+    doc.text(titre, marge, y); y += 7;
+    doc.setFont(undefined, "normal");
+    doc.setFontSize(10);
+    const lines = doc.splitTextToSize(texte, 180);
+    doc.text(lines, marge, y); y += lines.length * 5.5 + 8;
+  };
+
+  section("Ce que j'ai le plus souvent repéré",
+    resume.topEtat
+      ? `Sur la période sélectionnée, vous avez plusieurs fois indiqué vous reconnaître dans un état de ${NS_STATES.find((s) => s.id === resume.topEtat[0])?.label || resume.topEtat[0]}.`
+      : "Aucun état n'a été repéré de façon récurrente sur cette période.");
+
+  section("Les exercices que j'ai le plus essayés",
+    resume.topExos.length > 0
+      ? resume.topExos.map(([titre, n]) => `${titre} (${n} fois)`).join(", ") + "."
+      : "Aucun exercice essayé sur cette période.");
+
+  section("Ce qui a semblé le plus souvent m'aider",
+    resume.aides.length > 0
+      ? `Les exercices suivants semblent avoir été plus souvent associés à un retour positif : ${resume.aides.join(", ")}.`
+      : "Rien de suffisamment répété pour l'indiquer sur cette période.");
+
+  section("Ce qui m'a moins convenu",
+    resume.moinsAides.length > 0
+      ? `Vous avez indiqué préférer éviter ou moins apprécier : ${resume.moinsAides.join(", ")}.`
+      : "Rien de particulier n'a été indiqué comme peu aidant sur cette période.");
+
+  if (question && question.trim()) {
+    section("Ce que j'aimerais aborder", question.trim());
+  }
+
+  return doc;
+}
+
+function Journal({ c, onBack, entries, onGoExport, onGoRdv }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
+      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
       <ScreenTitle c={c}>Mon suivi personnel</ScreenTitle>
-      <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 20 }}>
+      <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 16 }}>
         Ce suivi n'est pas là pour mesurer une performance. Il peut simplement vous aider à mieux connaître votre
         fonctionnement et à repérer ce qui vous soutient.
       </p>
+
+      {entries.length > 0 && (
+        <div style={{ display: "flex", gap: 8, marginBottom: 18, flexWrap: "wrap" }}>
+          <button onClick={onGoExport} style={{ fontSize: 12.5, color: c.text, background: c.bgAlt, border: "none", borderRadius: 999, padding: "8px 13px", cursor: "pointer" }}>
+            Exporter mon journal
+          </button>
+          <button onClick={onGoRdv} style={{ fontSize: 12.5, color: c.text, background: c.sageSoft, border: "none", borderRadius: 999, padding: "8px 13px", cursor: "pointer" }}>
+            Préparer mon prochain rendez-vous
+          </button>
+        </div>
+      )}
+
       {entries.length === 0 && (
         <Card c={c} style={{ background: c.bgAlt, border: "none" }}>
           <p style={{ margin: 0, color: c.textSoft, fontSize: 14 }}>
@@ -2753,11 +2993,143 @@ function Journal({ c, onBack, entries }) {
   );
 }
 
-function Settings({ c, theme, toggleTheme, onBack, onWipe }) {
-  const [confirm, setConfirm] = useState(false);
+function JournalExportSelect({ c, onBack, champs, setChamps, periode, setPeriode, onNext }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
+      <BackRow c={c} onBack={onBack} label="Retour au journal" />
+      <ScreenTitle c={c}>Que souhaitez-vous inclure ?</ScreenTitle>
+      <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 18 }}>
+        Vous décidez toujours de ce que vous exportez. Rien n'est envoyé automatiquement à qui que ce soit.
+      </p>
+
+      <div style={{ fontSize: 12, color: c.textSoft, marginBottom: 8 }}>À inclure</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+        {CHAMPS_EXPORT.map((ch) => (
+          <label key={ch.id} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, color: c.text, cursor: "pointer" }}>
+            <input type="checkbox" checked={!!champs[ch.id]}
+              onChange={(e) => setChamps((prev) => ({ ...prev, [ch.id]: e.target.checked }))}
+              style={{ width: 17, height: 17, accentColor: c.sage }} />
+            {ch.label}
+          </label>
+        ))}
+      </div>
+
+      <div style={{ fontSize: 12, color: c.textSoft, marginBottom: 8 }}>Période</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 }}>
+        {PERIODES_JOURNAL.map((p) => (
+          <button key={p.id} onClick={() => setPeriode(p.id)}
+            style={{
+              textAlign: "left", padding: "11px 14px", borderRadius: 12, cursor: "pointer",
+              border: `1px solid ${periode === p.id ? c.sage : c.border}`,
+              background: periode === p.id ? c.sageSoft : c.card, color: c.text, fontSize: 14,
+            }}>
+            {p.label}
+          </button>
+        ))}
+      </div>
+
+      <Btn c={c} variant="primary" onClick={onNext}>Aperçu de mon export <span>→</span></Btn>
+    </div>
+  );
+}
+
+function JournalExportPreview({ c, onBack, champs, periode, entries, onCreate, onCancel }) {
+  const periodeLabel = PERIODES_JOURNAL.find((p) => p.id === periode)?.label || "";
+  const filtrees = entriesDansPeriode(entries, periode);
+  const inclus = CHAMPS_EXPORT.filter((ch) => champs[ch.id]).map((ch) => ch.label);
+  const exclus = CHAMPS_EXPORT.filter((ch) => !champs[ch.id]).map((ch) => ch.label);
+  return (
+    <div>
+      <BackRow c={c} onBack={onBack} label="Modifier ma sélection" />
+      <ScreenTitle c={c}>Aperçu de ce que vous allez exporter</ScreenTitle>
+      <Card c={c} style={{ marginBottom: 20 }}>
+        <p style={{ margin: "0 0 8px", fontSize: 13.5, color: c.text }}>{periodeLabel}</p>
+        <p style={{ margin: "0 0 12px", fontSize: 13.5, color: c.text }}>{filtrees.length} entrée{filtrees.length > 1 ? "s" : ""} du journal</p>
+        <p style={{ margin: "0 0 4px", fontSize: 12.5, color: c.textSoft }}>Vous avez choisi d'inclure :</p>
+        <p style={{ margin: "0 0 10px", fontSize: 13, color: c.text }}>{inclus.length > 0 ? inclus.join(", ") : "aucune catégorie"}</p>
+        {exclus.length > 0 && (
+          <>
+            <p style={{ margin: "0 0 4px", fontSize: 12.5, color: c.textSoft }}>Vous avez choisi de ne pas inclure :</p>
+            <p style={{ margin: 0, fontSize: 13, color: c.text }}>{exclus.join(", ")}</p>
+          </>
+        )}
+      </Card>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <Btn c={c} variant="primary" onClick={onCreate}>Créer le PDF <span>↓</span></Btn>
+        <Btn c={c} variant="secondary" onClick={onBack}>Modifier ma sélection</Btn>
+        <Btn c={c} variant="ghost" onClick={onCancel}>Annuler</Btn>
+      </div>
+    </div>
+  );
+}
+
+function RdvExportSelect({ c, onBack, periode, setPeriode, question, setQuestion, onNext }) {
+  return (
+    <div>
+      <BackRow c={c} onBack={onBack} label="Retour au journal" />
+      <ScreenTitle c={c}>Préparer mon prochain rendez-vous</ScreenTitle>
+      <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 18 }}>
+        Ce résumé, plus court que l'export complet, peut aider à montrer rapidement à votre thérapeute ce qui
+        s'est passé depuis le dernier rendez-vous.
+      </p>
+      <div style={{ fontSize: 12, color: c.textSoft, marginBottom: 8 }}>Période</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+        {PERIODES_JOURNAL.map((p) => (
+          <button key={p.id} onClick={() => setPeriode(p.id)}
+            style={{
+              textAlign: "left", padding: "11px 14px", borderRadius: 12, cursor: "pointer",
+              border: `1px solid ${periode === p.id ? c.sage : c.border}`,
+              background: periode === p.id ? c.sageSoft : c.card, color: c.text, fontSize: 14,
+            }}>
+            {p.label}
+          </button>
+        ))}
+      </div>
+      <label style={{ fontSize: 13, color: c.textSoft, display: "block", marginBottom: 8 }}>
+        Ce que j'aimerais aborder (optionnel)
+      </label>
+      <textarea value={question} onChange={(e) => setQuestion(e.target.value)} rows={3}
+        placeholder="Une question, une note, un sujet…"
+        style={{ width: "100%", borderRadius: 12, border: `1px solid ${c.border}`, background: c.card, color: c.text, padding: 10, fontFamily: fontBody, fontSize: 14, resize: "vertical", marginBottom: 22 }} />
+      <Btn c={c} variant="primary" onClick={onNext}>Aperçu du résumé <span>→</span></Btn>
+    </div>
+  );
+}
+
+function RdvExportPreview({ c, onBack, periode, entries, question, onCreate, onCancel }) {
+  const periodeLabel = PERIODES_JOURNAL.find((p) => p.id === periode)?.label || "";
+  const filtrees = entriesDansPeriode(entries, periode);
+  const resume = calculerResumeRendezVous(filtrees);
+  return (
+    <div>
+      <BackRow c={c} onBack={onBack} label="Modifier ma sélection" />
+      <ScreenTitle c={c}>Aperçu du résumé</ScreenTitle>
+      <Card c={c} style={{ marginBottom: 20 }}>
+        <p style={{ margin: "0 0 10px", fontSize: 13.5, color: c.text, fontWeight: 600 }}>{periodeLabel}</p>
+        <p style={{ margin: "0 0 6px", fontSize: 12.5, color: c.textSoft }}>Ce que j'ai le plus souvent repéré</p>
+        <p style={{ margin: "0 0 12px", fontSize: 13, color: c.text }}>
+          {resume.topEtat ? `Un état de ${NS_STATES.find((s) => s.id === resume.topEtat[0])?.label || resume.topEtat[0]}, plusieurs fois.` : "Rien de récurrent sur cette période."}
+        </p>
+        <p style={{ margin: "0 0 6px", fontSize: 12.5, color: c.textSoft }}>Exercices les plus essayés</p>
+        <p style={{ margin: 0, fontSize: 13, color: c.text }}>
+          {resume.topExos.length > 0 ? resume.topExos.map(([t]) => t).join(", ") : "Aucun sur cette période."}
+        </p>
+      </Card>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <Btn c={c} variant="primary" onClick={onCreate}>Créer le PDF <span>↓</span></Btn>
+        <Btn c={c} variant="secondary" onClick={onBack}>Modifier ma sélection</Btn>
+        <Btn c={c} variant="ghost" onClick={onCancel}>Annuler</Btn>
+      </div>
+    </div>
+  );
+}
+
+function Settings({ c, theme, toggleTheme, onBack, onWipe }) {
+  const [confirm, setConfirm] = useState(false);
+  const [showColors, setShowColors] = useState(false);
+  return (
+    <div>
+      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
       <ScreenTitle c={c}>Réglages</ScreenTitle>
 
       <Card c={c} style={{ marginBottom: 14 }}>
@@ -2767,6 +3139,45 @@ function Settings({ c, theme, toggleTheme, onBack, onWipe }) {
             {theme === "light" ? "Clair" : "Sombre"}
           </button>
         </div>
+      </Card>
+
+      <Card c={c} style={{ marginBottom: 14 }}>
+        <button onClick={() => setShowColors((s) => !s)} style={{
+          width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer",
+          display: "flex", justifyContent: "space-between", alignItems: "center", padding: 0,
+        }}>
+          <span style={{ color: c.text, fontSize: 15, fontWeight: 600 }}>Couleurs des exercices</span>
+          <span style={{ color: c.textSoft }}>{showColors ? "–" : "+"}</span>
+        </button>
+        {showColors && (
+          <div style={{ marginTop: 14 }}>
+            <p style={{ fontSize: 12.5, color: c.textSoft, lineHeight: 1.6, marginBottom: 12 }}>
+              Chaque couleur représente une fonction que peut avoir un exercice — jamais un état psychologique
+              ou un diagnostic.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+              {Object.entries(FAMILIES).map(([key, fam]) => (
+                <div key={key} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ width: 16, height: 16, borderRadius: 6, background: c[fam.color + "Soft"], border: `1px solid ${c.border}` }} />
+                  <span style={{ fontSize: 13, color: c.text }}>{fam.label}</span>
+                </div>
+              ))}
+            </div>
+            <p style={{ fontSize: 11.5, color: c.textSoft, marginTop: 12, lineHeight: 1.5 }}>
+              Les couleurs servent seulement à vous aider à vous repérer dans la bibliothèque. Elles ne
+              représentent en aucun cas un diagnostic ni une évaluation de votre état.
+            </p>
+          </div>
+        )}
+      </Card>
+
+      <Card c={c} style={{ marginBottom: 14 }}>
+        <p style={{ margin: "0 0 6px", fontSize: 13, color: c.text, fontWeight: 600 }}>À propos de cette application</p>
+        <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+          Cette application est un outil de soutien et de psychoéducation. Elle ne remplace pas un suivi
+          médical, psychologique ou psychiatrique, et ne pose aucun diagnostic. Elle ne surveille pas votre
+          état : aucune information n'est envoyée automatiquement à qui que ce soit.
+        </p>
       </Card>
 
       <Card c={c} style={{ marginBottom: 14 }}>
