@@ -873,6 +873,9 @@ export default function App() {
   const [exerciseSource, setExerciseSource] = useState(null); // 'library' | 'crisis'
   const [libraryInitialEtat, setLibraryInitialEtat] = useState(null);
   const [libraryInitialProtection, setLibraryInitialProtection] = useState(null);
+  const [libraryInitialFamily, setLibraryInitialFamily] = useState(null);
+  const [libraryInitialCanal, setLibraryInitialCanal] = useState(null);
+  const [libraryInitialDuree, setLibraryInitialDuree] = useState(null);
   const [avoidPrefs, setAvoidPrefs] = useState([]);
   const [exoFeedback, setExoFeedback] = useState({});
   const [customExercises, setCustomExercises] = useState([]);
@@ -929,6 +932,9 @@ export default function App() {
     setActiveExerciseRaison(null);
     setLibraryInitialEtat(null);
     setLibraryInitialProtection(null);
+    setLibraryInitialFamily(null);
+    setLibraryInitialCanal(null);
+    setLibraryInitialDuree(null);
   }, []);
 
   const goBack = useCallback(() => {
@@ -1116,6 +1122,7 @@ export default function App() {
         {screen === "library" && (
           <Library c={c} onBack={goBack}
             initialEtat={libraryInitialEtat} initialProtection={libraryInitialProtection}
+            initialFamily={libraryInitialFamily} initialCanal={libraryInitialCanal} initialDuree={libraryInitialDuree}
             avoidPrefs={avoidPrefs} feedback={exoFeedback} customExercises={customExercises}
             onPick={(ex, matchLevel, criteria) => {
               setActiveExercise(ex);
@@ -1151,6 +1158,13 @@ export default function App() {
             onStop={goBackHome}
             onRevenirListe={goBack}
             onEssayerAutreChose={() => goTo("library")}
+            onFilterByTag={(type, value) => {
+              setLibraryInitialEtat(null); setLibraryInitialProtection(null);
+              setLibraryInitialFamily(type === "family" ? value : null);
+              setLibraryInitialCanal(type === "canal" ? value : null);
+              setLibraryInitialDuree(type === "duree" ? value : null);
+              goTo("library");
+            }}
             onFinish={(effet, remarque) => {
               addEntry({ type: "exercice", exercice: activeExercise.titre, effet, remarque, intensite: intensity, etat: nsState });
               saveExoFeedback(activeExercise.id, effet);
@@ -1832,6 +1846,7 @@ function activeCriteriaOf(f) {
   if (f.canal) list.push({ type: "canal", value: f.canal, label: CANAUX_LIST.find((x) => x.id === f.canal)?.label });
   if (f.duree) list.push({ type: "duree", value: f.duree, label: DUREE_LIST.find((x) => x.id === f.duree)?.label });
   if (f.tag) list.push({ type: "tag", value: f.tag, label: TAG_LABELS[f.tag] || f.tag });
+  if (f.family) list.push({ type: "family", value: f.family, label: FAMILIES[f.family]?.label || f.family });
   return list;
 }
 
@@ -1841,6 +1856,7 @@ function matchesCriterion(ex, crit) {
   if (crit.type === "protection") return ex.protection.includes(crit.value);
   if (crit.type === "canal") return ex.canaux.includes(crit.value);
   if (crit.type === "tag") return !!(ex.tags && ex.tags.includes(crit.value));
+  if (crit.type === "family") return exerciseFamily(ex) === crit.value;
   if (crit.type === "duree") {
     const order = ["30s", "2min", "5min", "10min"];
     return order.indexOf(ex.duree) <= order.indexOf(crit.value);
@@ -1873,7 +1889,7 @@ const THEMES = [
   { id: "lieu_public", label: "Je suis dans un lieu public", apply: (f) => ({ ...f, avoid: addAvoid(addAvoid(f.avoid, "yeux_fermes"), "mouvement") }) },
   { id: "lit", label: "Je suis au lit", apply: (f) => ({ ...f, avoid: addAvoid(f.avoid, "mouvement") }) },
   { id: "creatif", label: "J'ai envie de quelque chose de créatif", apply: (f) => ({ ...f, tag: "creativite" }) },
-  { id: "ne_sait_pas", label: "Je ne sais pas ce dont j'ai besoin", apply: (f) => ({ ...f, etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null }) },
+  { id: "ne_sait_pas", label: "Je ne sais pas ce dont j'ai besoin", apply: (f) => ({ ...f, etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null, family: null }) },
 ];
 
 function pickSurprise(pool, feedback, etat, excludeId) {
@@ -1931,29 +1947,33 @@ function exerciseModalites(ex) {
   return (ex.canaux || []).slice(0, 2).map((cn) => CANAL_MODALITE[cn]).filter(Boolean);
 }
 
-function ExoTag({ family, c, children, small }) {
+function ExoTag({ family, c, children, small, onClick }) {
   const fam = FAMILIES[family];
   const bg = fam ? c[fam.color + "Soft"] : c.bgAlt;
   const fg = fam ? c.text : c.textSoft;
+  const Tag = onClick ? "button" : "span";
   return (
-    <span style={{
+    <Tag onClick={onClick} style={{
       display: "inline-flex", alignItems: "center", background: bg, color: fg,
-      padding: small ? "3px 9px" : "5px 11px", borderRadius: 999,
+      padding: small ? "3px 9px" : "5px 11px", borderRadius: 999, border: "none",
       fontSize: small ? 11 : 12, fontWeight: 600, whiteSpace: "nowrap",
+      cursor: onClick ? "pointer" : "default", fontFamily: fontBody,
     }}>
       {children}
-    </span>
+    </Tag>
   );
 }
 
-function ModaliteTag({ c, children }) {
+function ModaliteTag({ c, children, onClick }) {
+  const Tag = onClick ? "button" : "span";
   return (
-    <span style={{
-      display: "inline-flex", alignItems: "center", background: c.bgAlt, color: c.textSoft,
+    <Tag onClick={onClick} style={{
+      display: "inline-flex", alignItems: "center", background: c.bgAlt, color: c.textSoft, border: "none",
       padding: "3px 9px", borderRadius: 999, fontSize: 11, fontWeight: 500, whiteSpace: "nowrap",
+      cursor: onClick ? "pointer" : "default", fontFamily: fontBody,
     }}>
       {children}
-    </span>
+    </Tag>
   );
 }
 
@@ -1968,23 +1988,29 @@ function MatchDots({ c, level }) {
   );
 }
 
-function ExerciseCardTags({ ex, c, feedback, customExercises }) {
+function ExerciseCardTags({ ex, c, feedback, customExercises, onFilterFamily, onFilterCanal }) {
   const fam = exerciseFamily(ex);
   const modalites = exerciseModalites(ex);
   const isPerso = customExercises && customExercises.some((e) => e.id === ex.id);
   const dejaEssaye = feedback && feedback[ex.id];
   return (
     <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginTop: 6 }}>
-      <ExoTag family={fam} c={c} small>{FAMILIES[fam].label}</ExoTag>
-      {modalites.map((m) => <ModaliteTag key={m} c={c}>{m}</ModaliteTag>)}
+      <ExoTag family={fam} c={c} small onClick={onFilterFamily ? (e) => { e.stopPropagation(); onFilterFamily(fam); } : undefined}>
+        {FAMILIES[fam].label}
+      </ExoTag>
+      {modalites.map((m, i) => (
+        <ModaliteTag key={m} c={c} onClick={onFilterCanal ? (e) => { e.stopPropagation(); onFilterCanal(ex.canaux[i]); } : undefined}>
+          {m}
+        </ModaliteTag>
+      ))}
       {isPerso && <ModaliteTag c={c}>Mon exercice</ModaliteTag>}
       {dejaEssaye && <ModaliteTag c={c}>Déjà essayé · {dejaEssaye}</ModaliteTag>}
     </div>
   );
 }
 
-function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedback, customExercises, onPick, onGoPreferences, onGoCreate }) {
-  const [f, setF] = useState({ etat: initialEtat || null, besoin: null, protection: initialProtection || null, canal: null, duree: null, tag: null, excludeRelational: false, avoid: avoidPrefs || [] });
+function Library({ c, onBack, initialEtat, initialProtection, initialFamily, initialCanal, initialDuree, avoidPrefs, feedback, customExercises, onPick, onGoPreferences, onGoCreate }) {
+  const [f, setF] = useState({ etat: initialEtat || null, besoin: null, protection: initialProtection || null, canal: initialCanal || null, duree: initialDuree || null, tag: null, family: initialFamily || null, excludeRelational: false, avoid: avoidPrefs || [] });
   const [showFacets, setShowFacets] = useState(false);
   const [showAvoidPanel, setShowAvoidPanel] = useState(false);
   const [showThemes, setShowThemes] = useState(false);
@@ -2087,8 +2113,8 @@ function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedba
             vous attire le moins difficilement aujourd'hui.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Btn c={c} variant="secondary" onClick={() => { setF({ etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null, excludeRelational: false, avoid: f.avoid }); setShowFacets(true); setShowJeNeSaisPas(false); }}>Me poser quelques questions</Btn>
-            <Btn c={c} variant="secondary" onClick={() => { setF({ etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null, excludeRelational: false, avoid: f.avoid }); setShowJeNeSaisPas(false); }}>Me montrer différents types d'exercices</Btn>
+            <Btn c={c} variant="secondary" onClick={() => { setF({ etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null, family: null, excludeRelational: false, avoid: f.avoid }); setShowFacets(true); setShowJeNeSaisPas(false); }}>Me poser quelques questions</Btn>
+            <Btn c={c} variant="secondary" onClick={() => { setF({ etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null, family: null, excludeRelational: false, avoid: f.avoid }); setShowJeNeSaisPas(false); }}>Me montrer différents types d'exercices</Btn>
             <Btn c={c} variant="secondary" onClick={() => { setF((prev) => ({ ...prev, duree: "30s" })); setShowJeNeSaisPas(false); }}>Me proposer quelque chose de très court</Btn>
             <Btn c={c} variant="ghost" onClick={() => setShowJeNeSaisPas(false)}>Retour</Btn>
           </div>
@@ -2108,7 +2134,7 @@ function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedba
                 style={{ background: c.bgAlt, border: "none", borderRadius: "50%", width: 18, height: 18, color: c.textSoft, cursor: "pointer", fontSize: 11, lineHeight: "18px" }}>×</button>
             </span>
           ))}
-          <button onClick={() => setF((prev) => ({ ...prev, etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null }))}
+          <button onClick={() => setF((prev) => ({ ...prev, etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null, family: null }))}
             style={{ fontSize: 12, color: c.textSoft, background: "none", border: "none", textDecoration: "underline", cursor: "pointer" }}>
             Effacer tous les filtres
           </button>
@@ -2156,6 +2182,7 @@ function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedba
           <FacetRow title="Ma réaction de protection" options={FFFF_INFO.map((x) => ({ id: x.id, label: x.label.split(" — ")[0] }))} value={f.protection} onToggle={(v) => setF({ ...f, protection: v })} c={c} />
           <FacetRow title="Ce qui me convient aujourd'hui" options={CANAUX_LIST} value={f.canal} onToggle={(v) => setF({ ...f, canal: v })} c={c} />
           <FacetRow title="Le temps que j'ai" options={DUREE_LIST} value={f.duree} onToggle={(v) => setF({ ...f, duree: v })} c={c} />
+          <FacetRow title="Fonction de l'exercice" options={Object.entries(FAMILIES).map(([key, fam]) => ({ id: key, label: fam.label }))} value={f.family} onToggle={(v) => setF({ ...f, family: v })} c={c} />
         </Card>
       )}
 
@@ -2211,24 +2238,30 @@ function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedba
       )}
 
       {(banner === "partial" || banner === "per-criterion") && (
-        <Btn c={c} variant="ghost" onClick={() => setF({ etat: null, besoin: null, protection: null, canal: null, duree: null, avoid: f.avoid })} style={{ marginBottom: 14 }}>
+        <Btn c={c} variant="ghost" onClick={() => setF({ etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null, family: null, avoid: f.avoid })} style={{ marginBottom: 14 }}>
           Réinitialiser mes critères
         </Btn>
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
         {list.map((ex) => (
-          <button key={ex.id} onClick={() => onPick(ex, matchLevel, criteria)}
+          <div key={ex.id} onClick={() => onPick(ex, matchLevel, criteria)} role="button" tabIndex={0}
+            onKeyDown={(e) => { if (e.key === "Enter") onPick(ex, matchLevel, criteria); }}
             style={{ textAlign: "left", cursor: "pointer", border: `1px solid ${c.border}`, background: c.card, borderRadius: 18, padding: 16 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, gap: 8 }}>
               <span style={{ fontWeight: 700, color: c.text }}>{ex.titre}</span>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <MatchDots c={c} level={matchLevel} />
-                <span style={{ fontSize: 12, color: c.textSoft, whiteSpace: "nowrap" }}>{DUREE_LIST.find((d) => d.id === ex.duree)?.label}</span>
+                <button onClick={(e) => { e.stopPropagation(); setF((prev) => ({ ...prev, duree: ex.duree })); }}
+                  style={{ fontSize: 12, color: c.textSoft, whiteSpace: "nowrap", background: "none", border: "none", cursor: "pointer", fontFamily: fontBody, padding: 0 }}>
+                  {DUREE_LIST.find((d) => d.id === ex.duree)?.label}
+                </button>
               </div>
             </div>
-            <ExerciseCardTags ex={ex} c={c} feedback={feedback} customExercises={customExercises} />
-          </button>
+            <ExerciseCardTags ex={ex} c={c} feedback={feedback} customExercises={customExercises}
+              onFilterFamily={(fam) => setF((prev) => ({ ...prev, family: fam }))}
+              onFilterCanal={(canal) => setF((prev) => ({ ...prev, canal }))} />
+          </div>
         ))}
       </div>
 
@@ -2237,7 +2270,7 @@ function Library({ c, onBack, initialEtat, initialProtection, avoidPrefs, feedba
   );
 }
 
-function Exercise({ c, exercise, raison, onStop, onRevenirListe, onEssayerAutreChose, onFinish }) {
+function Exercise({ c, exercise, raison, onStop, onRevenirListe, onEssayerAutreChose, onFinish, onFilterByTag }) {
   const [step, setStep] = useState("do"); // do | pas-maintenant | remarque | continuer | feedback
   const [remarque, setRemarque] = useState(null);
   const [varianteIdx, setVarianteIdx] = useState(0); // 0 = version principale
@@ -2302,9 +2335,18 @@ function Exercise({ c, exercise, raison, onStop, onRevenirListe, onEssayerAutreC
   return (
     <div>
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10, alignItems: "center" }}>
-        <ExoTag family={exerciseFamily(exercise)} c={c}>{FAMILIES[exerciseFamily(exercise)].label}</ExoTag>
-        {exerciseModalites(exercise).map((m) => <ModaliteTag key={m} c={c}>{m}</ModaliteTag>)}
-        <span style={{ fontSize: 12, color: c.textSoft }}>⏱ {DUREE_LIST.find((d) => d.id === exercise.duree)?.label}</span>
+        <ExoTag family={exerciseFamily(exercise)} c={c} onClick={onFilterByTag ? () => onFilterByTag("family", exerciseFamily(exercise)) : undefined}>
+          {FAMILIES[exerciseFamily(exercise)].label}
+        </ExoTag>
+        {exercise.canaux.map((cn) => (
+          <ModaliteTag key={cn} c={c} onClick={onFilterByTag ? () => onFilterByTag("canal", cn) : undefined}>
+            {CANAL_MODALITE[cn]}
+          </ModaliteTag>
+        ))}
+        <button onClick={onFilterByTag ? () => onFilterByTag("duree", exercise.duree) : undefined}
+          style={{ fontSize: 12, color: c.textSoft, background: "none", border: "none", cursor: onFilterByTag ? "pointer" : "default", fontFamily: fontBody, padding: 0 }}>
+          ⏱ {DUREE_LIST.find((d) => d.id === exercise.duree)?.label}
+        </button>
       </div>
       <ScreenTitle c={c}>{exercise.titre}</ScreenTitle>
       {raison && (
@@ -2942,14 +2984,41 @@ function genererPdfRendezVous(entriesFiltrees, periodeLabel, question) {
 }
 
 function Journal({ c, onBack, entries, onGoExport, onGoRdv }) {
+  const [showHelp, setShowHelp] = useState(false);
   return (
     <div>
       <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
-      <ScreenTitle c={c}>Mon suivi personnel</ScreenTitle>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+        <ScreenTitle c={c}>Mon suivi personnel</ScreenTitle>
+        <button onClick={() => setShowHelp((s) => !s)} aria-label="À quoi sert le journal ?" style={{
+          width: 22, height: 22, borderRadius: "50%", border: `1px solid ${c.border}`, background: c.card,
+          color: c.textSoft, fontSize: 12, cursor: "pointer", flexShrink: 0, marginTop: -10,
+        }}>?</button>
+      </div>
       <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 16 }}>
         Ce suivi n'est pas là pour mesurer une performance. Il peut simplement vous aider à mieux connaître votre
         fonctionnement et à repérer ce qui vous soutient.
       </p>
+
+      {showHelp && (
+        <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 16 }}>
+          <div style={{ fontWeight: 700, color: c.text, marginBottom: 8, fontSize: 14 }}>À quoi sert le journal ?</div>
+          <p style={{ fontSize: 12.5, color: c.textSoft, lineHeight: 1.6, margin: "0 0 8px" }}>
+            Le journal vous permet de garder une trace de ce que vous avez choisi d'enregistrer : états repérés,
+            exercices essayés et retours éventuels. Vous pouvez l'utiliser uniquement pour vous-même.
+          </p>
+          <p style={{ fontSize: 12.5, color: c.textSoft, lineHeight: 1.6, margin: "0 0 8px" }}>
+            Vous pouvez aussi choisir d'en exporter une partie sous forme de PDF, par exemple pour préparer un
+            rendez-vous avec un professionnel.
+          </p>
+          <p style={{ fontSize: 12.5, color: c.text, lineHeight: 1.6, margin: "0 0 8px", fontWeight: 600 }}>
+            Vous décidez toujours de ce que vous enregistrez, de ce que vous exportez et de ce que vous partagez.
+          </p>
+          <p style={{ fontSize: 12.5, color: c.textSoft, lineHeight: 1.6, margin: 0 }}>
+            Aucun journal ni PDF n'est envoyé automatiquement à un professionnel.
+          </p>
+        </Card>
+      )}
 
       {entries.length > 0 && (
         <div style={{ display: "flex", gap: 8, marginBottom: 18, flexWrap: "wrap" }}>
