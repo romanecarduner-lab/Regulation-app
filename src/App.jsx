@@ -390,7 +390,7 @@ const EXERCISES = [
   { id: "meteo-impossible", titre: "Fabriquer une météo impossible", etats: ["tolerance", "hyperactivation"], besoins: ["douceur", "mental"], protection: [], canaux: ["imaginatif", "cognitif"], duree: "2min", materiel: null,
     tags: ["creativite", "humour", "imagination"],
     objectif: "Mobiliser l'imagination et la flexibilité, sans passer par un lieu ressource ou un souvenir.",
-    etapes: ["Inventez une météo qui n'existe pas : pluie tiède de confettis, brouillard à rayures, vent carré…", "Aucune bonne réponse : l'idée est simplement de jouer un instant avec l'impossible."],
+    etapes: ["Inventez une météo qui n'existe pas : pluie tiède de confettis, brouillard à rayures, vent carré…", "Aucune bonne réponse : l'idée est simplement de jouer un instant avec l'impossible.", "Si imaginer ne vous convient pas aujourd'hui : décrivez plutôt, à voix haute ou mentalement, la météo réelle de l'endroit où vous êtes, avec un détail inventé en plus (« il fait gris, et il manquerait juste un peu de confettis »)."],
     precaution: null, sensible: ["imagination"] },
   { id: "gribouillage", titre: "Le gribouillage qui s'arrête quand je décide", etats: ["tolerance", "hyperactivation", "hypoactivation"], besoins: ["choix", "mouvement"], protection: [], canaux: ["cognitif", "moteur"], duree: "5min", materiel: "Une feuille et un stylo, ou une surface tactile.",
     tags: ["creativite", "ecriture", "choix"],
@@ -419,7 +419,7 @@ const EXERCISES = [
   { id: "mouvement-prepare", titre: "Le mouvement préparé mais non réalisé", etats: ["hypoactivation"], besoins: ["mouvement"], protection: ["freeze"], canaux: ["cognitif", "moteur"], duree: "30s", materiel: null,
     tags: ["proprioception"],
     objectif: "Explorer un mouvement uniquement en pensée, sans obligation de l'exécuter.",
-    etapes: ["Imaginez seulement que votre main pourrait bouger. Vous n'avez pas besoin de la bouger.", "Si elle voulait commencer, quel serait le premier millimètre du mouvement ?"],
+    etapes: ["Imaginez seulement que votre main pourrait bouger. Vous n'avez pas besoin de la bouger.", "Si elle voulait commencer, quel serait le premier millimètre du mouvement ?", "Si imaginer ne vous convient pas aujourd'hui : posez simplement votre attention sur une main, sans rien bouger, et remarquez juste ce qui s'y passe (chaleur, poids, contact avec une surface)."],
     precaution: null, sensible: ["imagination"] },
   { id: "oui-non-yeux", titre: "Oui / non avec les yeux", etats: ["hypoactivation"], besoins: ["choix"], protection: ["freeze"], canaux: ["visuel"], duree: "30s", materiel: null,
     tags: ["vue", "choix"],
@@ -476,7 +476,7 @@ const EXERCISES = [
   { id: "personnage-qui-repond", titre: "Le personnage qui répond à ma place", etats: ["tolerance", "hyperactivation"], besoins: ["limites"], protection: ["fawn"], canaux: ["imaginatif", "cognitif"], duree: "2min", materiel: null,
     tags: ["imagination", "creativite"],
     objectif: "Emprunter, pour un instant, la capacité à prendre son temps d'un personnage imaginé.",
-    etapes: ["Imaginez un personnage qui sait prendre son temps avant de répondre — réel, fictif, animal ou inventé.", "Que dirait-il à votre place ?"],
+    etapes: ["Imaginez un personnage qui sait prendre son temps avant de répondre — réel, fictif, animal ou inventé.", "Que dirait-il à votre place ?", "Si imaginer un personnage ne vous convient pas aujourd'hui : pensez simplement à une personne réelle que vous connaissez et qui prend son temps avant de répondre. Que dirait-elle ?"],
     precaution: "Ce que dirait ce personnage n'est pas présenté comme « la bonne réponse », seulement comme une possibilité parmi d'autres.", sensible: ["imagination"] },
   { id: "bouton-non-consequence", titre: "Le bouton non, sans conséquence", etats: ["tolerance"], besoins: ["choix", "limites"], protection: [], canaux: ["cognitif"], duree: "30s", materiel: null,
     tags: ["choix"],
@@ -497,7 +497,7 @@ const EXERCISES = [
   { id: "paysage-appuis", titre: "Construire un paysage d'appuis", etats: ["tolerance", "hyperactivation"], besoins: ["appuis", "lieu_ressource"], protection: [], canaux: ["imaginatif"], duree: "5min", materiel: null,
     tags: ["imagination", "creativite"],
     objectif: "Assembler mentalement une scène suffisamment soutenante, sans qu'elle ait besoin d'être belle ou calme.",
-    etapes: ["Choisissez librement parmi : sol, mur, lumière, arbre, personne, animal, objet, distance, sortie.", "Construisez une scène avec les éléments qui vous semblent suffisamment soutenants aujourd'hui."],
+    etapes: ["Choisissez librement parmi : sol, mur, lumière, arbre, personne, animal, objet, distance, sortie.", "Construisez une scène avec les éléments qui vous semblent suffisamment soutenants aujourd'hui.", "Si imaginer une scène ne vous convient pas aujourd'hui : faites la même liste, mais à partir d'éléments réels et présents autour de vous maintenant (le sol sous vos pieds, un mur proche, la lumière de la pièce…)."],
     precaution: null, sensible: ["imagination"] },
   { id: "palette-du-jour", titre: "La palette du jour", etats: ["tolerance", "hyperactivation", "hypoactivation"], besoins: ["sens"], protection: [], canaux: ["visuel"], duree: "30s", materiel: null,
     tags: ["vue"],
@@ -846,6 +846,10 @@ function BackRow({ onBack, c, label = "Retour", onHome }) {
 /* ---------------------------------------------------------------
    MAIN APP
 --------------------------------------------------------------- */
+function freshFilters(avoid, overrides = {}) {
+  return { etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null, family: null, excludeRelational: false, avoid: avoid || [], ...overrides };
+}
+
 function raisonTexte(matchLevel, criteria) {
   if (!criteria || criteria.length === 0) return null;
   if (matchLevel === 3) return criteria.length === 1 ? `Correspond à : ${criteria[0].label}.` : "Correspond à l'ensemble de vos critères sélectionnés.";
@@ -871,11 +875,9 @@ export default function App() {
   const [activeExercise, setActiveExercise] = useState(null);
   const [activeExerciseRaison, setActiveExerciseRaison] = useState(null);
   const [exerciseSource, setExerciseSource] = useState(null); // 'library' | 'crisis'
-  const [libraryInitialEtat, setLibraryInitialEtat] = useState(null);
-  const [libraryInitialProtection, setLibraryInitialProtection] = useState(null);
-  const [libraryInitialFamily, setLibraryInitialFamily] = useState(null);
-  const [libraryInitialCanal, setLibraryInitialCanal] = useState(null);
-  const [libraryInitialDuree, setLibraryInitialDuree] = useState(null);
+  const [libraryFilters, setLibraryFilters] = useState({
+    etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null, family: null, excludeRelational: false, avoid: [],
+  });
   const [avoidPrefs, setAvoidPrefs] = useState([]);
   const [exoFeedback, setExoFeedback] = useState({});
   const [customExercises, setCustomExercises] = useState([]);
@@ -930,12 +932,8 @@ export default function App() {
     setEtatExploration(null);
     setActiveExercise(null);
     setActiveExerciseRaison(null);
-    setLibraryInitialEtat(null);
-    setLibraryInitialProtection(null);
-    setLibraryInitialFamily(null);
-    setLibraryInitialCanal(null);
-    setLibraryInitialDuree(null);
-  }, []);
+    setLibraryFilters(freshFilters(avoidPrefs));
+  }, [avoidPrefs]);
 
   const goBack = useCallback(() => {
     setHistory((h) => {
@@ -1064,8 +1062,7 @@ export default function App() {
             onExercises={() => {
               setExerciseSource("library");
               const ffffCat = ["fight", "flight", "freeze", "fawn"].includes(ffffState) ? ffffState : null;
-              setLibraryInitialEtat(nsState);
-              setLibraryInitialProtection(ffffCat);
+              setLibraryFilters(freshFilters(avoidPrefs, { etat: nsState, protection: ffffCat }));
               goTo("library");
             }} />
         )}
@@ -1121,9 +1118,8 @@ export default function App() {
 
         {screen === "library" && (
           <Library c={c} onBack={goBack}
-            initialEtat={libraryInitialEtat} initialProtection={libraryInitialProtection}
-            initialFamily={libraryInitialFamily} initialCanal={libraryInitialCanal} initialDuree={libraryInitialDuree}
-            avoidPrefs={avoidPrefs} feedback={exoFeedback} customExercises={customExercises}
+            filters={libraryFilters} setFilters={setLibraryFilters}
+            feedback={exoFeedback} customExercises={customExercises}
             onPick={(ex, matchLevel, criteria) => {
               setActiveExercise(ex);
               setActiveExerciseRaison(raisonTexte(matchLevel, criteria));
@@ -1148,7 +1144,7 @@ export default function App() {
 
         {screen === "protection" && (
           <Protection c={c} onBack={goBackHome}
-            onExercises={(cat) => { setLibraryInitialEtat(null); setLibraryInitialProtection(cat); goTo("library"); }} />
+            onExercises={(cat) => { setLibraryFilters(freshFilters(avoidPrefs, { protection: cat })); goTo("library"); }} />
         )}
 
         {screen === "psychoed" && <Psychoeducation c={c} onBack={goBackHome} />}
@@ -1159,10 +1155,7 @@ export default function App() {
             onRevenirListe={goBack}
             onEssayerAutreChose={() => goTo("library")}
             onFilterByTag={(type, value) => {
-              setLibraryInitialEtat(null); setLibraryInitialProtection(null);
-              setLibraryInitialFamily(type === "family" ? value : null);
-              setLibraryInitialCanal(type === "canal" ? value : null);
-              setLibraryInitialDuree(type === "duree" ? value : null);
+              setLibraryFilters(freshFilters(avoidPrefs, { [type]: value }));
               goTo("library");
             }}
             onFinish={(effet, remarque) => {
@@ -2009,8 +2002,7 @@ function ExerciseCardTags({ ex, c, feedback, customExercises, onFilterFamily, on
   );
 }
 
-function Library({ c, onBack, initialEtat, initialProtection, initialFamily, initialCanal, initialDuree, avoidPrefs, feedback, customExercises, onPick, onGoPreferences, onGoCreate }) {
-  const [f, setF] = useState({ etat: initialEtat || null, besoin: null, protection: initialProtection || null, canal: initialCanal || null, duree: initialDuree || null, tag: null, family: initialFamily || null, excludeRelational: false, avoid: avoidPrefs || [] });
+function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExercises, onPick, onGoPreferences, onGoCreate }) {
   const [showFacets, setShowFacets] = useState(false);
   const [showAvoidPanel, setShowAvoidPanel] = useState(false);
   const [showThemes, setShowThemes] = useState(false);
