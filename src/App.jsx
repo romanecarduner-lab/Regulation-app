@@ -56,6 +56,8 @@ const fontDisplay =
 const fontBody =
   '-apple-system, "Segoe UI", "Figtree", "Helvetica Neue", Arial, sans-serif';
 
+const MENTION_PROPRIETE = "Créé par Romane Carduner – Centre Sentiré · Tous droits réservés";
+
 /* ---------------------------------------------------------------
    CONTENU — Bibliothèque clinique d'exercices
    Chaque exercice est indexé selon plusieurs portes d'entrée :
@@ -891,9 +893,12 @@ export default function App() {
   const [exportPeriode, setExportPeriode] = useState("30");
   const [rdvPeriode, setRdvPeriode] = useState("30");
   const [rdvQuestion, setRdvQuestion] = useState("");
+  const [inclureReperesJournal, setInclureReperesJournal] = useState(false);
+  const [inclureJournalReperes, setInclureJournalReperes] = useState(false);
   const [zonePerso, setZonePerso] = useState({
     hyper: "", hypo: "", tolerance: "", signes: "",
   });
+  const [personalInfo, setPersonalInfo] = useState({ nom: "", prenom: "", dateNaissance: "" });
 
   const c = palette[theme];
 
@@ -906,6 +911,7 @@ export default function App() {
       const ap = await loadJSON("exo:avoid", []);
       const fb = await loadJSON("exo:feedback", {});
       const ce = await loadJSON("exo:custom", []);
+      const pi = await loadJSON("profil:info", null);
       setTheme(t);
       if (sp) setSafetyPlan(sp);
       setEntries(en);
@@ -913,6 +919,7 @@ export default function App() {
       setAvoidPrefs(ap);
       setExoFeedback(fb);
       setCustomExercises(ce);
+      if (pi) setPersonalInfo(pi);
       setLoading(false);
     })();
   }, []);
@@ -960,6 +967,9 @@ export default function App() {
   const updateZonePerso = (field, value) => setZonePerso((prev) => ({ ...prev, [field]: value }));
   const persistZonePerso = () => saveJSON("zone:personnalisation", zonePerso);
 
+  const updatePersonalInfo = (field, value) => setPersonalInfo((prev) => ({ ...prev, [field]: value }));
+  const persistPersonalInfo = () => saveJSON("profil:info", personalInfo);
+
   const addEntry = async (entry) => {
     const next = [{ ...entry, date: new Date().toISOString() }, ...entries].slice(0, 200);
     setEntries(next);
@@ -988,6 +998,7 @@ export default function App() {
       await window.storage.delete("exo:avoid", false);
       await window.storage.delete("exo:feedback", false);
       await window.storage.delete("exo:custom", false);
+      await window.storage.delete("profil:info", false);
     } catch {}
     setSafetyPlan({ signes: "", personnes: "", lieux: "", eviter: "", phrases: "", numeros: "" });
     setEntries([]);
@@ -995,6 +1006,7 @@ export default function App() {
     setAvoidPrefs([]);
     setExoFeedback({});
     setCustomExercises([]);
+    setPersonalInfo({ nom: "", prenom: "", dateNaissance: "" });
     goBackHome();
   };
 
@@ -1010,7 +1022,7 @@ export default function App() {
     <div style={{ background: c.bg, minHeight: 620, fontFamily: fontBody, transition: "background .3s" }}>
       <div style={{ maxWidth: 480, margin: "0 auto", padding: "22px 18px 100px", position: "relative" }}>
 
-        {screen === "home" && <Home c={c} theme={theme} toggleTheme={toggleTheme} goTo={goTo} />}
+        {screen === "home" && <Home c={c} theme={theme} toggleTheme={toggleTheme} goTo={goTo} prenom={personalInfo.prenom} />}
 
         {screen === "checkin-state" && (
           <CheckinState c={c} onBack={goBackHome} value={nsState}
@@ -1170,7 +1182,8 @@ export default function App() {
         )}
 
         {screen === "safety" && (
-          <SafetyPlan c={c} onBack={goBack} plan={safetyPlan} onChange={updateSafetyPlan} onSave={persistSafetyPlan} />
+          <SafetyPlan c={c} onBack={goBack} plan={safetyPlan} onChange={updateSafetyPlan} onSave={persistSafetyPlan}
+            onGoExport={() => goTo("reperes-export")} />
         )}
 
         {screen === "nervous-system" && <NervousSystem c={c} onBack={goBackHome} />}
@@ -1191,10 +1204,11 @@ export default function App() {
         {screen === "journal-export-preview" && (
           <JournalExportPreview c={c} onBack={goBack}
             champs={exportChamps} periode={exportPeriode} entries={entries}
+            safetyPlan={safetyPlan} inclureReperes={inclureReperesJournal} setInclureReperes={setInclureReperesJournal}
             onCreate={() => {
               const filtrees = entriesDansPeriode(entries, exportPeriode);
               const periodeLabel = PERIODES_JOURNAL.find((p) => p.id === exportPeriode)?.label || "";
-              const doc = genererPdfJournal(filtrees, exportChamps, periodeLabel);
+              const doc = genererPdfJournal(filtrees, exportChamps, periodeLabel, personalInfo, inclureReperesJournal ? safetyPlan : null);
               telechargerOuPartagerPdf(doc, "mon-journal-de-suivi.pdf");
               goTo("journal");
             }}
@@ -1214,15 +1228,31 @@ export default function App() {
             onCreate={() => {
               const filtrees = entriesDansPeriode(entries, rdvPeriode);
               const periodeLabel = PERIODES_JOURNAL.find((p) => p.id === rdvPeriode)?.label || "";
-              const doc = genererPdfRendezVous(filtrees, periodeLabel, rdvQuestion);
+              const doc = genererPdfRendezVous(filtrees, periodeLabel, rdvQuestion, personalInfo);
               telechargerOuPartagerPdf(doc, "preparer-mon-rendez-vous.pdf");
               goTo("journal");
             }}
             onCancel={() => goTo("journal")} />
         )}
 
+        {screen === "reperes-export" && (
+          <ReperesExportPreview c={c} onBack={goBack}
+            plan={safetyPlan} entries={entries} periode={exportPeriode} setPeriode={setExportPeriode}
+            inclureJournal={inclureJournalReperes} setInclureJournal={setInclureJournalReperes}
+            onCreate={() => {
+              const filtrees = inclureJournalReperes ? entriesDansPeriode(entries, exportPeriode) : null;
+              const periodeLabel = PERIODES_JOURNAL.find((p) => p.id === exportPeriode)?.label || "";
+              const champsDefaut = { dates: true, etats: true, intensites: true, protection: true, exercices: true, retours: true };
+              const doc = genererPdfReperes(safetyPlan, personalInfo, filtrees, inclureJournalReperes ? champsDefaut : null, periodeLabel);
+              telechargerOuPartagerPdf(doc, "mes-reperes-de-securite.pdf");
+              goTo("safety");
+            }}
+            onCancel={() => goTo("safety")} />
+        )}
+
         {screen === "settings" && (
-          <Settings c={c} theme={theme} toggleTheme={toggleTheme} onBack={goBackHome} onWipe={wipeAllData} />
+          <Settings c={c} theme={theme} toggleTheme={toggleTheme} onBack={goBackHome} onWipe={wipeAllData}
+            personalInfo={personalInfo} onChangePersonalInfo={updatePersonalInfo} onSavePersonalInfo={persistPersonalInfo} />
         )}
 
         {/* Bouton flottant global — sauf sur l'écran crise lui-même */}
@@ -1259,7 +1289,8 @@ export default function App() {
 /* ---------------------------------------------------------------
    SCREENS
 --------------------------------------------------------------- */
-function Home({ c, theme, toggleTheme, goTo }) {
+function Home({ c, theme, toggleTheme, goTo, prenom }) {
+  const prenomPropre = prenom && prenom.trim() ? prenom.trim() : "";
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -1269,7 +1300,7 @@ function Home({ c, theme, toggleTheme, goTo }) {
       </div>
 
       <div style={{ fontFamily: fontDisplay, fontSize: 30, color: c.text, marginTop: 8, marginBottom: 14, lineHeight: 1.3 }}>
-        Bienvenue.
+        {prenomPropre ? `Bienvenue ${prenomPropre}` : "Bienvenue."}
       </div>
       <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 10 }}>
         Cette application peut vous aider à observer votre état intérieur, à mieux comprendre les réactions
@@ -1331,6 +1362,9 @@ function Home({ c, theme, toggleTheme, goTo }) {
           Réglages
         </Btn>
       </div>
+      <p style={{ textAlign: "center", fontSize: 10.5, color: c.textSoft, opacity: 0.7, marginTop: 28 }}>
+        {MENTION_PROPRIETE}
+      </p>
     </div>
   );
 }
@@ -2542,7 +2576,7 @@ function CreateExercise({ c, onBack, onSave }) {
   );
 }
 
-function SafetyPlan({ c, onBack, plan, onChange, onSave }) {
+function SafetyPlan({ c, onBack, plan, onChange, onSave, onGoExport }) {
   const [saved, setSaved] = useState(false);
   const fields = [
     ["signes", "Quand je vais mal, les signes à surveiller sont…"],
@@ -2552,6 +2586,7 @@ function SafetyPlan({ c, onBack, plan, onChange, onSave }) {
     ["phrases", "Les phrases qui peuvent m'aider sont…"],
     ["numeros", "Les numéros d'urgence ou de soutien sont…"],
   ];
+  const aDuContenu = SAFETY_FIELDS.some(([key]) => plan[key] && plan[key].trim());
   return (
     <div>
       <BackRow c={c} onBack={onBack} />
@@ -2577,9 +2612,74 @@ function SafetyPlan({ c, onBack, plan, onChange, onSave }) {
           />
         </div>
       ))}
-      <Btn c={c} variant="primary" onClick={() => { onSave(); setSaved(true); }}>
+      <Btn c={c} variant="primary" onClick={() => { onSave(); setSaved(true); }} style={{ marginBottom: 12 }}>
         {saved ? "Enregistré ✓" : "Enregistrer"}
       </Btn>
+      {aDuContenu && (
+        <Btn c={c} variant="secondary" onClick={onGoExport}>
+          Exporter mes repères de sécurité en PDF <span>↓</span>
+        </Btn>
+      )}
+    </div>
+  );
+}
+
+function ReperesExportPreview({ c, onBack, plan, entries, periode, setPeriode, inclureJournal, setInclureJournal, onCreate, onCancel }) {
+  const champsRemplis = SAFETY_FIELDS.filter(([key]) => plan[key] && plan[key].trim());
+  const journalDisponible = entries.length > 0;
+  return (
+    <div>
+      <BackRow c={c} onBack={onBack} label="Retour" />
+      <ScreenTitle c={c}>Exporter mes repères de sécurité</ScreenTitle>
+      <Card c={c} style={{ marginBottom: 20 }}>
+        <p style={{ margin: "0 0 8px", fontSize: 13.5, color: c.text }}>
+          {champsRemplis.length} rubrique{champsRemplis.length > 1 ? "s" : ""} renseignée{champsRemplis.length > 1 ? "s" : ""} sera{champsRemplis.length > 1 ? "ont" : ""} incluse{champsRemplis.length > 1 ? "s" : ""}.
+        </p>
+        <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+          Seules les informations que vous avez effectivement renseignées apparaîtront dans le PDF.
+        </p>
+      </Card>
+
+      {journalDisponible ? (
+        <Card c={c} style={{ marginBottom: 20, background: c.bgAlt, border: "none" }}>
+          <p style={{ margin: "0 0 12px", fontSize: 13.5, color: c.text, fontWeight: 600 }}>
+            Souhaitez-vous également inclure votre journal de suivi dans ce PDF ?
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: inclureJournal ? 16 : 0 }}>
+            <Btn c={c} variant={inclureJournal ? "primary" : "secondary"} onClick={() => setInclureJournal(true)}>
+              Oui, inclure mon journal de suivi
+            </Btn>
+            <Btn c={c} variant={!inclureJournal ? "primary" : "secondary"} onClick={() => setInclureJournal(false)}>
+              Non, exporter uniquement mes repères de sécurité
+            </Btn>
+          </div>
+          {inclureJournal && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {PERIODES_JOURNAL.map((p) => (
+                <button key={p.id} onClick={() => setPeriode(p.id)}
+                  style={{
+                    textAlign: "left", padding: "9px 12px", borderRadius: 10, cursor: "pointer", fontSize: 13,
+                    border: `1px solid ${periode === p.id ? c.sage : c.border}`,
+                    background: periode === p.id ? c.sageSoft : c.card, color: c.text,
+                  }}>
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </Card>
+      ) : (
+        <Card c={c} style={{ marginBottom: 20, background: c.bgAlt, border: "none" }}>
+          <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft }}>
+            Aucune donnée n'est disponible dans votre journal de suivi pour l'instant.
+          </p>
+        </Card>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <Btn c={c} variant="primary" onClick={onCreate}>Créer le PDF <span>↓</span></Btn>
+        <Btn c={c} variant="ghost" onClick={onCancel}>Annuler</Btn>
+      </div>
     </div>
   );
 }
@@ -2828,24 +2928,58 @@ function formatDateFr(d) {
   return new Date(d).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
 }
 
-function genererPdfJournal(entriesFiltrees, champs, periodeLabel) {
-  const doc = new jsPDF();
-  const marge = 15;
-  let y = 20;
+const SAFETY_FIELDS = [
+  ["signes", "Quand je vais mal, les signes à surveiller sont…"],
+  ["personnes", "Les personnes que je peux contacter sont…"],
+  ["lieux", "Les lieux où je peux aller sont…"],
+  ["eviter", "Les choses à éviter quand je suis débordé·e sont…"],
+  ["phrases", "Les phrases qui peuvent m'aider sont…"],
+  ["numeros", "Les numéros d'urgence ou de soutien sont…"],
+];
 
-  doc.setFontSize(18);
-  doc.text("Mon journal de suivi", marge, y); y += 10;
-  doc.setFontSize(11);
+function safetyPlanHasContent(plan) {
+  return !!plan && SAFETY_FIELDS.some(([key]) => plan[key] && plan[key].trim().length > 0);
+}
+
+function ajouterEnteteIdentite(doc, marge, y, personalInfo) {
+  if (!personalInfo) return y;
+  const lignes = [];
+  if (personalInfo.prenom && personalInfo.prenom.trim()) lignes.push(`Prénom : ${personalInfo.prenom.trim()}`);
+  if (personalInfo.nom && personalInfo.nom.trim()) lignes.push(`Nom : ${personalInfo.nom.trim()}`);
+  if (personalInfo.dateNaissance && personalInfo.dateNaissance.trim()) {
+    lignes.push(`Date de naissance : ${new Date(personalInfo.dateNaissance).toLocaleDateString("fr-FR")}`);
+  }
+  if (lignes.length === 0) return y;
+  doc.setFontSize(10);
   doc.setTextColor(110, 100, 90);
-  doc.text(`Période : ${periodeLabel}`, marge, y); y += 8;
-  doc.setFontSize(9);
-  const disclaimer = "Ce document rassemble les informations que vous avez choisi d'enregistrer et d'exporter depuis l'application. Il ne constitue pas un diagnostic ni une évaluation clinique.";
-  const disclaimerLines = doc.splitTextToSize(disclaimer, 180);
-  doc.text(disclaimerLines, marge, y); y += disclaimerLines.length * 5 + 8;
+  lignes.forEach((l) => { doc.text(l, marge, y); y += 5.5; });
   doc.setTextColor(40, 38, 34);
+  return y + 4;
+}
 
+function ajouterSectionReperes(doc, marge, y, plan) {
+  if (y > 250) { doc.addPage(); y = 20; }
+  doc.setFontSize(13);
+  doc.setFont(undefined, "bold");
+  doc.text("Mes repères de sécurité", marge, y); y += 8;
+  doc.setFont(undefined, "normal");
+  doc.setFontSize(10);
+  SAFETY_FIELDS.forEach(([key, label]) => {
+    const val = plan[key];
+    if (!val || !val.trim()) return;
+    if (y > 265) { doc.addPage(); y = 20; }
+    doc.setFont(undefined, "bold");
+    const labelLines = doc.splitTextToSize(label, 180);
+    doc.text(labelLines, marge, y); y += labelLines.length * 5.5 + 1;
+    doc.setFont(undefined, "normal");
+    const valLines = doc.splitTextToSize(val.trim(), 180);
+    doc.text(valLines, marge, y); y += valLines.length * 5.5 + 7;
+  });
+  return y;
+}
+
+function ajouterEntreesJournal(doc, marge, y, entriesFiltrees, champs) {
   const sorted = [...entriesFiltrees].sort((a, b) => new Date(b.date) - new Date(a.date));
-
   sorted.forEach((e) => {
     if (y > 265) { doc.addPage(); y = 20; }
     doc.setFontSize(11);
@@ -2876,12 +3010,79 @@ function genererPdfJournal(entriesFiltrees, champs, periodeLabel) {
     }
     y += 4;
   });
-
   if (sorted.length === 0) {
     doc.setFontSize(11);
-    doc.text("Aucune entrée sur cette période.", marge, y);
+    doc.text("Aucune entrée sur cette période.", marge, y); y += 8;
+  }
+  return y;
+}
+
+function ajouterPiedDePage(doc) {
+  const nbPages = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= nbPages; i++) {
+    doc.setPage(i);
+    doc.setFontSize(8);
+    doc.setTextColor(150, 145, 135);
+    doc.text(MENTION_PROPRIETE, 15, 290);
+    doc.setTextColor(40, 38, 34);
+  }
+}
+
+function genererPdfJournal(entriesFiltrees, champs, periodeLabel, personalInfo, safetyPlan) {
+  const doc = new jsPDF();
+  const marge = 15;
+  let y = 20;
+
+  doc.setFontSize(18);
+  doc.text("Mon journal de suivi", marge, y); y += 10;
+  y = ajouterEnteteIdentite(doc, marge, y, personalInfo);
+  doc.setFontSize(11);
+  doc.setTextColor(110, 100, 90);
+  doc.text(`Période : ${periodeLabel}`, marge, y); y += 8;
+  doc.setFontSize(9);
+  const disclaimer = "Ce document rassemble les informations que vous avez choisi d'enregistrer et d'exporter depuis l'application. Il ne constitue pas un diagnostic ni une évaluation clinique.";
+  const disclaimerLines = doc.splitTextToSize(disclaimer, 180);
+  doc.text(disclaimerLines, marge, y); y += disclaimerLines.length * 5 + 8;
+  doc.setTextColor(40, 38, 34);
+
+  y = ajouterEntreesJournal(doc, marge, y, entriesFiltrees, champs);
+
+  if (safetyPlan && safetyPlanHasContent(safetyPlan)) {
+    y += 6;
+    y = ajouterSectionReperes(doc, marge, y, safetyPlan);
   }
 
+  ajouterPiedDePage(doc);
+  return doc;
+}
+
+function genererPdfReperes(plan, personalInfo, entriesFiltrees, champs, periodeLabelJournal) {
+  const doc = new jsPDF();
+  const marge = 15;
+  let y = 20;
+
+  doc.setFontSize(18);
+  doc.text("Mes repères de sécurité", marge, y); y += 10;
+  y = ajouterEnteteIdentite(doc, marge, y, personalInfo);
+  doc.setFontSize(9);
+  doc.setTextColor(110, 100, 90);
+  const disclaimer = "Ce document rassemble les informations que vous avez choisi d'enregistrer et d'exporter depuis l'application. Il ne constitue pas un diagnostic ni une évaluation clinique.";
+  const dLines = doc.splitTextToSize(disclaimer, 180);
+  doc.text(dLines, marge, y); y += dLines.length * 5 + 8;
+  doc.setTextColor(40, 38, 34);
+
+  y = ajouterSectionReperes(doc, marge, y, plan);
+
+  if (entriesFiltrees && entriesFiltrees.length >= 0 && champs) {
+    y += 6;
+    doc.setFontSize(9);
+    doc.setTextColor(110, 100, 90);
+    doc.text(`Journal de suivi — période : ${periodeLabelJournal}`, marge, y); y += 8;
+    doc.setTextColor(40, 38, 34);
+    y = ajouterEntreesJournal(doc, marge, y, entriesFiltrees, champs);
+  }
+
+  ajouterPiedDePage(doc);
   return doc;
 }
 
@@ -2920,7 +3121,7 @@ function calculerResumeRendezVous(entriesFiltrees) {
   return { topEtat, topExos, aides, moinsAides };
 }
 
-function genererPdfRendezVous(entriesFiltrees, periodeLabel, question) {
+function genererPdfRendezVous(entriesFiltrees, periodeLabel, question, personalInfo) {
   const doc = new jsPDF();
   const marge = 15;
   let y = 20;
@@ -2928,6 +3129,7 @@ function genererPdfRendezVous(entriesFiltrees, periodeLabel, question) {
 
   doc.setFontSize(18);
   doc.text("Préparer mon prochain rendez-vous", marge, y); y += 10;
+  y = ajouterEnteteIdentite(doc, marge, y, personalInfo);
   doc.setFontSize(11);
   doc.setTextColor(110, 100, 90);
   doc.text(`Période : ${periodeLabel}`, marge, y); y += 10;
@@ -2972,6 +3174,7 @@ function genererPdfRendezVous(entriesFiltrees, periodeLabel, question) {
     section("Ce que j'aimerais aborder", question.trim());
   }
 
+  ajouterPiedDePage(doc);
   return doc;
 }
 
@@ -3094,11 +3297,12 @@ function JournalExportSelect({ c, onBack, champs, setChamps, periode, setPeriode
   );
 }
 
-function JournalExportPreview({ c, onBack, champs, periode, entries, onCreate, onCancel }) {
+function JournalExportPreview({ c, onBack, champs, periode, entries, safetyPlan, inclureReperes, setInclureReperes, onCreate, onCancel }) {
   const periodeLabel = PERIODES_JOURNAL.find((p) => p.id === periode)?.label || "";
   const filtrees = entriesDansPeriode(entries, periode);
   const inclus = CHAMPS_EXPORT.filter((ch) => champs[ch.id]).map((ch) => ch.label);
   const exclus = CHAMPS_EXPORT.filter((ch) => !champs[ch.id]).map((ch) => ch.label);
+  const reperesDisponibles = safetyPlanHasContent(safetyPlan);
   return (
     <div>
       <BackRow c={c} onBack={onBack} label="Modifier ma sélection" />
@@ -3115,6 +3319,23 @@ function JournalExportPreview({ c, onBack, champs, periode, entries, onCreate, o
           </>
         )}
       </Card>
+
+      {reperesDisponibles && (
+        <Card c={c} style={{ marginBottom: 20, background: c.bgAlt, border: "none" }}>
+          <p style={{ margin: "0 0 12px", fontSize: 13.5, color: c.text, fontWeight: 600 }}>
+            Souhaitez-vous également inclure vos repères de sécurité dans ce PDF ?
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <Btn c={c} variant={inclureReperes ? "primary" : "secondary"} onClick={() => setInclureReperes(true)}>
+              Oui, inclure mes repères de sécurité
+            </Btn>
+            <Btn c={c} variant={!inclureReperes ? "primary" : "secondary"} onClick={() => setInclureReperes(false)}>
+              Non, exporter uniquement mon journal
+            </Btn>
+          </div>
+        </Card>
+      )}
+
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <Btn c={c} variant="primary" onClick={onCreate}>Créer le PDF <span>↓</span></Btn>
         <Btn c={c} variant="secondary" onClick={onBack}>Modifier ma sélection</Btn>
@@ -3185,9 +3406,11 @@ function RdvExportPreview({ c, onBack, periode, entries, question, onCreate, onC
   );
 }
 
-function Settings({ c, theme, toggleTheme, onBack, onWipe }) {
+function Settings({ c, theme, toggleTheme, onBack, onWipe, personalInfo, onChangePersonalInfo, onSavePersonalInfo }) {
   const [confirm, setConfirm] = useState(false);
   const [showColors, setShowColors] = useState(false);
+  const [savedInfo, setSavedInfo] = useState(false);
+  const inputStyle = { width: "100%", borderRadius: 12, border: `1px solid ${c.border}`, background: c.card, color: c.text, padding: 10, fontFamily: fontBody, fontSize: 14 };
   return (
     <div>
       <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
@@ -3200,6 +3423,37 @@ function Settings({ c, theme, toggleTheme, onBack, onWipe }) {
             {theme === "light" ? "Clair" : "Sombre"}
           </button>
         </div>
+      </Card>
+
+      <Card c={c} style={{ marginBottom: 14 }}>
+        <p style={{ margin: "0 0 4px", fontSize: 15, color: c.text, fontWeight: 600 }}>Informations personnelles</p>
+        <p style={{ margin: "0 0 14px", fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+          Ces informations sont facultatives. Elles permettent uniquement de personnaliser vos documents
+          exportés (et le message d'accueil pour le prénom).
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 12 }}>
+          <div>
+            <label style={{ fontSize: 12, color: c.textSoft, display: "block", marginBottom: 5 }}>Prénom</label>
+            <input type="text" value={personalInfo.prenom}
+              onChange={(e) => { onChangePersonalInfo("prenom", e.target.value); setSavedInfo(false); }}
+              style={inputStyle} />
+          </div>
+          <div>
+            <label style={{ fontSize: 12, color: c.textSoft, display: "block", marginBottom: 5 }}>Nom</label>
+            <input type="text" value={personalInfo.nom}
+              onChange={(e) => { onChangePersonalInfo("nom", e.target.value); setSavedInfo(false); }}
+              style={inputStyle} />
+          </div>
+          <div>
+            <label style={{ fontSize: 12, color: c.textSoft, display: "block", marginBottom: 5 }}>Date de naissance</label>
+            <input type="date" value={personalInfo.dateNaissance}
+              onChange={(e) => { onChangePersonalInfo("dateNaissance", e.target.value); setSavedInfo(false); }}
+              style={inputStyle} />
+          </div>
+        </div>
+        <Btn c={c} variant="secondary" onClick={() => { onSavePersonalInfo(); setSavedInfo(true); }}>
+          {savedInfo ? "Enregistré ✓" : "Enregistrer"}
+        </Btn>
       </Card>
 
       <Card c={c} style={{ marginBottom: 14 }}>
@@ -3234,11 +3488,12 @@ function Settings({ c, theme, toggleTheme, onBack, onWipe }) {
 
       <Card c={c} style={{ marginBottom: 14 }}>
         <p style={{ margin: "0 0 6px", fontSize: 13, color: c.text, fontWeight: 600 }}>À propos de cette application</p>
-        <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+        <p style={{ margin: "0 0 10px", fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
           Cette application est un outil de soutien et de psychoéducation. Elle ne remplace pas un suivi
           médical, psychologique ou psychiatrique, et ne pose aucun diagnostic. Elle ne surveille pas votre
           état : aucune information n'est envoyée automatiquement à qui que ce soit.
         </p>
+        <p style={{ margin: 0, fontSize: 11, color: c.textSoft, opacity: 0.8 }}>{MENTION_PROPRIETE}</p>
       </Card>
 
       <Card c={c} style={{ marginBottom: 14 }}>
