@@ -1201,6 +1201,13 @@ export default function App() {
 
         {screen === "nervous-system" && <NervousSystem c={c} onBack={goBackHome} />}
 
+        {screen === "ce-qui-maide" && (
+          <CeQuiMaide c={c} onBack={goBackHome}
+            feedback={exoFeedback} customExercises={customExercises} entries={entries}
+            onPick={(ex) => { setActiveExercise(ex); setActiveExerciseRaison(null); goTo("exercise"); }}
+            onGoLibrary={() => goTo("library")} />
+        )}
+
         {screen === "journal" && (
           <Journal c={c} onBack={goBackHome} entries={entries}
             onGoExport={() => goTo("journal-export")}
@@ -1367,6 +1374,9 @@ function Home({ c, theme, toggleTheme, goTo, prenom }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <Btn c={c} variant="secondary" onClick={() => goTo("safety")}>
           Mes repères de sécurité <span>→</span>
+        </Btn>
+        <Btn c={c} variant="secondary" onClick={() => goTo("ce-qui-maide")}>
+          Ce qui m'aide <span>→</span>
         </Btn>
         <Btn c={c} variant="secondary" onClick={() => goTo("journal")}>
           Mon suivi personnel <span>→</span>
@@ -3189,6 +3199,113 @@ function genererPdfRendezVous(entriesFiltrees, periodeLabel, question, personalI
 
   ajouterPiedDePage(doc);
   return doc;
+}
+
+function CeQuiMaide({ c, onBack, feedback, customExercises, entries, onPick, onGoLibrary }) {
+  const [showEviter, setShowEviter] = useState(false);
+  const toutesLesExercices = [...EXERCISES, ...customExercises];
+
+  const dernierContexte = (titre) => {
+    const derniere = entries.find((e) => e.type === "exercice" && e.exercice === titre);
+    if (!derniere) return null;
+    const parts = [];
+    if (derniere.etat) parts.push(NS_STATES.find((s) => s.id === derniere.etat)?.label);
+    if (derniere.intensite !== null && derniere.intensite !== undefined) parts.push(`intensité ${derniere.intensite}/10`);
+    return parts.length > 0 ? parts.join(" · ") : null;
+  };
+
+  const groupes = { souvent: [], parfois: [], eviter: [] };
+  let essayes = 0;
+  toutesLesExercices.forEach((ex) => {
+    const f = feedback[ex.id];
+    if (!f) return;
+    essayes++;
+    if (f === "Beaucoup" || f === "Un peu") groupes.souvent.push(ex);
+    else if (f === "Cela dépend") groupes.parfois.push(ex);
+    else if (f === "Pas vraiment" || f === "Je préfère l'éviter") groupes.eviter.push(ex);
+  });
+  const nonEssayes = toutesLesExercices.length - essayes;
+
+  const ExoRow = ({ ex }) => (
+    <button onClick={() => onPick(ex)} style={{
+      textAlign: "left", cursor: "pointer", border: `1px solid ${c.border}`, background: c.card,
+      borderRadius: 16, padding: 14, width: "100%",
+    }}>
+      <div style={{ fontWeight: 700, color: c.text, fontSize: 14.5, marginBottom: 3 }}>{ex.titre}</div>
+      {dernierContexte(ex.titre) && (
+        <div style={{ fontSize: 11.5, color: c.textSoft }}>Dernière fois : {dernierContexte(ex.titre)}</div>
+      )}
+    </button>
+  );
+
+  return (
+    <div>
+      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
+      <ScreenTitle c={c}>Ce qui m'aide</ScreenTitle>
+      <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 22 }}>
+        Ce n'est pas un classement de réussite. C'est un espace pour repérer, au fil du temps, ce qui semble vous
+        convenir — et ce que vous préférez éviter. Cela peut changer d'un jour à l'autre.
+      </p>
+
+      {essayes === 0 ? (
+        <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 20 }}>
+          <p style={{ margin: 0, fontSize: 13.5, color: c.textSoft, lineHeight: 1.6 }}>
+            Rien n'est encore noté. Après un exercice, vous pourrez indiquer s'il vous a aidé — cet espace se
+            remplira progressivement à partir de vos retours.
+          </p>
+        </Card>
+      ) : (
+        <>
+          <div style={{ marginBottom: 22 }}>
+            <div style={{ fontSize: 12.5, color: c.sage, fontWeight: 700, marginBottom: 10 }}>M'aide souvent</div>
+            {groupes.souvent.length > 0 ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {groupes.souvent.map((ex) => <ExoRow key={ex.id} ex={ex} />)}
+              </div>
+            ) : (
+              <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft }}>Rien pour l'instant dans cette catégorie.</p>
+            )}
+          </div>
+
+          <div style={{ marginBottom: 22 }}>
+            <div style={{ fontSize: 12.5, color: c.blue, fontWeight: 700, marginBottom: 10 }}>Peut m'aider selon les moments</div>
+            {groupes.parfois.length > 0 ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {groupes.parfois.map((ex) => <ExoRow key={ex.id} ex={ex} />)}
+              </div>
+            ) : (
+              <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft }}>Rien pour l'instant dans cette catégorie.</p>
+            )}
+          </div>
+
+          {groupes.eviter.length > 0 && (
+            <div style={{ marginBottom: 22 }}>
+              <button onClick={() => setShowEviter((s) => !s)} style={{
+                background: "none", border: "none", padding: 0, cursor: "pointer",
+                fontSize: 12.5, color: c.textSoft, fontWeight: 700, marginBottom: 10, display: "block",
+              }}>
+                Je préfère éviter ({groupes.eviter.length}) {showEviter ? "–" : "+"}
+              </button>
+              {showEviter && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {groupes.eviter.map((ex) => <ExoRow key={ex.id} ex={ex} />)}
+                </div>
+              )}
+            </div>
+          )}
+        </>
+      )}
+
+      {nonEssayes > 0 && (
+        <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 12 }}>
+          <p style={{ margin: "0 0 10px", fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+            {nonEssayes} exercice{nonEssayes > 1 ? "s" : ""} n'{nonEssayes > 1 ? "ont" : "a"} pas encore été essayé{nonEssayes > 1 ? "s" : ""} — ce n'est pas grave, rien n'oblige à tout essayer.
+          </p>
+          <Btn c={c} variant="secondary" onClick={onGoLibrary}>Découvrir dans la bibliothèque <span>→</span></Btn>
+        </Card>
+      )}
+    </div>
+  );
 }
 
 function Journal({ c, onBack, entries, onGoExport, onGoRdv }) {
