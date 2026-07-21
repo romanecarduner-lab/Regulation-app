@@ -1085,6 +1085,22 @@ export default function App() {
         paddingBottom: "calc(22px + 54px + 24px + env(safe-area-inset-bottom))",
       }}>
 
+        {screen !== "home" && screen !== "crisis" && (
+          <div style={{
+            position: "sticky", top: 0, zIndex: 15, background: c.bg,
+            paddingTop: 10, paddingBottom: 10, marginBottom: 10,
+            borderBottom: `1px solid ${c.border}`,
+          }}>
+            <button onClick={goBackHome} style={{
+              background: "none", border: "none", color: c.textSoft, fontFamily: fontBody,
+              fontSize: 13, fontWeight: 600, cursor: "pointer", padding: 0,
+              display: "flex", alignItems: "center", gap: 6,
+            }}>
+              <span style={{ fontSize: 15 }}>🏠</span> Accueil
+            </button>
+          </div>
+        )}
+
         {screen === "home" && <Home c={c} theme={theme} toggleTheme={toggleTheme} goTo={goTo} prenom={personalInfo.prenom} />}
 
         {screen === "checkin-state" && (
