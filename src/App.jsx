@@ -1641,11 +1641,20 @@ function InfosImportantes({ c }) {
   return (
     <div>
       <ScreenTitle c={c}>Informations importantes</ScreenTitle>
-      <Card c={c} style={{ background: c.bgAlt, border: "none" }}>
+      <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 14 }}>
         <p style={{ color: c.textSoft, fontSize: 13.5, lineHeight: 1.6, margin: 0 }}>
           Cet outil ne remplace pas un accompagnement médical, psychologique ou psychiatrique. En cas de
           danger immédiat, contactez les services d'urgence ou une personne de confiance.
         </p>
+      </Card>
+      <Card c={c}>
+        <p style={{ margin: "0 0 8px", fontSize: 13, color: c.text, fontWeight: 600 }}>Une question sur l'application ?</p>
+        <p style={{ margin: "0 0 10px", fontSize: 13, color: c.textSoft, lineHeight: 1.6 }}>
+          Pour toute question ou remarque concernant l'application elle-même, vous pouvez me contacter directement.
+        </p>
+        <a href="mailto:contact@romanecarduner-psychologue.fr" style={{ fontSize: 13, color: c.terracotta, fontWeight: 600, textDecoration: "none" }}>
+          contact@romanecarduner-psychologue.fr
+        </a>
       </Card>
     </div>
   );
@@ -4441,6 +4450,12 @@ function Settings({ c, theme, toggleTheme, onBack, onWipe, personalInfo, onChang
           Cette application est un outil de soutien et de psychoéducation. Elle ne remplace pas un suivi
           médical, psychologique ou psychiatrique, et ne pose aucun diagnostic. Elle ne surveille pas votre
           état : aucune information n'est envoyée automatiquement à qui que ce soit.
+        </p>
+        <p style={{ margin: "0 0 10px", fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+          Une question ou une remarque sur l'application ?{" "}
+          <a href="mailto:contact@romanecarduner-psychologue.fr" style={{ color: c.terracotta, fontWeight: 600, textDecoration: "none" }}>
+            contact@romanecarduner-psychologue.fr
+          </a>
         </p>
         <p style={{ margin: 0, fontSize: 11, color: c.textSoft, opacity: 0.8 }}>{MENTION_PROPRIETE}</p>
       </Card>
