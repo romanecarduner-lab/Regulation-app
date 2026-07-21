@@ -1094,6 +1094,8 @@ export default function App() {
             "rdv-export-preview": { label: "Modifier ma sélection", onClick: goBack },
             "reperes-export": { label: "Retour", onClick: goBack },
             "settings": { label: "Retour à l'accueil", onClick: goBackHome },
+            "mon-espace": { label: "Retour à l'accueil", onClick: goBackHome },
+            "infos-importantes": { label: "Retour à l'accueil", onClick: goBackHome },
           };
           const backInfo = BACK_MAP[screen];
           return (
@@ -1362,6 +1364,10 @@ export default function App() {
             personalInfo={personalInfo} onChangePersonalInfo={updatePersonalInfo} onSavePersonalInfo={persistPersonalInfo} />
         )}
 
+        {screen === "mon-espace" && <MonEspaceHub c={c} goTo={goTo} />}
+
+        {screen === "infos-importantes" && <InfosImportantes c={c} />}
+
         {/* Bouton flottant global — sauf sur l'écran crise lui-même */}
         {screen !== "crisis" && screen !== "home" && (
           <button
@@ -1399,68 +1405,203 @@ export default function App() {
 /* ---------------------------------------------------------------
    SCREENS
 --------------------------------------------------------------- */
+function IconLeaf({ color }) {
+  return (
+    <svg viewBox="0 0 48 48" width="30" height="30" fill="none">
+      <path d="M24 10 L24 38" stroke={color} strokeWidth="2" strokeLinecap="round" />
+      <path d="M24 15 C 30 13, 34 17, 32 23 C 26 23, 24 19, 24 15 Z" fill={color} opacity="0.85" />
+      <path d="M24 23 C 18 21, 14 25, 16 31 C 22 31, 24 27, 24 23 Z" fill={color} opacity="0.7" />
+    </svg>
+  );
+}
+
+function IconWaves({ color }) {
+  return (
+    <svg viewBox="0 0 48 48" width="30" height="30" fill="none">
+      <path d="M6 30 Q 14 24, 22 30 T 38 30" stroke={color} strokeWidth="2" strokeLinecap="round" fill="none" />
+      <path d="M6 36 Q 14 30, 22 36 T 38 36" stroke={color} strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.55" />
+      <path d="M30 10 L30 24" stroke={color} strokeWidth="2" strokeLinecap="round" />
+      <path d="M30 13 C 35 11, 38 15, 36 19 C 32 19, 30 16, 30 13 Z" fill={color} opacity="0.8" />
+    </svg>
+  );
+}
+
+function IconArchSteps({ color }) {
+  return (
+    <svg viewBox="0 0 48 48" width="30" height="30" fill="none">
+      <path d="M14 33 V22 C14 15 18 11 24 11 C30 11 34 15 34 22 V33" stroke={color} strokeWidth="2" fill="none" strokeLinecap="round" />
+      <rect x="11" y="33" width="10" height="5" rx="1.5" fill={color} opacity="0.75" />
+      <rect x="9" y="38" width="14" height="4.5" rx="1.5" fill={color} opacity="0.5" />
+    </svg>
+  );
+}
+
+function IconSunHills({ color }) {
+  return (
+    <svg viewBox="0 0 32 32" width="20" height="20" fill="none">
+      <circle cx="16" cy="12" r="4.5" stroke={color} strokeWidth="1.7" />
+      <path d="M16 4.5 V6.5 M9.5 8.5 L11 10 M22.5 8.5 L21 10" stroke={color} strokeWidth="1.7" strokeLinecap="round" />
+      <path d="M4 24 Q 10 17, 16 24 T 28 24" stroke={color} strokeWidth="1.7" fill="none" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconBrain({ color }) {
+  return (
+    <svg viewBox="0 0 32 32" width="20" height="20" fill="none">
+      <path d="M13 8c-3.2 0-5.2 2.1-5.2 5 0 1-1 1.9-1 3 0 2.9 2 3.8 2 5.7 0 1.9 1.9 2.8 3.7 2.8h1.2V9.4c-.2-.5-.4-1.4-.7-1.4z" stroke={color} strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M19 8c3.2 0 5.2 2.1 5.2 5 0 1 1 1.9 1 3 0 2.9-2 3.8-2 5.7 0 1.9-1.9 2.8-3.7 2.8H18.3V9.4c.2-.5.4-1.4.7-1.4z" stroke={color} strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M16 9.5v15" stroke={color} strokeWidth="1.3" />
+    </svg>
+  );
+}
+
+function IconShield({ color }) {
+  return (
+    <svg viewBox="0 0 32 32" width="20" height="20" fill="none">
+      <path d="M16 5.5 L24.5 9 V16 C24.5 21.5 20.9 25.3 16 27 C11.1 25.3 7.5 21.5 7.5 16 V9 Z" stroke={color} strokeWidth="1.7" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconBook({ color }) {
+  return (
+    <svg viewBox="0 0 32 32" width="20" height="20" fill="none">
+      <path d="M16 9.5c-2-1.4-4.7-1.9-7.5-1.4v14c2.8-.5 5.5 0 7.5 1.4" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M16 9.5c2-1.4 4.7-1.9 7.5-1.4v14c-2.8-.5-5.5 0-7.5 1.4" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M16 9.5v15" stroke={color} strokeWidth="1.3" />
+    </svg>
+  );
+}
+
+function IconInfoCercle({ color }) {
+  return (
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none">
+      <circle cx="12" cy="12" r="8.5" stroke={color} strokeWidth="1.6" />
+      <circle cx="12" cy="8.2" r="0.9" fill={color} />
+      <path d="M12 11v5.5" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconEngrenage({ color }) {
+  return (
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none">
+      <circle cx="12" cy="12" r="2.8" stroke={color} strokeWidth="1.6" />
+      <path d="M12 3v2.6M12 18.4V21M3 12h2.6M18.4 12H21M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M5.5 18.5l1.8-1.8M16.7 7.3l1.8-1.8" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function BigCard({ c, colorKey, icon, titre, sousTitre, onClick }) {
+  const accent = c[colorKey];
+  const bg = c[colorKey + "Soft"];
+  return (
+    <button onClick={onClick} style={{
+      width: "100%", textAlign: "left", cursor: "pointer", border: "none",
+      background: bg, borderRadius: 22, padding: "20px 18px", marginBottom: 14,
+      display: "flex", alignItems: "center", gap: 14,
+    }}>
+      <div style={{ position: "relative", width: 56, height: 56, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ position: "absolute", width: 44, height: 44, borderRadius: "50%", background: accent, opacity: 0.16 }} />
+        <div style={{ position: "absolute", width: 26, height: 26, borderRadius: "50%", background: accent, opacity: 0.14, top: 2, left: 24 }} />
+        {icon}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontFamily: fontDisplay, fontSize: 21, color: accent, marginBottom: 3 }}>{titre}</div>
+        <div style={{ fontSize: 12, color: c.textSoft, lineHeight: 1.4 }}>{sousTitre}</div>
+      </div>
+      <div style={{
+        width: 36, height: 36, borderRadius: "50%", background: accent, color: "#fff",
+        display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 15,
+      }}>→</div>
+    </button>
+  );
+}
+
+function MiniCard({ c, colorKey, icon, titre, description, onClick }) {
+  return (
+    <button onClick={onClick} style={{
+      textAlign: "left", cursor: "pointer", border: `1px solid ${c.border}`, background: c.card,
+      borderRadius: 16, padding: 14, display: "flex", flexDirection: "column", gap: 10,
+    }}>
+      <div style={{
+        width: 32, height: 32, borderRadius: "50%", background: c[colorKey + "Soft"],
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}>{icon}</div>
+      <div>
+        <div style={{ fontWeight: 700, fontSize: 13, color: c.text, marginBottom: 3, lineHeight: 1.3 }}>{titre}</div>
+        <div style={{ fontSize: 11.5, color: c.textSoft, lineHeight: 1.4 }}>{description}</div>
+      </div>
+    </button>
+  );
+}
+
 function Home({ c, theme, toggleTheme, goTo, prenom }) {
   const prenomPropre = prenom && prenom.trim() ? prenom.trim() : "";
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button onClick={toggleTheme} style={{ background: "none", border: "none", color: c.textSoft, fontSize: 12, cursor: "pointer" }}>
-          {theme === "light" ? "🌙 Mode sombre" : "☀️ Mode clair"}
+        <button onClick={toggleTheme} style={{ background: "none", border: "none", color: c.textSoft, fontSize: 12, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+          <span>{theme === "light" ? "🌙" : "☀️"}</span> {theme === "light" ? "Mode sombre" : "Mode clair"}
         </button>
       </div>
 
-      <div style={{ fontFamily: fontDisplay, fontSize: 30, color: c.text, marginTop: 8, marginBottom: 14, lineHeight: 1.3 }}>
+      <div style={{ fontFamily: fontDisplay, fontSize: 33, color: c.text, marginTop: 10, marginBottom: 10, lineHeight: 1.2 }}>
         {prenomPropre ? `Bienvenue ${prenomPropre}` : "Bienvenue."}
       </div>
-      <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 10 }}>
-        Cette application peut vous aider à observer votre état intérieur, à mieux comprendre les réactions
-        de votre système nerveux et à choisir un exercice de stabilisation adapté. Vous pouvez avancer à votre
-        rythme et arrêter à tout moment.
+      <p style={{ color: c.textSoft, fontSize: 14.5, lineHeight: 1.6, marginBottom: 24 }}>
+        Un espace pour observer ce qui se passe, trouver un appui et avancer à votre rythme.
       </p>
 
-      <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 22 }}>
-        <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, margin: 0 }}>
-          Cet outil ne remplace pas un accompagnement médical, psychologique ou psychiatrique. En cas de
-          danger immédiat, contactez les services d'urgence ou une personne de confiance.
-        </p>
-      </Card>
+      <BigCard c={c} colorKey="sage" onClick={() => goTo("checkin-state")}
+        icon={<IconLeaf color={c.sage} />} titre="Je repère" sousTitre="Observer ce qui se passe en moi." />
+      <BigCard c={c} colorKey="blue" onClick={() => goTo("library")}
+        icon={<IconWaves color={c.blue} />} titre="Je régule" sousTitre="Essayer quelque chose maintenant." />
+      <BigCard c={c} colorKey="terracotta" onClick={() => goTo("mon-espace")}
+        icon={<IconArchSteps color={c.terracotta} />} titre="Mon espace" sousTitre="Retrouver mes ressources, mes repères et mon suivi." />
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 8 }}>
-        <Btn c={c} variant="primary" onClick={() => goTo("checkin-state")}>
-          Comment je me sens maintenant ? <span>→</span>
-        </Btn>
-        <p style={{ color: c.textSoft, fontSize: 12.5, margin: "-4px 2px 2px" }}>
-          Observer mon état et trouver ce qui pourrait m'aider.
-        </p>
-        <Btn c={c} variant="soft" onClick={() => goTo("library")}>
-          J'aimerais essayer quelque chose <span>→</span>
-        </Btn>
-        <p style={{ color: c.textSoft, fontSize: 12.5, margin: "-4px 2px 2px" }}>
-          Accéder directement aux exercices.
-        </p>
+      <div style={{ fontSize: 13.5, fontWeight: 700, color: c.text, margin: "26px 2px 12px" }}>
+        Pour mieux comprendre
       </div>
-
-      <div style={{ fontSize: 12, color: c.textSoft, textTransform: "uppercase", letterSpacing: 0.4, margin: "22px 2px 10px" }}>
-        Comprendre
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 8 }}>
-        <Btn c={c} variant="secondary" onClick={() => goTo("tolerance-zone")}>
-          Ma zone de tolérance <span>→</span>
-        </Btn>
-        <Btn c={c} variant="secondary" onClick={() => goTo("nervous-system")}>
-          Mon système nerveux <span>→</span>
-        </Btn>
-        <Btn c={c} variant="secondary" onClick={() => goTo("protection")}>
-          Mes réponses de protection <span>→</span>
-        </Btn>
-        <Btn c={c} variant="secondary" onClick={() => goTo("psychoed")}>
-          Psychoéducation <span>→</span>
-        </Btn>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 24 }}>
+        <MiniCard c={c} colorKey="sage" icon={<IconSunHills color={c.sage} />}
+          titre="Ma zone de tolérance" description="Identifier ce qui m'aide à rester dans ma fenêtre de tolérance."
+          onClick={() => goTo("tolerance-zone")} />
+        <MiniCard c={c} colorKey="blue" icon={<IconBrain color={c.blue} />}
+          titre="Mon système nerveux" description="Comprendre son fonctionnement et ses messages."
+          onClick={() => goTo("nervous-system")} />
+        <MiniCard c={c} colorKey="terracotta" icon={<IconShield color={c.terracotta} />}
+          titre="Mes réponses de protection" description="Découvrir mes réactions automatiques et leur utilité."
+          onClick={() => goTo("protection")} />
+        <MiniCard c={c} colorKey="ocre" icon={<IconBook color={c.ocre} />}
+          titre="Psychoéducation" description="Des repères clairs pour mieux comprendre et avancer."
+          onClick={() => goTo("psychoed")} />
       </div>
 
-      <div style={{ fontSize: 12, color: c.textSoft, textTransform: "uppercase", letterSpacing: 0.4, margin: "22px 2px 10px" }}>
-        Mon espace
+      <div style={{ borderTop: `1px solid ${c.border}`, paddingTop: 16, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+        <button onClick={() => goTo("infos-importantes")} style={{ background: "none", border: "none", color: c.textSoft, fontSize: 12.5, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+          <IconInfoCercle color={c.textSoft} /> Informations importantes <span>›</span>
+        </button>
+        <button onClick={() => goTo("settings")} style={{ background: "none", border: "none", color: c.textSoft, fontSize: 12.5, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+          <IconEngrenage color={c.textSoft} /> Réglages <span>›</span>
+        </button>
       </div>
+
+      <p style={{ textAlign: "center", fontSize: 10.5, color: c.textSoft, opacity: 0.7, marginTop: 22 }}>
+        {MENTION_PROPRIETE}
+      </p>
+    </div>
+  );
+}
+
+function MonEspaceHub({ c, goTo }) {
+  return (
+    <div>
+      <ScreenTitle c={c}>Mon espace</ScreenTitle>
+      <p style={{ color: c.textSoft, fontSize: 13.5, lineHeight: 1.6, marginBottom: 22 }}>
+        Retrouvez ici vos ressources, vos repères et votre suivi personnel.
+      </p>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <Btn c={c} variant="secondary" onClick={() => goTo("safety")}>
           Mes repères de sécurité <span>→</span>
@@ -1471,13 +1612,21 @@ function Home({ c, theme, toggleTheme, goTo, prenom }) {
         <Btn c={c} variant="secondary" onClick={() => goTo("journal")}>
           Mon suivi personnel <span>→</span>
         </Btn>
-        <Btn c={c} variant="ghost" onClick={() => goTo("settings")}>
-          Réglages
-        </Btn>
       </div>
-      <p style={{ textAlign: "center", fontSize: 10.5, color: c.textSoft, opacity: 0.7, marginTop: 28 }}>
-        {MENTION_PROPRIETE}
-      </p>
+    </div>
+  );
+}
+
+function InfosImportantes({ c }) {
+  return (
+    <div>
+      <ScreenTitle c={c}>Informations importantes</ScreenTitle>
+      <Card c={c} style={{ background: c.bgAlt, border: "none" }}>
+        <p style={{ color: c.textSoft, fontSize: 13.5, lineHeight: 1.6, margin: 0 }}>
+          Cet outil ne remplace pas un accompagnement médical, psychologique ou psychiatrique. En cas de
+          danger immédiat, contactez les services d'urgence ou une personne de confiance.
+        </p>
+      </Card>
     </div>
   );
 }
