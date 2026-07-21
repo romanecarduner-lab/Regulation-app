@@ -916,6 +916,7 @@ export default function App() {
   // exercise flow
   const [activeExercise, setActiveExercise] = useState(null);
   const [activeExerciseRaison, setActiveExerciseRaison] = useState(null);
+  const [lastExerciseId, setLastExerciseId] = useState(null);
   const [exerciseSource, setExerciseSource] = useState(null); // 'library' | 'crisis'
   const [libraryFilters, setLibraryFilters] = useState({
     etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null, family: null, excludeRelational: false, avoid: [],
@@ -982,6 +983,7 @@ export default function App() {
     setEtatExploration(null);
     setActiveExercise(null);
     setActiveExerciseRaison(null);
+    setLastExerciseId(null);
     setLibraryFilters(freshFilters(avoidPrefs));
   }, [avoidPrefs]);
 
@@ -1248,6 +1250,7 @@ export default function App() {
           <Library c={c} onBack={goBack}
             filters={libraryFilters} setFilters={setLibraryFilters}
             feedback={exoFeedback} customExercises={customExercises}
+            excludeExerciseId={lastExerciseId}
             onPick={(ex, matchLevel, criteria) => {
               setActiveExercise(ex);
               setActiveExerciseRaison(raisonTexte(matchLevel, criteria));
@@ -1282,14 +1285,16 @@ export default function App() {
             savedNote={exoNotes[activeExercise.id] || ""} onSaveNote={(texte) => saveExoNote(activeExercise.id, texte)}
             onStop={goBackHome}
             onRevenirListe={goBack}
-            onEssayerAutreChose={() => goTo("library")}
+            onEssayerAutreChose={() => { setLastExerciseId(activeExercise.id); goTo("library"); }}
             onFilterByTag={(type, value) => {
+              setLastExerciseId(activeExercise.id);
               setLibraryFilters(freshFilters(avoidPrefs, { [type]: value }));
               goTo("library");
             }}
             onFinish={(effet, remarque) => {
               addEntry({ type: "exercice", exercice: activeExercise.titre, effet, remarque, intensite: intensity, etat: nsState });
               saveExoFeedback(activeExercise.id, effet);
+              setLastExerciseId(activeExercise.id);
               goTo("exercise-done");
             }} />
         )}
@@ -2160,9 +2165,13 @@ function scoreExercise(ex, criteria) {
   return criteria.filter((crit) => matchesCriterion(ex, crit)).length;
 }
 
-function sortByFeedback(list, feedback) {
+function sortByFeedback(list, feedback, weights = {}) {
   const rank = { "Beaucoup": 0, "Un peu": 1, "Cela dépend": 2, "Pas vraiment": 3 };
-  return [...list].sort((a, b) => (rank[feedback[a.id]] ?? 1.5) - (rank[feedback[b.id]] ?? 1.5));
+  return [...list].sort((a, b) => {
+    const parRang = (rank[feedback[a.id]] ?? 1.5) - (rank[feedback[b.id]] ?? 1.5);
+    if (parRang !== 0) return parRang;
+    return (weights[a.id] ?? 0.5) - (weights[b.id] ?? 0.5);
+  });
 }
 
 function addAvoid(arr, tag) { return arr.includes(tag) ? arr : [...arr, tag]; }
@@ -2367,7 +2376,7 @@ function ExerciseCardTags({ ex, c, feedback, customExercises, onFilterFamily, on
   );
 }
 
-function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExercises, onPick, onGoPreferences, onGoCreate }) {
+function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExercises, onPick, onGoPreferences, onGoCreate, excludeExerciseId }) {
   const [showFacets, setShowFacets] = useState(false);
   const [showAvoidPanel, setShowAvoidPanel] = useState(false);
   const [showThemes, setShowThemes] = useState(false);
@@ -2378,7 +2387,13 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
   const [visibleCount, setVisibleCount] = useState(6);
 
   const allExercises = [...EXERCISES, ...customExercises];
+  const rotationWeights = useState(() => {
+    const w = {};
+    allExercises.forEach((ex) => { w[ex.id] = Math.random(); });
+    return w;
+  })[0];
   const notAvoided = allExercises.filter((ex) =>
+    ex.id !== excludeExerciseId &&
     feedback[ex.id] !== "Je préfère l'éviter" &&
     !(f.avoid && f.avoid.length && ex.sensible.some((s) => f.avoid.includes(s))) &&
     !(f.excludeRelational && ex.canaux.length === 1 && ex.canaux[0] === "relationnel")
@@ -2390,16 +2405,16 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
   let perCriterion = null;
 
   if (criteria.length === 0) {
-    list = sortByFeedback(notAvoided, feedback);
+    list = sortByFeedback(notAvoided, feedback, rotationWeights);
   } else {
     const scored = notAvoided.map((ex) => ({ ex, score: scoreExercise(ex, criteria) }));
     const fullMatches = scored.filter((s) => s.score === criteria.length).map((s) => s.ex);
     if (fullMatches.length > 0) {
-      list = sortByFeedback(fullMatches, feedback);
+      list = sortByFeedback(fullMatches, feedback, rotationWeights);
     } else {
       const maxScore = Math.max(0, ...scored.map((s) => s.score));
       if (maxScore > 0) {
-        list = sortByFeedback(scored.filter((s) => s.score === maxScore).map((s) => s.ex), feedback);
+        list = sortByFeedback(scored.filter((s) => s.score === maxScore).map((s) => s.ex), feedback, rotationWeights);
         banner = "partial";
       } else {
         perCriterion = criteria.map((crit) => ({ crit, exercise: notAvoided.find((ex) => matchesCriterion(ex, crit)) || null }));
@@ -2410,9 +2425,14 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
 
   const matchLevel = criteria.length === 0 ? 0 : (banner === "partial" ? 2 : banner === "per-criterion" ? 1 : 3);
 
+  const notAvoidedSansExclusionRecherche = allExercises.filter((ex) =>
+    feedback[ex.id] !== "Je préfère l'éviter" &&
+    !(f.avoid && f.avoid.length && ex.sensible.some((s) => f.avoid.includes(s))) &&
+    !(f.excludeRelational && ex.canaux.length === 1 && ex.canaux[0] === "relationnel")
+  );
   const rechercheActive = recherche.trim().length > 0;
   const resultatsRecherche = rechercheActive
-    ? notAvoided.filter((ex) => {
+    ? notAvoidedSansExclusionRecherche.filter((ex) => {
         const q = recherche.trim().toLowerCase();
         return ex.titre.toLowerCase().includes(q) || ex.objectif.toLowerCase().includes(q);
       })
