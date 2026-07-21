@@ -1098,6 +1098,7 @@ export default function App() {
             "infos-importantes": { label: "Retour à l'accueil", onClick: goBackHome },
           };
           const backInfo = BACK_MAP[screen];
+          const afficherRetour = backInfo && backInfo.onClick !== goBackHome;
           return (
             <div style={{
               position: "sticky", top: 0, zIndex: 15, background: c.bg,
@@ -1105,7 +1106,7 @@ export default function App() {
               borderBottom: `1px solid ${c.border}`,
               display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10,
             }}>
-              {backInfo ? (
+              {afficherRetour ? (
                 <button onClick={backInfo.onClick} style={{
                   background: "none", border: "none", color: c.textSoft, fontFamily: fontBody,
                   fontSize: 13, fontWeight: 600, cursor: "pointer", padding: 0,
