@@ -826,7 +826,7 @@ function Card({ children, c, style }) {
   );
 }
 
-function ScreenTitle({ children, c }) {
+function ScreenTitle({ children, c, style }) {
   return (
     <h1
       style={{
@@ -836,6 +836,7 @@ function ScreenTitle({ children, c }) {
         color: c.text,
         margin: "4px 0 14px",
         lineHeight: 1.25,
+        ...style,
       }}
     >
       {children}
@@ -2198,6 +2199,72 @@ const FAMILIES = {
   force: { label: "Force / protection", color: "force" },
 };
 
+function IconCompass({ color }) {
+  return (
+    <svg viewBox="0 0 32 32" width="18" height="18" fill="none">
+      <circle cx="16" cy="16" r="9" stroke={color} strokeWidth="1.7" />
+      <path d="M20 12 L14 14 L12 20 L18 18 Z" fill={color} opacity="0.8" />
+    </svg>
+  );
+}
+
+function IconEclair({ color }) {
+  return (
+    <svg viewBox="0 0 32 32" width="18" height="18" fill="none">
+      <path d="M18 6 L10 18 H15 L13 26 L23 13 H18 Z" fill={color} opacity="0.85" />
+    </svg>
+  );
+}
+
+function IconEtincelle({ color }) {
+  return (
+    <svg viewBox="0 0 32 32" width="18" height="18" fill="none">
+      <path d="M16 6c0 5 1 8 6 10-5 2-6 5-6 10 0-5-1-8-6-10 5-2 6-5 6-10z" fill={color} opacity="0.85" />
+    </svg>
+  );
+}
+
+function IconBoite({ color }) {
+  return (
+    <svg viewBox="0 0 32 32" width="18" height="18" fill="none">
+      <rect x="7" y="13" width="18" height="12" rx="2" stroke={color} strokeWidth="1.7" />
+      <path d="M7 13 L16 7 L25 13" stroke={color} strokeWidth="1.7" fill="none" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconFlamme({ color }) {
+  return (
+    <svg viewBox="0 0 32 32" width="18" height="18" fill="none">
+      <path d="M16 6c4 6 6 9 4 13 2-1 3-3 3-3 1 6-3 11-7 11-5 0-8-4-7-9 1 2 2 2 2 2-1-5 2-10 5-14z" fill={color} opacity="0.85" />
+    </svg>
+  );
+}
+
+const FAMILY_ICONS = {
+  orientation: IconCompass,
+  espace: IconWaves,
+  energie: IconEclair,
+  limites: IconShield,
+  creativite: IconEtincelle,
+  contenant: IconBoite,
+  force: IconFlamme,
+};
+
+function FamilyBadge({ family, c, size = 34 }) {
+  const fam = FAMILIES[family];
+  const Icon = FAMILY_ICONS[family] || IconCompass;
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: "50%", flexShrink: 0,
+      background: fam ? c[fam.color + "Soft"] : c.bgAlt,
+      display: "flex", alignItems: "center", justifyContent: "center",
+    }}>
+      <Icon color={fam ? c[fam.color] : c.textSoft} />
+    </div>
+  );
+}
+
 const BESOIN_TO_FAMILY = {
   orienter: "orientation", appuis: "orientation", corps: "orientation", sens: "energie",
   dissocie: "orientation", tolerance_renforcer: "orientation",
@@ -2570,20 +2637,23 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
         {listeAffichee.map((ex) => (
           <div key={ex.id} onClick={() => onPick(ex, matchLevel, criteria)} role="button" tabIndex={0}
             onKeyDown={(e) => { if (e.key === "Enter") onPick(ex, matchLevel, criteria); }}
-            style={{ textAlign: "left", cursor: "pointer", border: `1px solid ${c.border}`, background: c.card, borderRadius: 18, padding: 16 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, gap: 8 }}>
-              <span style={{ fontWeight: 700, color: c.text }}>{ex.titre}</span>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <MatchDots c={c} level={rechercheActive ? 0 : matchLevel} />
-                <button onClick={(e) => { e.stopPropagation(); setF((prev) => ({ ...prev, duree: ex.duree })); }}
-                  style={{ fontSize: 12, color: c.textSoft, whiteSpace: "nowrap", background: "none", border: "none", cursor: "pointer", fontFamily: fontBody, padding: 0 }}>
-                  {DUREE_LIST.find((d) => d.id === ex.duree)?.label}
-                </button>
+            style={{ textAlign: "left", cursor: "pointer", border: `1px solid ${c.border}`, background: c.card, borderRadius: 18, padding: 16, display: "flex", gap: 12 }}>
+            <FamilyBadge family={exerciseFamily(ex)} c={c} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, gap: 8 }}>
+                <span style={{ fontWeight: 700, color: c.text }}>{ex.titre}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <MatchDots c={c} level={rechercheActive ? 0 : matchLevel} />
+                  <button onClick={(e) => { e.stopPropagation(); setF((prev) => ({ ...prev, duree: ex.duree })); }}
+                    style={{ fontSize: 12, color: c.textSoft, whiteSpace: "nowrap", background: "none", border: "none", cursor: "pointer", fontFamily: fontBody, padding: 0 }}>
+                    {DUREE_LIST.find((d) => d.id === ex.duree)?.label}
+                  </button>
+                </div>
               </div>
+              <ExerciseCardTags ex={ex} c={c} feedback={feedback} customExercises={customExercises}
+                onFilterFamily={(fam) => setF((prev) => ({ ...prev, family: fam }))}
+                onFilterCanal={(canal) => setF((prev) => ({ ...prev, canal }))} />
             </div>
-            <ExerciseCardTags ex={ex} c={c} feedback={feedback} customExercises={customExercises}
-              onFilterFamily={(fam) => setF((prev) => ({ ...prev, family: fam }))}
-              onFilterCanal={(canal) => setF((prev) => ({ ...prev, canal }))} />
           </div>
         ))}
       </div>
@@ -2829,8 +2899,12 @@ function Exercise({ c, exercise, raison, onStop, onRevenirListe, onEssayerAutreC
 
   return (
     <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
+        <FamilyBadge family={exerciseFamily(exercise)} c={c} size={44} />
+        <ScreenTitle c={c} style={{ margin: 0 }}>{exercise.titre}</ScreenTitle>
+      </div>
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10, alignItems: "center" }}>
-        <ExoTag family={exerciseFamily(exercise)} c={c} onClick={onFilterByTag ? () => onFilterByTag("family", exerciseFamily(exercise)) : undefined}>
+        <ExoTag family={exerciseFamily(exercise)} c={c} small onClick={onFilterByTag ? () => onFilterByTag("family", exerciseFamily(exercise)) : undefined}>
           {FAMILIES[exerciseFamily(exercise)].label}
         </ExoTag>
         {exercise.canaux.map((cn) => (
@@ -2843,7 +2917,6 @@ function Exercise({ c, exercise, raison, onStop, onRevenirListe, onEssayerAutreC
           ⏱ {DUREE_LIST.find((d) => d.id === exercise.duree)?.label}
         </button>
       </div>
-      <ScreenTitle c={c}>{exercise.titre}</ScreenTitle>
       {raison && (
         <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 12 }}>
           <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 2 }}>Pourquoi cette proposition ?</div>
@@ -3163,12 +3236,17 @@ function NervousSystem({ c, onBack }) {
         leurs réactions corporelles et relationnelles — il ne résume pas toute la complexité d'une personne.
       </p>
       {[
-        ["Sécurité / engagement social", "sage", "Quand le système nerveux perçoit suffisamment de sécurité, nous pouvons être en lien, réfléchir, parler, écouter, ressentir et revenir plus facilement à l'équilibre."],
-        ["Mobilisation", "terracotta", "Quand le système nerveux perçoit une menace, il peut mobiliser de l'énergie pour se protéger. Cela peut ressembler à l'envie de fuir, de se défendre, de contrôler, de s'agiter ou de réagir vite."],
-        ["Immobilisation / retrait", "blue", "Quand le système nerveux perçoit qu'il n'y a pas d'issue ou que c'est trop, il peut ralentir, figer ou couper certaines sensations. Cela peut donner une impression de vide, d'absence, de fatigue extrême, de brouillard ou d'effondrement."],
-      ].map(([titre, color, txt]) => (
+        ["Sécurité / engagement social", "sage", IconLeaf, "Quand le système nerveux perçoit suffisamment de sécurité, nous pouvons être en lien, réfléchir, parler, écouter, ressentir et revenir plus facilement à l'équilibre."],
+        ["Mobilisation", "terracotta", IconFlamme, "Quand le système nerveux perçoit une menace, il peut mobiliser de l'énergie pour se protéger. Cela peut ressembler à l'envie de fuir, de se défendre, de contrôler, de s'agiter ou de réagir vite."],
+        ["Immobilisation / retrait", "blue", IconBoite, "Quand le système nerveux perçoit qu'il n'y a pas d'issue ou que c'est trop, il peut ralentir, figer ou couper certaines sensations. Cela peut donner une impression de vide, d'absence, de fatigue extrême, de brouillard ou d'effondrement."],
+      ].map(([titre, color, Icon, txt]) => (
         <Card key={titre} c={c} style={{ background: c[color + "Soft"], border: "none", marginBottom: 14 }}>
-          <div style={{ fontWeight: 700, color: c.text, marginBottom: 6 }}>{titre}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+            <div style={{ width: 30, height: 30, borderRadius: "50%", background: c.card, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <Icon color={c[color]} />
+            </div>
+            <div style={{ fontWeight: 700, color: c.text }}>{titre}</div>
+          </div>
           <div style={{ fontSize: 13, color: c.textSoft, lineHeight: 1.6 }}>{txt}</div>
         </Card>
       ))}
@@ -3275,10 +3353,15 @@ function Protection({ c, onBack, onExercises }) {
                 style={{
                   width: "100%", textAlign: "left", padding: 16, cursor: "pointer", border: "none",
                   background: c[f.color + "Soft"],
-                  display: "flex", justifyContent: "space-between", alignItems: "center",
+                  display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10,
                 }}
               >
-                <span style={{ fontWeight: 700, color: c.text }}>{f.label}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ width: 30, height: 30, borderRadius: "50%", background: c.card, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    {(() => { const Icon = FAMILY_ICONS[PROTECTION_TO_FAMILY[f.id]] || IconCompass; return <Icon color={c[f.color]} />; })()}
+                  </div>
+                  <span style={{ fontWeight: 700, color: c.text }}>{f.label}</span>
+                </div>
                 <span style={{ color: c.textSoft }}>{isOpen ? "–" : "+"}</span>
               </button>
               {isOpen && (
@@ -3340,10 +3423,15 @@ function Psychoeducation({ c, onBack }) {
                 style={{
                   width: "100%", textAlign: "left", padding: 14, cursor: "pointer", border: "none",
                   background: c.card, color: c.text, fontWeight: 600, fontSize: 14,
-                  display: "flex", justifyContent: "space-between", alignItems: "center",
+                  display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10,
                 }}
               >
-                <span>{fiche.titre}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: "50%", background: c.ocreSoft, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <IconBook color={c.ocre} />
+                  </div>
+                  <span>{fiche.titre}</span>
+                </div>
                 <span style={{ color: c.textSoft }}>{isOpen ? "–" : "+"}</span>
               </button>
               {isOpen && (
