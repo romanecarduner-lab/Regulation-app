@@ -3283,6 +3283,70 @@ function safetyPlanHasContent(plan) {
   return !!plan && SAFETY_FIELDS.some(([key]) => plan[key] && plan[key].trim().length > 0);
 }
 
+const PDF_COULEURS = {
+  sage: [143, 164, 135],
+  sageSoft: [220, 229, 214],
+  terracotta: [196, 137, 106],
+  terracottaSoft: [241, 223, 212],
+  blue: [143, 163, 179],
+  blueSoft: [222, 231, 236],
+  text: [62, 58, 54],
+  textSoft: [107, 100, 89],
+  border: [231, 224, 213],
+  bg: [250, 247, 242],
+};
+
+function ajouterBandeauEntete(doc, titre, sousTitre) {
+  doc.setFillColor(...PDF_COULEURS.sageSoft);
+  doc.rect(0, 0, 210, sousTitre ? 34 : 28, "F");
+  doc.setFontSize(19);
+  doc.setFont(undefined, "bold");
+  doc.setTextColor(...PDF_COULEURS.text);
+  doc.text(titre, 15, 18);
+  if (sousTitre) {
+    doc.setFontSize(10.5);
+    doc.setFont(undefined, "normal");
+    doc.setTextColor(...PDF_COULEURS.textSoft);
+    doc.text(sousTitre, 15, 27);
+  }
+  doc.setFont(undefined, "normal");
+  doc.setTextColor(...PDF_COULEURS.text);
+  return (sousTitre ? 34 : 28) + 10;
+}
+
+function titreSection(doc, marge, y, texte, couleur = PDF_COULEURS.terracotta) {
+  if (y > 255) { doc.addPage(); y = 20; }
+  doc.setFillColor(...couleur);
+  doc.rect(marge, y - 4.2, 2.6, 5.5, "F");
+  doc.setFontSize(12.5);
+  doc.setFont(undefined, "bold");
+  doc.setTextColor(...PDF_COULEURS.text);
+  doc.text(texte, marge + 6, y);
+  doc.setFont(undefined, "normal");
+  return y + 8;
+}
+
+function ligneSeparatrice(doc, marge, y) {
+  doc.setDrawColor(...PDF_COULEURS.border);
+  doc.setLineWidth(0.3);
+  doc.line(marge, y, 195, y);
+  return y + 6;
+}
+
+function barreProportion(doc, marge, y, label, valeurTexte, pct, couleur = PDF_COULEURS.sage) {
+  doc.setFontSize(10);
+  doc.setTextColor(...PDF_COULEURS.text);
+  doc.text(label, marge, y);
+  doc.setTextColor(...PDF_COULEURS.textSoft);
+  doc.text(valeurTexte, 195, y, { align: "right" });
+  y += 3;
+  doc.setFillColor(...PDF_COULEURS.border);
+  doc.roundedRect(marge, y, 130, 2.6, 1.3, 1.3, "F");
+  doc.setFillColor(...couleur);
+  doc.roundedRect(marge, y, Math.max(4, (130 * pct) / 100), 2.6, 1.3, 1.3, "F");
+  return y + 8;
+}
+
 function ajouterEnteteIdentite(doc, marge, y, personalInfo) {
   if (!personalInfo) return y;
   const lignes = [];
@@ -3293,68 +3357,87 @@ function ajouterEnteteIdentite(doc, marge, y, personalInfo) {
   }
   if (lignes.length === 0) return y;
   doc.setFontSize(10);
-  doc.setTextColor(110, 100, 90);
+  doc.setTextColor(...PDF_COULEURS.textSoft);
   lignes.forEach((l) => { doc.text(l, marge, y); y += 5.5; });
-  doc.setTextColor(40, 38, 34);
+  doc.setTextColor(...PDF_COULEURS.text);
   return y + 4;
 }
 
+function ajouterDisclaimer(doc, marge, y, texte) {
+  const lines = doc.splitTextToSize(texte, 175);
+  const hauteur = lines.length * 4.6 + 8;
+  doc.setFillColor(...PDF_COULEURS.bg);
+  doc.setDrawColor(...PDF_COULEURS.border);
+  doc.roundedRect(marge, y - 5, 180, hauteur, 2, 2, "FD");
+  doc.setFontSize(9);
+  doc.setTextColor(...PDF_COULEURS.textSoft);
+  doc.text(lines, marge + 4, y);
+  doc.setTextColor(...PDF_COULEURS.text);
+  return y + hauteur + 6;
+}
+
 function ajouterSectionReperes(doc, marge, y, plan) {
-  if (y > 250) { doc.addPage(); y = 20; }
-  doc.setFontSize(13);
-  doc.setFont(undefined, "bold");
-  doc.text("Mes repères de sécurité", marge, y); y += 8;
-  doc.setFont(undefined, "normal");
+  y = titreSection(doc, marge, y, "Mes repères de sécurité", PDF_COULEURS.terracotta);
   doc.setFontSize(10);
   SAFETY_FIELDS.forEach(([key, label]) => {
     const val = plan[key];
     if (!val || !val.trim()) return;
-    if (y > 265) { doc.addPage(); y = 20; }
+    if (y > 260) { doc.addPage(); y = 20; }
     doc.setFont(undefined, "bold");
-    const labelLines = doc.splitTextToSize(label, 180);
-    doc.text(labelLines, marge, y); y += labelLines.length * 5.5 + 1;
+    doc.setTextColor(...PDF_COULEURS.textSoft);
+    const labelLines = doc.splitTextToSize(label, 175);
+    doc.text(labelLines, marge, y); y += labelLines.length * 5.2 + 1;
     doc.setFont(undefined, "normal");
-    const valLines = doc.splitTextToSize(val.trim(), 180);
-    doc.text(valLines, marge, y); y += valLines.length * 5.5 + 7;
+    doc.setTextColor(...PDF_COULEURS.text);
+    const valLines = doc.splitTextToSize(val.trim(), 175);
+    doc.text(valLines, marge, y); y += valLines.length * 5.2 + 3;
+    y = ligneSeparatrice(doc, marge, y);
   });
   return y;
 }
 
 function ajouterEntreesJournal(doc, marge, y, entriesFiltrees, champs) {
   const sorted = [...entriesFiltrees].sort((a, b) => new Date(b.date) - new Date(a.date));
+  y = titreSection(doc, marge, y, "Journal", PDF_COULEURS.blue);
   sorted.forEach((e) => {
-    if (y > 265) { doc.addPage(); y = 20; }
-    doc.setFontSize(11);
+    if (y > 262) { doc.addPage(); y = 20; }
+    doc.setFontSize(10.5);
     doc.setFont(undefined, "bold");
+    doc.setTextColor(...PDF_COULEURS.text);
     const dateLabel = champs.dates
       ? new Date(e.date).toLocaleString("fr-FR", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })
       : "Entrée";
-    doc.text(dateLabel, marge, y); y += 7;
+    doc.text(dateLabel, marge, y); y += 6.5;
     doc.setFont(undefined, "normal");
     doc.setFontSize(10);
+    doc.setTextColor(...PDF_COULEURS.textSoft);
 
     if (e.type === "check-in") {
       if (champs.etats && e.etat) {
         const lbl = NS_STATES.find((s) => s.id === e.etat)?.label;
-        if (lbl) { doc.text(`État repéré : ${lbl}`, marge, y); y += 6; }
+        if (lbl) { doc.text(`État repéré : ${lbl}`, marge, y); y += 5.5; }
       }
       if (champs.intensites && e.intensite !== null && e.intensite !== undefined) {
-        doc.text(`Intensité indiquée : ${e.intensite}/10`, marge, y); y += 6;
+        doc.text(`Intensité indiquée : ${e.intensite}/10`, marge, y); y += 5.5;
       }
       if (champs.protection && e.ffff) {
         const flbl = FFFF_INFO.find((f) => f.id === e.ffff)?.label;
-        if (flbl) { doc.text(`Réponse de protection reconnue : ${flbl}`, marge, y); y += 6; }
+        if (flbl) { doc.text(`Réponse de protection reconnue : ${flbl}`, marge, y); y += 5.5; }
       }
     } else {
-      if (champs.exercices) { doc.text(`Exercice essayé : ${e.exercice}`, marge, y); y += 6; }
-      if (champs.retours && e.effet) { doc.text(`Retour après l'exercice : ${e.effet}`, marge, y); y += 6; }
-      if (champs.retours && e.remarque) { doc.text(`Ce qui a été remarqué : ${e.remarque}`, marge, y); y += 6; }
+      if (champs.exercices) { doc.text(`Exercice essayé : ${e.exercice}`, marge, y); y += 5.5; }
+      if (champs.retours && e.effet) { doc.text(`Retour après l'exercice : ${e.effet}`, marge, y); y += 5.5; }
+      if (champs.retours && e.remarque) { doc.text(`Ce qui a été remarqué : ${e.remarque}`, marge, y); y += 5.5; }
     }
-    y += 4;
+    doc.setTextColor(...PDF_COULEURS.text);
+    y += 2;
+    y = ligneSeparatrice(doc, marge, y);
   });
   if (sorted.length === 0) {
-    doc.setFontSize(11);
+    doc.setFontSize(10.5);
+    doc.setTextColor(...PDF_COULEURS.textSoft);
     doc.text("Aucune entrée sur cette période.", marge, y); y += 8;
+    doc.setTextColor(...PDF_COULEURS.text);
   }
   return y;
 }
@@ -3363,88 +3446,87 @@ function ajouterPiedDePage(doc) {
   const nbPages = doc.internal.getNumberOfPages();
   for (let i = 1; i <= nbPages; i++) {
     doc.setPage(i);
+    doc.setDrawColor(...PDF_COULEURS.border);
+    doc.setLineWidth(0.3);
+    doc.line(15, 284, 195, 284);
     doc.setFontSize(8);
-    doc.setTextColor(150, 145, 135);
+    doc.setTextColor(...PDF_COULEURS.textSoft);
     doc.text(MENTION_PROPRIETE, 15, 290);
-    doc.setTextColor(40, 38, 34);
+    doc.text(`${i} / ${nbPages}`, 195, 290, { align: "right" });
+    doc.setTextColor(...PDF_COULEURS.text);
   }
 }
 
 function ajouterSectionStatistiques(doc, marge, y, entriesFiltrees) {
   const stats = calculerStatistiques(entriesFiltrees);
-  if (y > 240) { doc.addPage(); y = 20; }
-  doc.setFontSize(13);
-  doc.setFont(undefined, "bold");
-  doc.text("Statistiques (tendances générales)", marge, y); y += 8;
-  doc.setFont(undefined, "normal");
-  doc.setFontSize(10);
+  y = titreSection(doc, marge, y, "Statistiques (tendances générales)", PDF_COULEURS.sage);
 
   if (stats.totalCheckins === 0) {
+    doc.setFontSize(10);
+    doc.setTextColor(...PDF_COULEURS.textSoft);
     doc.text("Pas assez d'observations enregistrées sur cette période pour en tirer une tendance.", marge, y);
+    doc.setTextColor(...PDF_COULEURS.text);
     return y + 10;
   }
 
-  doc.setFont(undefined, "bold");
-  doc.text("Répartition des états repérés", marge, y); y += 6;
-  doc.setFont(undefined, "normal");
+  doc.setFontSize(9.5);
+  doc.setTextColor(...PDF_COULEURS.textSoft);
+  doc.text("Répartition des états repérés", marge, y); y += 7;
+  doc.setTextColor(...PDF_COULEURS.text);
   stats.etatSorted.forEach(([etatId, count]) => {
-    const lbl = NS_STATES.find((s) => s.id === etatId)?.label || etatId;
+    const s = NS_STATES.find((x) => x.id === etatId);
     const pct = Math.round((count / stats.totalCheckins) * 100);
-    doc.text(`${lbl} : ${count} fois (${pct}%)`, marge, y); y += 5.5;
+    const couleurBarre = { sage: PDF_COULEURS.sage, terracotta: PDF_COULEURS.terracotta, blue: PDF_COULEURS.blue, stone: PDF_COULEURS.textSoft }[s?.color] || PDF_COULEURS.sage;
+    y = barreProportion(doc, marge, y, s?.label || etatId, `${count} fois (${pct}%)`, pct, couleurBarre);
   });
-  y += 4;
+  y += 3;
 
   if (stats.protectionSorted.length > 0) {
-    if (y > 260) { doc.addPage(); y = 20; }
-    doc.setFont(undefined, "bold");
+    if (y > 250) { doc.addPage(); y = 20; }
+    doc.setFontSize(9.5);
+    doc.setTextColor(...PDF_COULEURS.textSoft);
     doc.text("Réponses de protection reconnues", marge, y); y += 6;
-    doc.setFont(undefined, "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(...PDF_COULEURS.text);
     stats.protectionSorted.forEach(([id, count]) => {
       const lbl = FFFF_INFO.find((f) => f.id === id)?.label || id;
-      doc.text(`${lbl} : ${count} fois`, marge, y); y += 5.5;
+      doc.text(`•  ${lbl} : ${count} fois`, marge, y); y += 5.5;
     });
-    y += 4;
+    y += 3;
   }
 
   const etatsAvecExos = Object.keys(stats.exosParEtat);
   if (etatsAvecExos.length > 0) {
-    if (y > 250) { doc.addPage(); y = 20; }
-    doc.setFont(undefined, "bold");
+    if (y > 245) { doc.addPage(); y = 20; }
+    doc.setFontSize(9.5);
+    doc.setTextColor(...PDF_COULEURS.textSoft);
     doc.text("Exercices associés à chaque état", marge, y); y += 6;
-    doc.setFont(undefined, "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(...PDF_COULEURS.text);
     etatsAvecExos.forEach((etatId) => {
-      if (y > 265) { doc.addPage(); y = 20; }
+      if (y > 262) { doc.addPage(); y = 20; }
       const lbl = NS_STATES.find((s) => s.id === etatId)?.label || etatId;
       const texte = `${lbl} — ${stats.exosParEtat[etatId].map(([titre]) => titre).join(", ")}`;
-      const lines = doc.splitTextToSize(texte, 180);
-      doc.text(lines, marge, y); y += lines.length * 5.5 + 2;
+      const lines = doc.splitTextToSize(texte, 175);
+      doc.text(lines, marge, y); y += lines.length * 5.2 + 2;
     });
-    y += 4;
+    y += 3;
   }
 
-  return y;
+  return ligneSeparatrice(doc, marge, y + 2);
 }
 
 function genererPdfJournal(entriesFiltrees, champs, periodeLabel, personalInfo, safetyPlan) {
   const doc = new jsPDF();
   const marge = 15;
-  let y = 20;
-
-  doc.setFontSize(18);
-  doc.text("Mon journal de suivi", marge, y); y += 10;
+  let y = ajouterBandeauEntete(doc, "Mon journal de suivi", `Période : ${periodeLabel}`);
   y = ajouterEnteteIdentite(doc, marge, y, personalInfo);
-  doc.setFontSize(11);
-  doc.setTextColor(110, 100, 90);
-  doc.text(`Période : ${periodeLabel}`, marge, y); y += 8;
-  doc.setFontSize(9);
-  const disclaimer = "Ce document rassemble les informations que vous avez choisi d'enregistrer et d'exporter depuis l'application. Il ne constitue pas un diagnostic ni une évaluation clinique.";
-  const disclaimerLines = doc.splitTextToSize(disclaimer, 180);
-  doc.text(disclaimerLines, marge, y); y += disclaimerLines.length * 5 + 8;
-  doc.setTextColor(40, 38, 34);
+  y = ajouterDisclaimer(doc, marge, y,
+    "Ce document rassemble les informations que vous avez choisi d'enregistrer et d'exporter depuis l'application. Il ne constitue pas un diagnostic ni une évaluation clinique.");
 
   if (champs.stats) {
     y = ajouterSectionStatistiques(doc, marge, y, entriesFiltrees);
-    y += 6;
+    y += 4;
   }
 
   const detailsActifs = champs.dates || champs.etats || champs.intensites || champs.protection || champs.exercices || champs.retours;
@@ -3453,7 +3535,7 @@ function genererPdfJournal(entriesFiltrees, champs, periodeLabel, personalInfo, 
   }
 
   if (safetyPlan && safetyPlanHasContent(safetyPlan)) {
-    y += 6;
+    y += 4;
     y = ajouterSectionReperes(doc, marge, y, safetyPlan);
   }
 
@@ -3464,26 +3546,19 @@ function genererPdfJournal(entriesFiltrees, champs, periodeLabel, personalInfo, 
 function genererPdfReperes(plan, personalInfo, entriesFiltrees, champs, periodeLabelJournal) {
   const doc = new jsPDF();
   const marge = 15;
-  let y = 20;
-
-  doc.setFontSize(18);
-  doc.text("Mes repères de sécurité", marge, y); y += 10;
+  let y = ajouterBandeauEntete(doc, "Mes repères de sécurité");
   y = ajouterEnteteIdentite(doc, marge, y, personalInfo);
-  doc.setFontSize(9);
-  doc.setTextColor(110, 100, 90);
-  const disclaimer = "Ce document rassemble les informations que vous avez choisi d'enregistrer et d'exporter depuis l'application. Il ne constitue pas un diagnostic ni une évaluation clinique.";
-  const dLines = doc.splitTextToSize(disclaimer, 180);
-  doc.text(dLines, marge, y); y += dLines.length * 5 + 8;
-  doc.setTextColor(40, 38, 34);
+  y = ajouterDisclaimer(doc, marge, y,
+    "Ce document rassemble les informations que vous avez choisi d'enregistrer et d'exporter depuis l'application. Il ne constitue pas un diagnostic ni une évaluation clinique.");
 
   y = ajouterSectionReperes(doc, marge, y, plan);
 
   if (entriesFiltrees && entriesFiltrees.length >= 0 && champs) {
-    y += 6;
+    y += 4;
     doc.setFontSize(9);
-    doc.setTextColor(110, 100, 90);
+    doc.setTextColor(...PDF_COULEURS.textSoft);
     doc.text(`Journal de suivi — période : ${periodeLabelJournal}`, marge, y); y += 8;
-    doc.setTextColor(40, 38, 34);
+    doc.setTextColor(...PDF_COULEURS.text);
     y = ajouterEntreesJournal(doc, marge, y, entriesFiltrees, champs);
   }
 
@@ -3529,30 +3604,19 @@ function calculerResumeRendezVous(entriesFiltrees) {
 function genererPdfRendezVous(entriesFiltrees, periodeLabel, question, personalInfo) {
   const doc = new jsPDF();
   const marge = 15;
-  let y = 20;
+  let y = ajouterBandeauEntete(doc, "Préparer mon prochain rendez-vous", `Période : ${periodeLabel}`);
+  y = ajouterEnteteIdentite(doc, marge, y, personalInfo);
+  y = ajouterDisclaimer(doc, marge, y,
+    "Ce document ne constitue pas un diagnostic ni une évaluation clinique. Il rassemble des tendances observées à partir de ce que la personne a choisi d'enregistrer.");
   const resume = calculerResumeRendezVous(entriesFiltrees);
 
-  doc.setFontSize(18);
-  doc.text("Préparer mon prochain rendez-vous", marge, y); y += 10;
-  y = ajouterEnteteIdentite(doc, marge, y, personalInfo);
-  doc.setFontSize(11);
-  doc.setTextColor(110, 100, 90);
-  doc.text(`Période : ${periodeLabel}`, marge, y); y += 10;
-  doc.setTextColor(40, 38, 34);
-  doc.setFontSize(9);
-  const disclaimer = "Ce document ne constitue pas un diagnostic ni une évaluation clinique. Il rassemble des tendances observées à partir de ce que la personne a choisi d'enregistrer.";
-  const dLines = doc.splitTextToSize(disclaimer, 180);
-  doc.text(dLines, marge, y); y += dLines.length * 5 + 10;
-
   const section = (titre, texte) => {
-    if (y > 260) { doc.addPage(); y = 20; }
-    doc.setFontSize(12);
-    doc.setFont(undefined, "bold");
-    doc.text(titre, marge, y); y += 7;
-    doc.setFont(undefined, "normal");
+    y = titreSection(doc, marge, y, titre, PDF_COULEURS.terracotta);
     doc.setFontSize(10);
-    const lines = doc.splitTextToSize(texte, 180);
-    doc.text(lines, marge, y); y += lines.length * 5.5 + 8;
+    doc.setTextColor(...PDF_COULEURS.text);
+    const lines = doc.splitTextToSize(texte, 175);
+    doc.text(lines, marge, y); y += lines.length * 5.2 + 3;
+    y = ligneSeparatrice(doc, marge, y);
   };
 
   section("Ce que j'ai le plus souvent repéré",
