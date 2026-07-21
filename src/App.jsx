@@ -2765,8 +2765,9 @@ function BreathingBall({ c }) {
 }
 
 function Exercise({ c, exercise, raison, onStop, onRevenirListe, onEssayerAutreChose, onFinish, onFilterByTag }) {
-  const [step, setStep] = useState("do"); // do | pas-maintenant | remarque | continuer | feedback
+  const [step, setStep] = useState("do"); // do | pas-maintenant | remarque | feedback | continuer
   const [remarque, setRemarque] = useState(null);
+  const [effet, setEffet] = useState(null);
   const [varianteIdx, setVarianteIdx] = useState(0); // 0 = version principale
   const versions = [{ label: "Version principale", etapes: exercise.etapes }, ...(exercise.variantes || [])];
   const etapesAffichees = versions[varianteIdx]?.etapes || exercise.etapes;
@@ -2793,20 +2794,8 @@ function Exercise({ c, exercise, raison, onStop, onRevenirListe, onEssayerAutreC
         <ScreenTitle c={c}>Qu'est-ce que vous remarquez maintenant ?</ScreenTitle>
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 10 }}>
           {REMARQUE_OPTIONS.map((o) => (
-            <Btn key={o} c={c} variant={remarque === o ? "primary" : "secondary"} onClick={() => { setRemarque(o); setStep("continuer"); }}>{o}</Btn>
+            <Btn key={o} c={c} variant={remarque === o ? "primary" : "secondary"} onClick={() => { setRemarque(o); setStep("feedback"); }}>{o}</Btn>
           ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (step === "continuer") {
-    return (
-      <div>
-        <ScreenTitle c={c}>Souhaitez-vous continuer ?</ScreenTitle>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <Btn c={c} variant="secondary" onClick={() => setStep("do")}>Essayer à nouveau cet exercice</Btn>
-          <Btn c={c} variant="secondary" onClick={() => setStep("feedback")}>Essayer autre chose / arrêter ici</Btn>
         </div>
       </div>
     );
@@ -2819,8 +2808,20 @@ function Exercise({ c, exercise, raison, onStop, onRevenirListe, onEssayerAutreC
         <p style={{ color: c.textSoft, fontSize: 13, marginBottom: 16 }}>Sans jugement — juste pour ajuster votre bibliothèque.</p>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {FEEDBACK_OPTIONS.map((o) => (
-            <Btn key={o} c={c} variant="secondary" onClick={() => onFinish(o, remarque)}>{o}</Btn>
+            <Btn key={o} c={c} variant="secondary" onClick={() => { setEffet(o); setStep("continuer"); }}>{o}</Btn>
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (step === "continuer") {
+    return (
+      <div>
+        <ScreenTitle c={c}>Souhaitez-vous continuer ?</ScreenTitle>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <Btn c={c} variant="secondary" onClick={() => setStep("do")}>Essayer à nouveau cet exercice</Btn>
+          <Btn c={c} variant="secondary" onClick={() => onFinish(effet, remarque)}>Essayer autre chose / arrêter ici</Btn>
         </div>
       </div>
     );
