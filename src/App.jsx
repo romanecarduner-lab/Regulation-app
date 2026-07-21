@@ -884,27 +884,6 @@ function ScrollToTopButton({ c }) {
   );
 }
 
-function BackRow({ onBack, c, label = "Retour", onHome }) {
-  return (
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "4px 0 12px" }}>
-      <button
-        onClick={onBack}
-        style={{ background: "none", border: "none", color: c.textSoft, fontFamily: fontBody, fontSize: 13, cursor: "pointer", padding: 0 }}
-      >
-        ← {label}
-      </button>
-      {onHome && (
-        <button
-          onClick={onHome}
-          style={{ background: "none", border: "none", color: c.textSoft, fontFamily: fontBody, fontSize: 12.5, cursor: "pointer", padding: 0, opacity: 0.8 }}
-        >
-          Accueil
-        </button>
-      )}
-    </div>
-  );
-}
-
 /* ---------------------------------------------------------------
    MAIN APP
 --------------------------------------------------------------- */
@@ -1085,21 +1064,63 @@ export default function App() {
         paddingBottom: "calc(22px + 54px + 24px + env(safe-area-inset-bottom))",
       }}>
 
-        {screen !== "home" && screen !== "crisis" && (
-          <div style={{
-            position: "sticky", top: 0, zIndex: 15, background: c.bg,
-            paddingTop: 10, paddingBottom: 10, marginBottom: 10,
-            borderBottom: `1px solid ${c.border}`,
-          }}>
-            <button onClick={goBackHome} style={{
-              background: "none", border: "none", color: c.textSoft, fontFamily: fontBody,
-              fontSize: 13, fontWeight: 600, cursor: "pointer", padding: 0,
-              display: "flex", alignItems: "center", gap: 6,
+        {screen !== "home" && screen !== "crisis" && (() => {
+          const BACK_MAP = {
+            "checkin-state": { label: "Retour à l'accueil", onClick: goBackHome },
+            "checkin-state-explore": { label: "Modifier mon état", onClick: () => goTo("checkin-state") },
+            "checkin-intensity": { label: "Modifier mon état", onClick: () => goTo("checkin-state") },
+            "checkin-sensations": { label: "Modifier l'intensité", onClick: goBack },
+            "checkin-protection": { label: "Retour", onClick: goBack },
+            "checkin-protection-confirm": { label: "Modifier ma réponse", onClick: () => goTo("checkin-protection") },
+            "aide-danger": { label: "Retour", onClick: goBack },
+            "aide-peur": { label: "Retour", onClick: goBack },
+            "aide-debord-q1": { label: "Retour", onClick: goBack },
+            "aide-debord-nonsur": { label: "Retour", onClick: goBack },
+            "aide-debord-q2": { label: "Retour", onClick: goBack },
+            "urgence": { label: "Retour", onClick: goBack },
+            "library": { label: "Retour", onClick: goBack },
+            "preferences": { label: "Retour", onClick: goBack },
+            "exo-create": { label: "Retour", onClick: goBack },
+            "tolerance-zone": { label: "Retour à l'accueil", onClick: goBackHome },
+            "protection": { label: "Retour à l'accueil", onClick: goBackHome },
+            "psychoed": { label: "Retour à l'accueil", onClick: goBackHome },
+            "safety": { label: "Retour", onClick: goBack },
+            "nervous-system": { label: "Retour à l'accueil", onClick: goBackHome },
+            "ce-qui-maide": { label: "Retour à l'accueil", onClick: goBackHome },
+            "journal": { label: "Retour à l'accueil", onClick: goBackHome },
+            "journal-export": { label: "Retour au journal", onClick: goBack },
+            "journal-export-preview": { label: "Modifier ma sélection", onClick: goBack },
+            "rdv-export": { label: "Retour au journal", onClick: goBack },
+            "rdv-export-preview": { label: "Modifier ma sélection", onClick: goBack },
+            "reperes-export": { label: "Retour", onClick: goBack },
+            "settings": { label: "Retour à l'accueil", onClick: goBackHome },
+          };
+          const backInfo = BACK_MAP[screen];
+          return (
+            <div style={{
+              position: "sticky", top: 0, zIndex: 15, background: c.bg,
+              paddingTop: 10, paddingBottom: 10, marginBottom: 10,
+              borderBottom: `1px solid ${c.border}`,
+              display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10,
             }}>
-              <span style={{ fontSize: 15 }}>🏠</span> Accueil
-            </button>
-          </div>
-        )}
+              {backInfo ? (
+                <button onClick={backInfo.onClick} style={{
+                  background: "none", border: "none", color: c.textSoft, fontFamily: fontBody,
+                  fontSize: 13, fontWeight: 600, cursor: "pointer", padding: 0,
+                }}>
+                  ← {backInfo.label}
+                </button>
+              ) : <span />}
+              <button onClick={goBackHome} style={{
+                background: "none", border: "none", color: c.textSoft, fontFamily: fontBody,
+                fontSize: 13, fontWeight: 600, cursor: "pointer", padding: 0,
+                display: "flex", alignItems: "center", gap: 6, flexShrink: 0,
+              }}>
+                <span style={{ fontSize: 15 }}>🏠</span> Accueil
+              </button>
+            </div>
+          );
+        })()}
 
         {screen === "home" && <Home c={c} theme={theme} toggleTheme={toggleTheme} goTo={goTo} prenom={personalInfo.prenom} />}
 
@@ -1473,7 +1494,6 @@ function CheckinIntensity({ c, onBack, onSubmit, value }) {
   ];
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Modifier mon état" />
       <ScreenTitle c={c}>À quel point cet état est-il présent maintenant ?</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 24 }}>
         Il n'y a pas de bonne réponse. Cette échelle sert seulement de repère pour vous.
@@ -1516,7 +1536,6 @@ function CheckinSensations({ c, onBack, sensations, setSensations, onNext }) {
     setSensations((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Modifier l'intensité" />
       <ScreenTitle c={c}>Qu'est-ce que vous remarquez ?</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 18 }}>
         Dans votre corps, ou dans votre état intérieur. Choisissez ce qui résonne — il n'y a pas de bonne réponse.
@@ -1544,7 +1563,6 @@ function CheckinSensations({ c, onBack, sensations, setSensations, onNext }) {
 function CheckinState({ c, onBack, onSelect, onUnknown, value }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
       <ScreenTitle c={c}>Où en êtes-vous maintenant ?</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 18 }}>
         Choisissez ce qui vous semble le plus proche de votre état en ce moment. Il n'est pas nécessaire d'être
@@ -1587,7 +1605,6 @@ const ETAT_EXPLORATION_OPTIONS = [
 function CheckinStateExplore({ c, onBack, onSelect }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Modifier mon état" />
       <ScreenTitle c={c}>C'est parfois difficile de savoir ce qui se passe à l'intérieur.</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 8 }}>
         Nous pouvons commencer autrement.
@@ -1607,7 +1624,6 @@ function CheckinStateExplore({ c, onBack, onSelect }) {
 function CheckinFFFF({ c, onBack, onSelect }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Retour" />
       <ScreenTitle c={c}>Une réaction de protection, peut-être ?</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 6 }}>
         Cette étape est facultative. Est-ce que vous reconnaissez une réaction de protection en ce moment ?
@@ -1626,7 +1642,6 @@ function CheckinProtectionConfirm({ c, ffff, onBack, onConfirm }) {
   if (!f) return null;
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Modifier ma réponse" />
       <ScreenTitle c={c}>Une réponse de protection que vous reconnaissez peut-être</ScreenTitle>
       <Card c={c} style={{ background: c[f.color + "Soft"], border: "none", marginBottom: 14 }}>
         <div style={{ fontWeight: 700, color: c.text, marginBottom: 6 }}>{f.label}</div>
@@ -1768,7 +1783,6 @@ function AideImmediate({ c, onBack, onDanger, onPeur, onDebord, onUrgence }) {
 function AideDanger({ c, onBack }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
       <ScreenTitle c={c}>Je suis en danger immédiat</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 20 }}>
         Appuyez sur un numéro pour appeler directement.
@@ -1794,7 +1808,6 @@ function AidePeur({ c, onBack, safetyPlan, onContacts }) {
   const aUnePersonne = safetyPlan && safetyPlan.personnes && safetyPlan.personnes.trim().length > 0;
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
       <ScreenTitle c={c}>Vous n'êtes pas seul·e avec ça.</ScreenTitle>
       <div style={{ marginBottom: 18 }}>
         <TelButton c={c} big label="Numéro national de prévention du suicide" num="3114" display="3114" />
@@ -1821,7 +1834,6 @@ function AidePeur({ c, onBack, safetyPlan, onContacts }) {
 function AideDebordQ1({ c, onBack, onOui, onNeSaitPas, onNon }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
       <ScreenTitle c={c}>Êtes-vous dans un endroit suffisamment sûr pour les prochaines minutes ?</ScreenTitle>
       <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 10 }}>
         <Btn c={c} variant="secondary" onClick={onOui}>Oui</Btn>
@@ -1835,7 +1847,6 @@ function AideDebordQ1({ c, onBack, onOui, onNeSaitPas, onNon }) {
 function AideDebordNonSur({ c, onBack, onAppeler, onContacter, onNumeros }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
       <ScreenTitle c={c}>La priorité, maintenant</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 22 }}>
         La priorité est de vous éloigner du danger si cela est possible et de contacter une aide extérieure.
@@ -1861,7 +1872,6 @@ const AIDE_DEBORD_CHOIX = [
 function AideDebordQ2({ c, onBack, onChoix }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
       <ScreenTitle c={c}>Que serait-il le plus facile de faire maintenant ?</ScreenTitle>
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 10 }}>
         {AIDE_DEBORD_CHOIX.map((o) => (
@@ -1901,7 +1911,6 @@ const EMERGENCY_NUMBERS = [
 function Urgence({ c, onBack }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Retour" />
       <ScreenTitle c={c}>Tous les numéros d'aide</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 22 }}>
         Appuyez sur un numéro pour appeler directement.
@@ -2186,7 +2195,6 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
 
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
         <ScreenTitle c={c}>Faire un exercice</ScreenTitle>
         <button onClick={() => setShowHelp((s) => !s)} aria-label="Comment fonctionnent les filtres ?" style={{
@@ -2755,7 +2763,6 @@ function Preferences({ c, onBack, avoidPrefs, onSave }) {
   const [saved, setSaved] = useState(false);
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
       <ScreenTitle c={c}>Mes préférences d'exercices</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 18 }}>
         Ce que vous cochez ici sera écarté par défaut à chaque fois que vous ouvrez la bibliothèque. Vous pourrez
@@ -2804,7 +2811,6 @@ function CreateExercise({ c, onBack, onSave }) {
   };
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
       <ScreenTitle c={c}>Construire quelque chose qui me ressemble</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 18 }}>
         Vous pouvez le nommer, l'enregistrer, le modifier ou le supprimer plus tard. Rien n'est obligatoire ici,
@@ -2903,7 +2909,6 @@ function SafetyPlan({ c, onBack, plan, onChange, onSave, onGoExport }) {
   const aDuContenu = SAFETY_FIELDS.some(([key]) => plan[key] && plan[key].trim());
   return (
     <div>
-      <BackRow c={c} onBack={onBack} />
       <ScreenTitle c={c}>Mes repères de sécurité</ScreenTitle>
       <Card c={c} style={{ background: c.terracottaSoft, border: "none", marginBottom: 20 }}>
         <p style={{ margin: 0, fontSize: 13, color: c.text, lineHeight: 1.6 }}>
@@ -2943,7 +2948,6 @@ function ReperesExportPreview({ c, onBack, plan, entries, periode, setPeriode, i
   const journalDisponible = entries.length > 0;
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Retour" />
       <ScreenTitle c={c}>Exporter mes repères de sécurité</ScreenTitle>
       <Card c={c} style={{ marginBottom: 20 }}>
         <p style={{ margin: "0 0 8px", fontSize: 13.5, color: c.text }}>
@@ -3001,7 +3005,6 @@ function ReperesExportPreview({ c, onBack, plan, entries, periode, setPeriode, i
 function NervousSystem({ c, onBack }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
       <ScreenTitle c={c}>Comprendre les réactions de mon système nerveux</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 20 }}>
         Vos réactions face au stress, à la peur, au conflit ou au trauma ne sont pas des choix conscients ni des
@@ -3036,7 +3039,6 @@ function ToleranceZone({ c, onBack, perso, onChange, onSave }) {
   ];
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
       <ScreenTitle c={c}>Comprendre ma zone de tolérance</ScreenTitle>
 
       <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 16 }}>
@@ -3105,7 +3107,6 @@ function Protection({ c, onBack, onExercises }) {
   const [open, setOpen] = useState(null);
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
       <ScreenTitle c={c}>Fight, Flight, Freeze, Fawn</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 14, lineHeight: 1.6, marginBottom: 20 }}>
         Face à une menace réelle ou perçue, notre système nerveux peut déclencher des réponses automatiques de
@@ -3174,7 +3175,6 @@ function Psychoeducation({ c, onBack }) {
   const [open, setOpen] = useState(null);
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
       <ScreenTitle c={c}>Psychoéducation</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 20 }}>
         Des fiches courtes, lisibles en moins de deux minutes chacune.
@@ -3686,7 +3686,6 @@ function CeQuiMaide({ c, onBack, feedback, customExercises, entries, onPick, onG
 
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
       <ScreenTitle c={c}>Ce qui m'aide</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 22 }}>
         Ce n'est pas un classement de réussite. C'est un espace pour repérer, au fil du temps, ce qui semble vous
@@ -3760,7 +3759,6 @@ function Journal({ c, onBack, entries, onGoExport, onGoRdv }) {
   const stats = calculerStatistiques(entries);
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
         <ScreenTitle c={c}>Mon suivi personnel</ScreenTitle>
         <button onClick={() => setShowHelp((s) => !s)} aria-label="À quoi sert le journal ?" style={{
@@ -3910,7 +3908,6 @@ function Journal({ c, onBack, entries, onGoExport, onGoRdv }) {
 function JournalExportSelect({ c, onBack, champs, setChamps, periode, setPeriode, onNext }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Retour au journal" />
       <ScreenTitle c={c}>Que souhaitez-vous inclure ?</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 18 }}>
         Vous décidez toujours de ce que vous exportez. Rien n'est envoyé automatiquement à qui que ce soit.
@@ -3955,7 +3952,6 @@ function JournalExportPreview({ c, onBack, champs, periode, entries, safetyPlan,
   const reperesDisponibles = safetyPlanHasContent(safetyPlan);
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Modifier ma sélection" />
       <ScreenTitle c={c}>Aperçu de ce que vous allez exporter</ScreenTitle>
       <Card c={c} style={{ marginBottom: 20 }}>
         <p style={{ margin: "0 0 8px", fontSize: 13.5, color: c.text }}>{periodeLabel}</p>
@@ -3998,7 +3994,6 @@ function JournalExportPreview({ c, onBack, champs, periode, entries, safetyPlan,
 function RdvExportSelect({ c, onBack, periode, setPeriode, question, setQuestion, onNext }) {
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Retour au journal" />
       <ScreenTitle c={c}>Préparer mon prochain rendez-vous</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 18 }}>
         Ce résumé, plus court que l'export complet, peut aider à montrer rapidement à votre thérapeute ce qui
@@ -4034,7 +4029,6 @@ function RdvExportPreview({ c, onBack, periode, entries, question, onCreate, onC
   const resume = calculerResumeRendezVous(filtrees);
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Modifier ma sélection" />
       <ScreenTitle c={c}>Aperçu du résumé</ScreenTitle>
       <Card c={c} style={{ marginBottom: 20 }}>
         <p style={{ margin: "0 0 10px", fontSize: 13.5, color: c.text, fontWeight: 600 }}>{periodeLabel}</p>
@@ -4063,7 +4057,6 @@ function Settings({ c, theme, toggleTheme, onBack, onWipe, personalInfo, onChang
   const inputStyle = { width: "100%", borderRadius: 12, border: `1px solid ${c.border}`, background: c.card, color: c.text, padding: 10, fontFamily: fontBody, fontSize: 14 };
   return (
     <div>
-      <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
       <ScreenTitle c={c}>Réglages</ScreenTitle>
 
       <Card c={c} style={{ marginBottom: 14 }}>
