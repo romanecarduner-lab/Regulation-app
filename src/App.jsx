@@ -949,7 +949,7 @@ export default function App() {
     signes: "", personnes: "", lieux: "", eviter: "", phrases: "", numeros: "",
   });
   const [entries, setEntries] = useState([]);
-  const [exportChamps, setExportChamps] = useState({ dates: true, etats: true, intensites: true, protection: true, exercices: true, retours: true });
+  const [exportChamps, setExportChamps] = useState({ stats: true, dates: true, etats: true, intensites: true, protection: true, exercices: true, retours: true });
   const [exportPeriode, setExportPeriode] = useState("30");
   const [rdvPeriode, setRdvPeriode] = useState("30");
   const [rdvQuestion, setRdvQuestion] = useState("");
@@ -3223,6 +3223,7 @@ const PERIODES_JOURNAL = [
 ];
 
 const CHAMPS_EXPORT = [
+  { id: "stats", label: "Statistiques (tendances générales)" },
   { id: "dates", label: "Dates et heures" },
   { id: "etats", label: "États repérés" },
   { id: "intensites", label: "Intensités" },
@@ -3230,6 +3231,33 @@ const CHAMPS_EXPORT = [
   { id: "exercices", label: "Exercices essayés" },
   { id: "retours", label: "Retours après les exercices" },
 ];
+
+function calculerStatistiques(entries) {
+  const etatCounts = {};
+  const protectionCounts = {};
+  const exosByEtat = {};
+  let totalCheckins = 0;
+  entries.forEach((e) => {
+    if (e.type === "check-in") {
+      totalCheckins++;
+      if (e.etat) etatCounts[e.etat] = (etatCounts[e.etat] || 0) + 1;
+      if (e.ffff && ["fight", "flight", "freeze", "fawn"].includes(e.ffff)) {
+        protectionCounts[e.ffff] = (protectionCounts[e.ffff] || 0) + 1;
+      }
+    }
+    if (e.type === "exercice" && e.etat) {
+      exosByEtat[e.etat] = exosByEtat[e.etat] || {};
+      exosByEtat[e.etat][e.exercice] = (exosByEtat[e.etat][e.exercice] || 0) + 1;
+    }
+  });
+  const etatSorted = Object.entries(etatCounts).sort((a, b) => b[1] - a[1]);
+  const protectionSorted = Object.entries(protectionCounts).sort((a, b) => b[1] - a[1]);
+  const exosParEtat = {};
+  Object.entries(exosByEtat).forEach(([etat, counts]) => {
+    exosParEtat[etat] = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  });
+  return { etatSorted, protectionSorted, exosParEtat, totalCheckins };
+}
 
 function entriesDansPeriode(entries, periodeId) {
   const p = PERIODES_JOURNAL.find((x) => x.id === periodeId);
@@ -3342,6 +3370,61 @@ function ajouterPiedDePage(doc) {
   }
 }
 
+function ajouterSectionStatistiques(doc, marge, y, entriesFiltrees) {
+  const stats = calculerStatistiques(entriesFiltrees);
+  if (y > 240) { doc.addPage(); y = 20; }
+  doc.setFontSize(13);
+  doc.setFont(undefined, "bold");
+  doc.text("Statistiques (tendances générales)", marge, y); y += 8;
+  doc.setFont(undefined, "normal");
+  doc.setFontSize(10);
+
+  if (stats.totalCheckins === 0) {
+    doc.text("Pas assez d'observations enregistrées sur cette période pour en tirer une tendance.", marge, y);
+    return y + 10;
+  }
+
+  doc.setFont(undefined, "bold");
+  doc.text("Répartition des états repérés", marge, y); y += 6;
+  doc.setFont(undefined, "normal");
+  stats.etatSorted.forEach(([etatId, count]) => {
+    const lbl = NS_STATES.find((s) => s.id === etatId)?.label || etatId;
+    const pct = Math.round((count / stats.totalCheckins) * 100);
+    doc.text(`${lbl} : ${count} fois (${pct}%)`, marge, y); y += 5.5;
+  });
+  y += 4;
+
+  if (stats.protectionSorted.length > 0) {
+    if (y > 260) { doc.addPage(); y = 20; }
+    doc.setFont(undefined, "bold");
+    doc.text("Réponses de protection reconnues", marge, y); y += 6;
+    doc.setFont(undefined, "normal");
+    stats.protectionSorted.forEach(([id, count]) => {
+      const lbl = FFFF_INFO.find((f) => f.id === id)?.label || id;
+      doc.text(`${lbl} : ${count} fois`, marge, y); y += 5.5;
+    });
+    y += 4;
+  }
+
+  const etatsAvecExos = Object.keys(stats.exosParEtat);
+  if (etatsAvecExos.length > 0) {
+    if (y > 250) { doc.addPage(); y = 20; }
+    doc.setFont(undefined, "bold");
+    doc.text("Exercices associés à chaque état", marge, y); y += 6;
+    doc.setFont(undefined, "normal");
+    etatsAvecExos.forEach((etatId) => {
+      if (y > 265) { doc.addPage(); y = 20; }
+      const lbl = NS_STATES.find((s) => s.id === etatId)?.label || etatId;
+      const texte = `${lbl} — ${stats.exosParEtat[etatId].map(([titre]) => titre).join(", ")}`;
+      const lines = doc.splitTextToSize(texte, 180);
+      doc.text(lines, marge, y); y += lines.length * 5.5 + 2;
+    });
+    y += 4;
+  }
+
+  return y;
+}
+
 function genererPdfJournal(entriesFiltrees, champs, periodeLabel, personalInfo, safetyPlan) {
   const doc = new jsPDF();
   const marge = 15;
@@ -3359,7 +3442,15 @@ function genererPdfJournal(entriesFiltrees, champs, periodeLabel, personalInfo, 
   doc.text(disclaimerLines, marge, y); y += disclaimerLines.length * 5 + 8;
   doc.setTextColor(40, 38, 34);
 
-  y = ajouterEntreesJournal(doc, marge, y, entriesFiltrees, champs);
+  if (champs.stats) {
+    y = ajouterSectionStatistiques(doc, marge, y, entriesFiltrees);
+    y += 6;
+  }
+
+  const detailsActifs = champs.dates || champs.etats || champs.intensites || champs.protection || champs.exercices || champs.retours;
+  if (detailsActifs) {
+    y = ajouterEntreesJournal(doc, marge, y, entriesFiltrees, champs);
+  }
 
   if (safetyPlan && safetyPlanHasContent(safetyPlan)) {
     y += 6;
@@ -3601,6 +3692,8 @@ function CeQuiMaide({ c, onBack, feedback, customExercises, entries, onPick, onG
 
 function Journal({ c, onBack, entries, onGoExport, onGoRdv }) {
   const [showHelp, setShowHelp] = useState(false);
+  const [showStats, setShowStats] = useState(true);
+  const stats = calculerStatistiques(entries);
   return (
     <div>
       <BackRow c={c} onBack={onBack} label="Retour à l'accueil" />
@@ -3645,6 +3738,78 @@ function Journal({ c, onBack, entries, onGoExport, onGoRdv }) {
             Préparer mon prochain rendez-vous
           </button>
         </div>
+      )}
+
+      {stats.totalCheckins > 0 && (
+        <Card c={c} style={{ marginBottom: 18 }}>
+          <button onClick={() => setShowStats((s) => !s)} style={{
+            width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer",
+            display: "flex", justifyContent: "space-between", alignItems: "center", padding: 0,
+          }}>
+            <span style={{ color: c.text, fontSize: 15, fontWeight: 600 }}>Statistiques</span>
+            <span style={{ color: c.textSoft }}>{showStats ? "–" : "+"}</span>
+          </button>
+          {showStats && (
+            <div style={{ marginTop: 16 }}>
+              <div style={{ fontSize: 12, color: c.textSoft, marginBottom: 10 }}>
+                Sur l'ensemble de vos observations, vous avez le plus souvent indiqué vous reconnaître dans :
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 18 }}>
+                {stats.etatSorted.map(([etatId, count]) => {
+                  const s = NS_STATES.find((x) => x.id === etatId);
+                  const pct = Math.round((count / stats.totalCheckins) * 100);
+                  return (
+                    <div key={etatId}>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, color: c.text, marginBottom: 3 }}>
+                        <span>{s?.label || etatId}</span>
+                        <span style={{ color: c.textSoft }}>{count} fois</span>
+                      </div>
+                      <div style={{ height: 6, borderRadius: 999, background: c.bgAlt, overflow: "hidden" }}>
+                        <div style={{ height: "100%", width: `${pct}%`, borderRadius: 999, background: c[s?.color || "sage"] }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {stats.protectionSorted.length > 0 && (
+                <>
+                  <div style={{ fontSize: 12, color: c.textSoft, marginBottom: 10 }}>
+                    Réponses de protection que vous avez reconnues :
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 18 }}>
+                    {stats.protectionSorted.map(([id, count]) => {
+                      const f = FFFF_INFO.find((x) => x.id === id);
+                      return (
+                        <ExoTag key={id} family={PROTECTION_TO_FAMILY[id] || "limites"} c={c} small>
+                          {f?.label.split(" — ")[0]} · {count}
+                        </ExoTag>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+
+              {Object.keys(stats.exosParEtat).length > 0 && (
+                <>
+                  <div style={{ fontSize: 12, color: c.textSoft, marginBottom: 10 }}>
+                    Exercices que vous avez surtout essayés selon l'état repéré :
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {Object.entries(stats.exosParEtat).map(([etatId, exos]) => {
+                      const s = NS_STATES.find((x) => x.id === etatId);
+                      return (
+                        <div key={etatId} style={{ fontSize: 12.5, color: c.text, lineHeight: 1.6 }}>
+                          <strong>{s?.label || etatId}</strong> — {exos.map(([titre]) => titre).join(", ")}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </Card>
       )}
 
       {entries.length === 0 && (
