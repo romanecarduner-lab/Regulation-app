@@ -2119,6 +2119,8 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
   const [showHelp, setShowHelp] = useState(false);
   const [showJeNeSaisPas, setShowJeNeSaisPas] = useState(false);
   const [lastSurpriseId, setLastSurpriseId] = useState(null);
+  const [recherche, setRecherche] = useState("");
+  const [visibleCount, setVisibleCount] = useState(6);
 
   const allExercises = [...EXERCISES, ...customExercises];
   const notAvoided = allExercises.filter((ex) =>
@@ -2153,6 +2155,19 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
 
   const matchLevel = criteria.length === 0 ? 0 : (banner === "partial" ? 2 : banner === "per-criterion" ? 1 : 3);
 
+  const rechercheActive = recherche.trim().length > 0;
+  const resultatsRecherche = rechercheActive
+    ? notAvoided.filter((ex) => {
+        const q = recherche.trim().toLowerCase();
+        return ex.titre.toLowerCase().includes(q) || ex.objectif.toLowerCase().includes(q);
+      })
+    : null;
+
+  useEffect(() => { setVisibleCount(6); }, [f.etat, f.besoin, f.protection, f.canal, f.duree, f.tag, f.family, recherche]);
+
+  const listeAffichee = rechercheActive ? resultatsRecherche : list.slice(0, visibleCount);
+  const resteAAfficher = rechercheActive ? 0 : Math.max(0, list.length - visibleCount);
+
   return (
     <div>
       <BackRow c={c} onBack={onBack} />
@@ -2167,6 +2182,26 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
         Vous pouvez arrêter à tout moment. Il n'existe pas un exercice qui convient à tout le monde — l'objectif
         est de découvrir progressivement ce qui vous aide, ce qui vous aide parfois, et ce que vous préférez éviter.
       </p>
+
+      <div style={{ position: "relative", marginBottom: 14 }}>
+        <input
+          type="text"
+          value={recherche}
+          onChange={(e) => setRecherche(e.target.value)}
+          placeholder="Chercher un exercice par son nom…"
+          style={{
+            width: "100%", borderRadius: 14, border: `1px solid ${c.border}`, background: c.card,
+            color: c.text, padding: "12px 40px 12px 14px", fontFamily: fontBody, fontSize: 14,
+          }}
+        />
+        {recherche && (
+          <button onClick={() => setRecherche("")} aria-label="Effacer la recherche"
+            style={{
+              position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)",
+              background: "none", border: "none", color: c.textSoft, fontSize: 16, cursor: "pointer",
+            }}>×</button>
+        )}
+      </div>
 
       {showHelp && (
         <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 16 }}>
@@ -2190,6 +2225,7 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
         </Card>
       )}
 
+      {!rechercheActive && (
       <div style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
         <button onClick={() => setShowFacets((s) => !s)} style={{ fontSize: 12.5, color: c.text, background: c.bgAlt, border: "none", borderRadius: 999, padding: "8px 13px", cursor: "pointer" }}>
           {showFacets ? "Masquer les filtres" : "Affiner ma recherche"}
@@ -2207,8 +2243,9 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
           Je ne sais pas quoi choisir
         </button>
       </div>
+      )}
 
-      {showJeNeSaisPas && (
+      {!rechercheActive && showJeNeSaisPas && (
         <Card c={c} style={{ marginBottom: 14, background: c.bgAlt, border: "none" }}>
           <p style={{ fontSize: 12.5, color: c.textSoft, margin: "0 0 10px", lineHeight: 1.6 }}>
             C'est possible. Vous pouvez commencer sans filtre, répondre à quelques questions, ou choisir ce qui
@@ -2223,7 +2260,7 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
         </Card>
       )}
 
-      {criteria.length > 0 && (
+      {!rechercheActive && criteria.length > 0 && (
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
           {criteria.map((crit) => (
             <span key={crit.type} style={{
@@ -2277,7 +2314,7 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
         </Card>
       )}
 
-      {showFacets && (
+      {!rechercheActive && showFacets && (
         <Card c={c} style={{ marginBottom: 16 }}>
           <FacetRow title="Mon état actuel" options={ETATS_LIST} value={f.etat} onToggle={(v) => setF({ ...f, etat: v })} c={c} />
           <FacetRow title="Ce dont j'ai besoin" options={BESOINS_LIST} value={f.besoin} onToggle={(v) => setF({ ...f, besoin: v })} c={c} />
@@ -2288,18 +2325,20 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
         </Card>
       )}
 
-      <Btn c={c} variant="soft" onClick={() => {
-        const pool = list.length > 0 ? list : notAvoided;
-        const surprise = pickSurprise(pool, feedback, f.etat, lastSurpriseId);
-        if (surprise) {
-          setLastSurpriseId(surprise.id);
-          onPick(surprise);
-        }
-      }} style={{ marginBottom: 16 }}>
-        🎲 Proposez-moi quelque chose de différent
-      </Btn>
+      {!rechercheActive && (
+        <Btn c={c} variant="soft" onClick={() => {
+          const pool = list.length > 0 ? list : notAvoided;
+          const surprise = pickSurprise(pool, feedback, f.etat, lastSurpriseId);
+          if (surprise) {
+            setLastSurpriseId(surprise.id);
+            onPick(surprise);
+          }
+        }} style={{ marginBottom: 16 }}>
+          🎲 Proposez-moi quelque chose de différent
+        </Btn>
+      )}
 
-      {banner === "partial" && (
+      {!rechercheActive && banner === "partial" && (
         <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 14 }}>
           <p style={{ margin: 0, fontSize: 13.5, color: c.textSoft, lineHeight: 1.6 }}>
             Aucun exercice ne correspond exactement à tout ce que vous décrivez en même temps. Voici ce qui
@@ -2308,7 +2347,7 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
         </Card>
       )}
 
-      {banner === "per-criterion" && (
+      {!rechercheActive && banner === "per-criterion" && (
         <div style={{ marginBottom: 16 }}>
           <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 12 }}>
             <p style={{ margin: 0, fontSize: 13.5, color: c.textSoft, lineHeight: 1.6 }}>
@@ -2339,21 +2378,29 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
         </div>
       )}
 
-      {(banner === "partial" || banner === "per-criterion") && (
+      {!rechercheActive && (banner === "partial" || banner === "per-criterion") && (
         <Btn c={c} variant="ghost" onClick={() => setF({ etat: null, besoin: null, protection: null, canal: null, duree: null, tag: null, family: null, avoid: f.avoid })} style={{ marginBottom: 14 }}>
           Réinitialiser mes critères
         </Btn>
       )}
 
+      {rechercheActive && (
+        <p style={{ fontSize: 12.5, color: c.textSoft, marginBottom: 12 }}>
+          {listeAffichee.length === 0
+            ? "Aucun exercice ne correspond à cette recherche."
+            : `${listeAffichee.length} exercice${listeAffichee.length > 1 ? "s" : ""} trouvé${listeAffichee.length > 1 ? "s" : ""}`}
+        </p>
+      )}
+
       <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
-        {list.map((ex) => (
+        {listeAffichee.map((ex) => (
           <div key={ex.id} onClick={() => onPick(ex, matchLevel, criteria)} role="button" tabIndex={0}
             onKeyDown={(e) => { if (e.key === "Enter") onPick(ex, matchLevel, criteria); }}
             style={{ textAlign: "left", cursor: "pointer", border: `1px solid ${c.border}`, background: c.card, borderRadius: 18, padding: 16 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, gap: 8 }}>
               <span style={{ fontWeight: 700, color: c.text }}>{ex.titre}</span>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <MatchDots c={c} level={matchLevel} />
+                <MatchDots c={c} level={rechercheActive ? 0 : matchLevel} />
                 <button onClick={(e) => { e.stopPropagation(); setF((prev) => ({ ...prev, duree: ex.duree })); }}
                   style={{ fontSize: 12, color: c.textSoft, whiteSpace: "nowrap", background: "none", border: "none", cursor: "pointer", fontFamily: fontBody, padding: 0 }}>
                   {DUREE_LIST.find((d) => d.id === ex.duree)?.label}
@@ -2366,6 +2413,12 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
           </div>
         ))}
       </div>
+
+      {resteAAfficher > 0 && (
+        <Btn c={c} variant="secondary" onClick={() => setVisibleCount((n) => n + 8)} style={{ marginBottom: 16 }}>
+          Voir {Math.min(8, resteAAfficher)} exercice{Math.min(8, resteAAfficher) > 1 ? "s" : ""} de plus <span>↓</span>
+        </Btn>
+      )}
 
       <Btn c={c} variant="secondary" onClick={onGoCreate}>Créer mon propre exercice <span>+</span></Btn>
     </div>
@@ -2394,7 +2447,21 @@ const BREATHING_PATTERNS = [
   ] },
 ];
 
-function jouerTonaliteRespiration(ctxRef, frequence) {
+const BULLE_COULEURS = [
+  { id: "sage", label: "Vert doux" },
+  { id: "blue", label: "Bleu doux" },
+  { id: "ocre", label: "Ocre doux" },
+  { id: "terracotta", label: "Terracotta doux" },
+  { id: "violet", label: "Violet doux" },
+];
+
+const SONS_RESPIRATION = [
+  { id: "douce", label: "Douce", type: "sine", inspire: 480, expire: 340 },
+  { id: "grave", label: "Grave", type: "sine", inspire: 260, expire: 180 },
+  { id: "cristalline", label: "Cristalline", type: "triangle", inspire: 620, expire: 440 },
+];
+
+function jouerTonaliteRespiration(ctxRef, frequence, waveform = "sine") {
   try {
     if (!ctxRef.current) {
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -2404,7 +2471,7 @@ function jouerTonaliteRespiration(ctxRef, frequence) {
     const ctx = ctxRef.current;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-    osc.type = "sine";
+    osc.type = waveform;
     osc.frequency.value = frequence;
     gain.gain.setValueAtTime(0.0001, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.05);
@@ -2423,18 +2490,22 @@ function BreathingBall({ c }) {
   const [running, setRunning] = useState(false);
   const [phaseIndex, setPhaseIndex] = useState(0);
   const [soundOn, setSoundOn] = useState(false);
+  const [soundId, setSoundId] = useState("douce");
+  const [couleurId, setCouleurId] = useState("sage");
+  const [showReglages, setShowReglages] = useState(false);
   const audioCtxRef = useState(() => ({ current: null }))[0];
 
   const pattern = BREATHING_PATTERNS.find((p) => p.id === patternId);
   const phase = pattern.phases[phaseIndex];
+  const son = SONS_RESPIRATION.find((s) => s.id === soundId);
 
   useEffect(() => {
     if (!running) return;
-    if (soundOn) jouerTonaliteRespiration(audioCtxRef, phase.scale === 1 ? 480 : 340);
+    if (soundOn) jouerTonaliteRespiration(audioCtxRef, phase.scale === 1 ? son.inspire : son.expire, son.type);
     const t = setTimeout(() => setPhaseIndex((i) => (i + 1) % pattern.phases.length), phase.duree);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [running, phaseIndex, patternId, soundOn]);
+  }, [running, phaseIndex, patternId, soundOn, soundId]);
 
   useEffect(() => () => { if (audioCtxRef.current) audioCtxRef.current.close(); }, [audioCtxRef]);
 
@@ -2444,7 +2515,7 @@ function BreathingBall({ c }) {
     <Card c={c} style={{ marginBottom: 16 }}>
       <div style={{
         width: 150, height: 150, borderRadius: "50%", margin: "10px auto 18px",
-        background: c.sageSoft, border: `2px solid ${c.sage}`,
+        background: c[couleurId + "Soft"], border: `2px solid ${c[couleurId]}`,
         display: "flex", alignItems: "center", justifyContent: "center",
         transform: `scale(${running ? phase.scale : 0.65})`,
         transition: running ? `transform ${phase.duree}ms ease-in-out` : "transform 0.4s ease",
@@ -2467,7 +2538,7 @@ function BreathingBall({ c }) {
         ))}
       </div>
 
-      <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+      <div style={{ display: "flex", gap: 10, justifyContent: "center", marginBottom: showReglages ? 16 : 0 }}>
         <Btn c={c} variant="primary" onClick={() => setRunning((r) => !r)} style={{ flex: "none", width: "auto", padding: "12px 22px" }}>
           {running ? "Mettre en pause" : "Démarrer"}
         </Btn>
@@ -2478,7 +2549,43 @@ function BreathingBall({ c }) {
           }}>
           {soundOn ? "🔊" : "🔈"}
         </button>
+        <button onClick={() => setShowReglages((s) => !s)} aria-label="Personnaliser la couleur et le son"
+          style={{
+            border: `1px solid ${c.border}`, background: c.card, color: c.text,
+            borderRadius: 999, padding: "12px 16px", cursor: "pointer", fontSize: 14,
+          }}>
+          🎨
+        </button>
       </div>
+
+      {showReglages && (
+        <div style={{ paddingTop: 16, borderTop: `1px solid ${c.border}` }}>
+          <div style={{ fontSize: 12, color: c.textSoft, marginBottom: 8 }}>Couleur de la bulle</div>
+          <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+            {BULLE_COULEURS.map((col) => (
+              <button key={col.id} onClick={() => setCouleurId(col.id)} aria-label={col.label}
+                style={{
+                  width: 30, height: 30, borderRadius: "50%", cursor: "pointer",
+                  background: c[col.id + "Soft"],
+                  border: couleurId === col.id ? `2px solid ${c[col.id]}` : `1px solid ${c.border}`,
+                }} />
+            ))}
+          </div>
+          <div style={{ fontSize: 12, color: c.textSoft, marginBottom: 8 }}>Type de son</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+            {SONS_RESPIRATION.map((s) => (
+              <button key={s.id} onClick={() => setSoundId(s.id)}
+                style={{
+                  padding: "7px 12px", borderRadius: 999, fontSize: 12, cursor: "pointer",
+                  border: `1px solid ${soundId === s.id ? c.sage : c.border}`,
+                  background: soundId === s.id ? c.sageSoft : c.card, color: c.text,
+                }}>
+                {s.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </Card>
   );
 }
