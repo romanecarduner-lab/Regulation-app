@@ -575,6 +575,12 @@ const EXERCISES = [
     ],
     precaution: "Si penser à un échange augmente nettement votre activation, votre confusion ou votre sentiment d'insécurité, vous pouvez arrêter l'exercice et revenir à quelque chose de plus concret dans le présent : regarder autour de vous, sentir un support stable ou choisir un exercice d'orientation.",
     sensible: [] },
+
+  { id: "coherence-cardiaque", titre: "Respiration guidée (bulle visuelle)", type: "breathing", etats: ["tolerance", "hyperactivation"], besoins: ["corps"], protection: [], canaux: ["visuel"], duree: "5min", materiel: null,
+    objectif: "Ralentir progressivement le rythme respiratoire à l'aide d'un repère visuel, si la respiration vous convient aujourd'hui.",
+    etapes: ["Une bulle grossit pendant l'inspiration et rapetisse pendant l'expiration — suivez son rythme à votre aise.", "Vous pouvez choisir le rythme qui vous convient (cohérence cardiaque, respiration carrée, 4-7-8, expiration allongée), activer ou couper le son, et vous arrêter à tout moment."],
+    precaution: "Porter attention à sa respiration ne convient pas à tout le monde : cela peut, chez certaines personnes, augmenter l'inconfort ou la sensation d'alerte plutôt que de l'apaiser. Si c'est votre cas, vous pouvez arrêter et choisir un exercice d'orientation ou de contact avec le corps à la place.",
+    sensible: ["respiration"] },
 ];
 
 /* ---------------------------------------------------------------
@@ -1992,7 +1998,7 @@ const THEMES = [
 function pickSurprise(pool, feedback, etat, excludeId) {
   let candidates = pool;
   if (etat === "dissociation") {
-    const restreint = candidates.filter((ex) => !ex.sensible.some((s) => ["yeux_fermes", "interoception", "imagination"].includes(s)));
+    const restreint = candidates.filter((ex) => !ex.sensible.some((s) => ["yeux_fermes", "interoception", "imagination", "respiration"].includes(s)));
     if (restreint.length > 0) candidates = restreint;
   }
   // Éviter de retirer immédiatement le même exercice deux fois de suite, si le choix le permet
@@ -2366,6 +2372,117 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
   );
 }
 
+const BREATHING_PATTERNS = [
+  { id: "coherence", label: "Cohérence cardiaque (5 s / 5 s)", phases: [
+    { nom: "Inspirez", duree: 5000, scale: 1 },
+    { nom: "Expirez", duree: 5000, scale: 0.42 },
+  ] },
+  { id: "carree", label: "Respiration carrée (4-4-4-4)", phases: [
+    { nom: "Inspirez", duree: 4000, scale: 1 },
+    { nom: "Retenez", duree: 4000, scale: 1 },
+    { nom: "Expirez", duree: 4000, scale: 0.42 },
+    { nom: "Retenez", duree: 4000, scale: 0.42 },
+  ] },
+  { id: "478", label: "4-7-8", phases: [
+    { nom: "Inspirez", duree: 4000, scale: 1 },
+    { nom: "Retenez", duree: 7000, scale: 1 },
+    { nom: "Expirez", duree: 8000, scale: 0.42 },
+  ] },
+  { id: "longue-expiration", label: "Expiration allongée (4 s / 6 s)", phases: [
+    { nom: "Inspirez", duree: 4000, scale: 1 },
+    { nom: "Expirez", duree: 6000, scale: 0.42 },
+  ] },
+];
+
+function jouerTonaliteRespiration(ctxRef, frequence) {
+  try {
+    if (!ctxRef.current) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      ctxRef.current = new AC();
+    }
+    const ctx = ctxRef.current;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.value = frequence;
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.5);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.55);
+  } catch {
+    // silence en cas d'API audio indisponible — l'exercice reste utilisable sans son
+  }
+}
+
+function BreathingBall({ c }) {
+  const [patternId, setPatternId] = useState("coherence");
+  const [running, setRunning] = useState(false);
+  const [phaseIndex, setPhaseIndex] = useState(0);
+  const [soundOn, setSoundOn] = useState(false);
+  const audioCtxRef = useState(() => ({ current: null }))[0];
+
+  const pattern = BREATHING_PATTERNS.find((p) => p.id === patternId);
+  const phase = pattern.phases[phaseIndex];
+
+  useEffect(() => {
+    if (!running) return;
+    if (soundOn) jouerTonaliteRespiration(audioCtxRef, phase.scale === 1 ? 480 : 340);
+    const t = setTimeout(() => setPhaseIndex((i) => (i + 1) % pattern.phases.length), phase.duree);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [running, phaseIndex, patternId, soundOn]);
+
+  useEffect(() => () => { if (audioCtxRef.current) audioCtxRef.current.close(); }, [audioCtxRef]);
+
+  const choisirPattern = (id) => { setPatternId(id); setPhaseIndex(0); setRunning(false); };
+
+  return (
+    <Card c={c} style={{ marginBottom: 16 }}>
+      <div style={{
+        width: 150, height: 150, borderRadius: "50%", margin: "10px auto 18px",
+        background: c.sageSoft, border: `2px solid ${c.sage}`,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        transform: `scale(${running ? phase.scale : 0.65})`,
+        transition: running ? `transform ${phase.duree}ms ease-in-out` : "transform 0.4s ease",
+      }}>
+        <span style={{ fontSize: 14, fontWeight: 600, color: c.text }}>
+          {running ? phase.nom : "Prêt·e ?"}
+        </span>
+      </div>
+
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 7, justifyContent: "center", marginBottom: 16 }}>
+        {BREATHING_PATTERNS.map((p) => (
+          <button key={p.id} onClick={() => choisirPattern(p.id)}
+            style={{
+              padding: "7px 12px", borderRadius: 999, fontSize: 12, cursor: "pointer",
+              border: `1px solid ${patternId === p.id ? c.sage : c.border}`,
+              background: patternId === p.id ? c.sageSoft : c.card, color: c.text,
+            }}>
+            {p.label}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+        <Btn c={c} variant="primary" onClick={() => setRunning((r) => !r)} style={{ flex: "none", width: "auto", padding: "12px 22px" }}>
+          {running ? "Mettre en pause" : "Démarrer"}
+        </Btn>
+        <button onClick={() => setSoundOn((s) => !s)} aria-label={soundOn ? "Couper le son" : "Activer le son"}
+          style={{
+            border: `1px solid ${c.border}`, background: soundOn ? c.sageSoft : c.card, color: c.text,
+            borderRadius: 999, padding: "12px 16px", cursor: "pointer", fontSize: 14,
+          }}>
+          {soundOn ? "🔊" : "🔈"}
+        </button>
+      </div>
+    </Card>
+  );
+}
+
 function Exercise({ c, exercise, raison, onStop, onRevenirListe, onEssayerAutreChose, onFinish, onFilterByTag }) {
   const [step, setStep] = useState("do"); // do | pas-maintenant | remarque | continuer | feedback
   const [remarque, setRemarque] = useState(null);
@@ -2471,11 +2588,15 @@ function Exercise({ c, exercise, raison, onStop, onRevenirListe, onEssayerAutreC
           ))}
         </div>
       )}
-      <Card c={c} style={{ marginBottom: 16 }}>
-        {etapesAffichees.map((et, i) => (
-          <p key={i} style={{ margin: i === 0 ? 0 : "10px 0 0", fontSize: 15.5, lineHeight: 1.65, color: c.text }}>{et}</p>
-        ))}
-      </Card>
+      {exercise.type === "breathing" ? (
+        <BreathingBall c={c} />
+      ) : (
+        <Card c={c} style={{ marginBottom: 16 }}>
+          {etapesAffichees.map((et, i) => (
+            <p key={i} style={{ margin: i === 0 ? 0 : "10px 0 0", fontSize: 15.5, lineHeight: 1.65, color: c.text }}>{et}</p>
+          ))}
+        </Card>
+      )}
       {exercise.precaution && (
         <Card c={c} style={{ background: c.terracottaSoft, border: "none", marginBottom: 20 }}>
           <p style={{ margin: 0, fontSize: 12.5, color: c.text, lineHeight: 1.6 }}>{exercise.precaution}</p>
