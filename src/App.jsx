@@ -922,6 +922,7 @@ export default function App() {
   });
   const [avoidPrefs, setAvoidPrefs] = useState([]);
   const [exoFeedback, setExoFeedback] = useState({});
+  const [exoNotes, setExoNotes] = useState({});
   const [customExercises, setCustomExercises] = useState([]);
 
   // persisted data
@@ -950,6 +951,7 @@ export default function App() {
       const zp = await loadJSON("zone:personnalisation", null);
       const ap = await loadJSON("exo:avoid", []);
       const fb = await loadJSON("exo:feedback", {});
+      const notes = await loadJSON("exo:notes", {});
       const ce = await loadJSON("exo:custom", []);
       const pi = await loadJSON("profil:info", null);
       setTheme(t);
@@ -958,6 +960,7 @@ export default function App() {
       if (zp) setZonePerso(zp);
       setAvoidPrefs(ap);
       setExoFeedback(fb);
+      setExoNotes(notes);
       setCustomExercises(ce);
       if (pi) setPersonalInfo(pi);
       setLoading(false);
@@ -1022,6 +1025,13 @@ export default function App() {
     setExoFeedback(next);
     await saveJSON("exo:feedback", next);
   };
+  const saveExoNote = async (id, texte) => {
+    const next = { ...exoNotes };
+    if (texte && texte.trim()) next[id] = texte;
+    else delete next[id];
+    setExoNotes(next);
+    await saveJSON("exo:notes", next);
+  };
   const saveCustomExercise = async (ex) => {
     const next = [...customExercises, ex];
     setCustomExercises(next);
@@ -1037,6 +1047,7 @@ export default function App() {
       await window.storage.delete("zone:personnalisation", false);
       await window.storage.delete("exo:avoid", false);
       await window.storage.delete("exo:feedback", false);
+      await window.storage.delete("exo:notes", false);
       await window.storage.delete("exo:custom", false);
       await window.storage.delete("profil:info", false);
     } catch {}
@@ -1045,6 +1056,7 @@ export default function App() {
     setZonePerso({ hyper: "", hypo: "", tolerance: "", signes: "" });
     setAvoidPrefs([]);
     setExoFeedback({});
+    setExoNotes({});
     setCustomExercises([]);
     setPersonalInfo({ nom: "", prenom: "", dateNaissance: "" });
     goBackHome();
@@ -1267,6 +1279,7 @@ export default function App() {
 
         {screen === "exercise" && activeExercise && (
           <Exercise c={c} exercise={activeExercise} raison={activeExerciseRaison}
+            savedNote={exoNotes[activeExercise.id] || ""} onSaveNote={(texte) => saveExoNote(activeExercise.id, texte)}
             onStop={goBackHome}
             onRevenirListe={goBack}
             onEssayerAutreChose={() => goTo("library")}
@@ -2834,11 +2847,16 @@ function BreathingBall({ c }) {
   );
 }
 
-function Exercise({ c, exercise, raison, onStop, onRevenirListe, onEssayerAutreChose, onFinish, onFilterByTag }) {
+const EXERCICES_AVEC_NOTE = ["lieu-ressource", "cercle-des-ressources", "figure-soutenante", "paysage-appuis", "le-contenant"];
+
+function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onRevenirListe, onEssayerAutreChose, onFinish, onFilterByTag }) {
   const [step, setStep] = useState("do"); // do | pas-maintenant | remarque | feedback | continuer
   const [remarque, setRemarque] = useState(null);
   const [effet, setEffet] = useState(null);
   const [varianteIdx, setVarianteIdx] = useState(0); // 0 = version principale
+  const [noteTexte, setNoteTexte] = useState(savedNote || "");
+  const [noteSaved, setNoteSaved] = useState(false);
+  const peutNoter = EXERCICES_AVEC_NOTE.includes(exercise.id);
   const versions = [{ label: "Version principale", etapes: exercise.etapes }, ...(exercise.variantes || [])];
   const etapesAffichees = versions[varianteIdx]?.etapes || exercise.etapes;
 
@@ -2924,6 +2942,12 @@ function Exercise({ c, exercise, raison, onStop, onRevenirListe, onEssayerAutreC
         </Card>
       )}
       <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 14, fontStyle: "italic" }}>{exercise.objectif}</p>
+      {peutNoter && savedNote && (
+        <Card c={c} style={{ background: c.sageSoft, border: "none", marginBottom: 14 }}>
+          <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 4 }}>Ce que vous aviez noté la dernière fois :</div>
+          <p style={{ margin: 0, fontSize: 13, color: c.text, lineHeight: 1.6 }}>{savedNote}</p>
+        </Card>
+      )}
       {exercise.materiel && (
         <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 14 }}>
           <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft }}>Matériel utile : {exercise.materiel}</p>
@@ -2957,6 +2981,29 @@ function Exercise({ c, exercise, raison, onStop, onRevenirListe, onEssayerAutreC
           <p style={{ margin: 0, fontSize: 12.5, color: c.text, lineHeight: 1.6 }}>{exercise.precaution}</p>
         </Card>
       )}
+
+      {peutNoter && (
+        <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 20 }}>
+          <p style={{ margin: "0 0 10px", fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+            Vous pouvez noter ici ce que vous avez imaginé, pour vous en souvenir la prochaine fois — c'est
+            facultatif, et vous pourrez le modifier à tout moment.
+          </p>
+          <textarea
+            value={noteTexte}
+            onChange={(e) => { setNoteTexte(e.target.value); setNoteSaved(false); }}
+            rows={3}
+            placeholder="Par exemple : un endroit, une présence, un contenant, ou ce que vous y avez déposé…"
+            style={{
+              width: "100%", borderRadius: 12, border: `1px solid ${c.border}`, background: c.card,
+              color: c.text, padding: 10, fontFamily: fontBody, fontSize: 13.5, resize: "vertical", marginBottom: 10,
+            }}
+          />
+          <Btn c={c} variant="secondary" onClick={() => { onSaveNote(noteTexte); setNoteSaved(true); }}>
+            {noteSaved ? "Enregistré ✓" : "Enregistrer ma note"}
+          </Btn>
+        </Card>
+      )}
+
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <Btn c={c} variant="primary" onClick={() => setStep("remarque")}>Continuer <span>✓</span></Btn>
         <Btn c={c} variant="secondary" onClick={onEssayerAutreChose}>Faire autrement</Btn>
