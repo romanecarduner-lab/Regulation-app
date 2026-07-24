@@ -1336,7 +1336,7 @@ export default function App() {
         )}
 
         {screen === "exercise-done" && (
-          <ExerciseDone c={c} goBackHome={goBackHome} onAnother={() => goTo("library")} />
+          <ExerciseDone c={c} goBackHome={goBackHome} onAnother={() => goTo("library")} onRetry={() => goTo("exercise")} />
         )}
 
         {screen === "safety" && (
@@ -2930,7 +2930,7 @@ function BreathingBall({ c }) {
 const EXERCICES_AVEC_NOTE = ["lieu-ressource", "cercle-des-ressources", "figure-soutenante", "paysage-appuis", "le-contenant"];
 
 function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onRevenirListe, onEssayerAutreChose, onFinish, onFilterByTag }) {
-  const [step, setStep] = useState("do"); // do | pas-maintenant | remarque | feedback | continuer
+  const [step, setStep] = useState("do"); // do | pas-maintenant | remarque | feedback
   const [remarque, setRemarque] = useState(null);
   const [effet, setEffet] = useState(null);
   const [varianteIdx, setVarianteIdx] = useState(0); // 0 = version principale
@@ -2976,20 +2976,8 @@ function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onReveni
         <p style={{ color: c.textSoft, fontSize: 13, marginBottom: 16 }}>Sans jugement — juste pour ajuster votre bibliothèque.</p>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {FEEDBACK_OPTIONS.map((o) => (
-            <Btn key={o} c={c} variant="secondary" onClick={() => { setEffet(o); setStep("continuer"); }}>{o}</Btn>
+            <Btn key={o} c={c} variant="secondary" onClick={() => { setEffet(o); onFinish(o, remarque); }}>{o}</Btn>
           ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (step === "continuer") {
-    return (
-      <div>
-        <ScreenTitle c={c}>Souhaitez-vous continuer ?</ScreenTitle>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <Btn c={c} variant="secondary" onClick={() => setStep("do")}>Essayer à nouveau cet exercice</Btn>
-          <Btn c={c} variant="secondary" onClick={() => onFinish(effet, remarque)}>Essayer autre chose / arrêter ici</Btn>
         </div>
       </div>
     );
@@ -3093,7 +3081,7 @@ function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onReveni
   );
 }
 
-function ExerciseDone({ c, goBackHome, onAnother }) {
+function ExerciseDone({ c, goBackHome, onAnother, onRetry }) {
   return (
     <div>
       <ScreenTitle c={c}>Merci d'avoir essayé.</ScreenTitle>
@@ -3102,6 +3090,7 @@ function ExerciseDone({ c, goBackHome, onAnother }) {
         n'est pas une performance — simplement une observation de plus sur ce qui vous aide ou non.
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <Btn c={c} variant="secondary" onClick={onRetry}>Refaire ce même exercice</Btn>
         <Btn c={c} variant="secondary" onClick={onAnother}>Essayer un autre exercice</Btn>
         <Btn c={c} variant="ghost" onClick={goBackHome}>Revenir à l'accueil</Btn>
       </div>
