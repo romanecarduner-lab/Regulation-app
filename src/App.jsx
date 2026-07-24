@@ -3121,13 +3121,26 @@ function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onReveni
               <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.65, color: c.text }}>{etapesAffichees[etapeIndex]}</p>
             )}
           </Card>
-          {!voirTout && etapesAffichees.length > 1 && etapeIndex > 0 && (
-            <button onClick={() => setEtapeIndex((i) => Math.max(0, i - 1))} style={{
-              background: "none", border: "none", color: c.textSoft, fontSize: 12.5,
-              cursor: "pointer", padding: 0, marginBottom: 16, display: "block",
-            }}>
-              ← Revenir à l'étape précédente
-            </button>
+          {!voirTout && etapesAffichees.length > 1 && (
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
+              <button onClick={() => setEtapeIndex((i) => Math.max(0, i - 1))} aria-label="Étape précédente"
+                style={{
+                  visibility: etapeIndex > 0 ? "visible" : "hidden",
+                  width: 44, height: 44, borderRadius: "50%", border: `1px solid ${c.border}`,
+                  background: c.card, color: c.text, fontSize: 18, cursor: "pointer",
+                }}>
+                ←
+              </button>
+              {!derniereEtape && (
+                <button onClick={() => setEtapeIndex((i) => i + 1)} aria-label="Étape suivante"
+                  style={{
+                    width: 44, height: 44, borderRadius: "50%", border: "none",
+                    background: c.sage, color: "#fff", fontSize: 18, cursor: "pointer",
+                  }}>
+                  →
+                </button>
+              )}
+            </div>
           )}
         </>
       )}
@@ -3137,8 +3150,16 @@ function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onReveni
         </Card>
       )}
 
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: peutNoter ? 20 : 0 }}>
+        {(voirTout || derniereEtape || etapesAffichees.length <= 1) && (
+          <Btn c={c} variant="primary" onClick={() => setStep("remarque")}>J'ai terminé <span>✓</span></Btn>
+        )}
+        <Btn c={c} variant="secondary" onClick={onEssayerAutreChose}>Faire autrement</Btn>
+        <Btn c={c} variant="ghost" onClick={() => setStep("pas-maintenant")}>Pas maintenant</Btn>
+      </div>
+
       {peutNoter && (
-        <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 20 }}>
+        <Card c={c} style={{ background: c.bgAlt, border: "none" }}>
           <p style={{ margin: "0 0 10px", fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
             Vous pouvez noter ici ce que vous avez imaginé, pour vous en souvenir la prochaine fois — c'est
             facultatif, et vous pourrez le modifier à tout moment.
@@ -3158,16 +3179,6 @@ function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onReveni
           </Btn>
         </Card>
       )}
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {!voirTout && etapesAffichees.length > 1 && !derniereEtape ? (
-          <Btn c={c} variant="primary" onClick={() => setEtapeIndex((i) => i + 1)}>Continuer, un peu plus <span>→</span></Btn>
-        ) : (
-          <Btn c={c} variant="primary" onClick={() => setStep("remarque")}>J'ai terminé <span>✓</span></Btn>
-        )}
-        <Btn c={c} variant="secondary" onClick={onEssayerAutreChose}>Faire autrement</Btn>
-        <Btn c={c} variant="ghost" onClick={() => setStep("pas-maintenant")}>Pas maintenant</Btn>
-      </div>
     </div>
   );
 }
