@@ -2985,9 +2985,12 @@ function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onReveni
   const [varianteIdx, setVarianteIdx] = useState(0); // 0 = version principale
   const [noteTexte, setNoteTexte] = useState(savedNote || "");
   const [noteSaved, setNoteSaved] = useState(false);
+  const [etapeIndex, setEtapeIndex] = useState(0);
+  const [voirTout, setVoirTout] = useState(false);
   const peutNoter = EXERCICES_AVEC_NOTE.includes(exercise.id);
   const versions = [{ label: "Version principale", etapes: exercise.etapes }, ...(exercise.variantes || [])];
   const etapesAffichees = versions[varianteIdx]?.etapes || exercise.etapes;
+  const derniereEtape = etapeIndex >= etapesAffichees.length - 1;
 
   if (step === "pas-maintenant") {
     return (
@@ -3081,7 +3084,7 @@ function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onReveni
       {versions.length > 1 && (
         <div style={{ display: "flex", gap: 7, flexWrap: "wrap", marginBottom: 14 }}>
           {versions.map((v, i) => (
-            <button key={i} onClick={() => setVarianteIdx(i)}
+            <button key={i} onClick={() => { setVarianteIdx(i); setEtapeIndex(0); }}
               style={{
                 padding: "7px 12px", borderRadius: 999, fontSize: 12, cursor: "pointer",
                 border: `1px solid ${varianteIdx === i ? c.sage : c.border}`,
@@ -3095,11 +3098,38 @@ function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onReveni
       {exercise.type === "breathing" ? (
         <BreathingBall c={c} />
       ) : (
-        <Card c={c} style={{ marginBottom: 16 }}>
-          {etapesAffichees.map((et, i) => (
-            <p key={i} style={{ margin: i === 0 ? 0 : "10px 0 0", fontSize: 15.5, lineHeight: 1.65, color: c.text }}>{et}</p>
-          ))}
-        </Card>
+        <>
+          {etapesAffichees.length > 1 && (
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <span style={{ fontSize: 11.5, color: c.textSoft }}>
+                {voirTout ? "Toutes les étapes" : `Étape ${etapeIndex + 1} sur ${etapesAffichees.length}`}
+              </span>
+              <button onClick={() => { setVoirTout((v) => !v); }} style={{
+                background: "none", border: "none", color: c.textSoft, fontSize: 11.5,
+                textDecoration: "underline", cursor: "pointer", padding: 0,
+              }}>
+                {voirTout ? "Revenir pas à pas" : "Voir toutes les étapes"}
+              </button>
+            </div>
+          )}
+          <Card c={c} style={{ marginBottom: 16 }}>
+            {voirTout ? (
+              etapesAffichees.map((et, i) => (
+                <p key={i} style={{ margin: i === 0 ? 0 : "10px 0 0", fontSize: 15.5, lineHeight: 1.65, color: c.text }}>{et}</p>
+              ))
+            ) : (
+              <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.65, color: c.text }}>{etapesAffichees[etapeIndex]}</p>
+            )}
+          </Card>
+          {!voirTout && etapesAffichees.length > 1 && etapeIndex > 0 && (
+            <button onClick={() => setEtapeIndex((i) => Math.max(0, i - 1))} style={{
+              background: "none", border: "none", color: c.textSoft, fontSize: 12.5,
+              cursor: "pointer", padding: 0, marginBottom: 16, display: "block",
+            }}>
+              ← Revenir à l'étape précédente
+            </button>
+          )}
+        </>
       )}
       {exercise.precaution && (
         <Card c={c} style={{ background: c.terracottaSoft, border: "none", marginBottom: 20 }}>
@@ -3130,7 +3160,11 @@ function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onReveni
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <Btn c={c} variant="primary" onClick={() => setStep("remarque")}>Continuer <span>✓</span></Btn>
+        {!voirTout && etapesAffichees.length > 1 && !derniereEtape ? (
+          <Btn c={c} variant="primary" onClick={() => setEtapeIndex((i) => i + 1)}>Continuer, un peu plus <span>→</span></Btn>
+        ) : (
+          <Btn c={c} variant="primary" onClick={() => setStep("remarque")}>J'ai terminé <span>✓</span></Btn>
+        )}
         <Btn c={c} variant="secondary" onClick={onEssayerAutreChose}>Faire autrement</Btn>
         <Btn c={c} variant="ghost" onClick={() => setStep("pas-maintenant")}>Pas maintenant</Btn>
       </div>
