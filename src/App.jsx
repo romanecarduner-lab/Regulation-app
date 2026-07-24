@@ -1322,6 +1322,7 @@ export default function App() {
             onStop={goBackHome}
             onRevenirListe={goBack}
             onEssayerAutreChose={() => { setLastExerciseId(activeExercise.id); goTo("library"); }}
+            onEditPerso={(ex) => { setEditingExercise(ex); goTo("exo-create"); }}
             onFilterByTag={(type, value) => {
               setLastExerciseId(activeExercise.id);
               setLibraryFilters(freshFilters(avoidPrefs, { [type]: value }));
@@ -2755,8 +2756,10 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <Btn c={c} variant="secondary" onClick={onGoMesExercices}>
+          Mes exercices personnalisés {customExercises.length > 0 ? `(${customExercises.length})` : ""} <span>→</span>
+        </Btn>
         <Btn c={c} variant="secondary" onClick={onGoCreate}>Créer mon propre exercice <span>+</span></Btn>
-        <Btn c={c} variant="ghost" onClick={onGoMesExercices}>Mes exercices personnalisés <span>→</span></Btn>
       </div>
     </div>
   );
@@ -2929,7 +2932,7 @@ function BreathingBall({ c }) {
 
 const EXERCICES_AVEC_NOTE = ["lieu-ressource", "cercle-des-ressources", "figure-soutenante", "paysage-appuis", "le-contenant"];
 
-function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onRevenirListe, onEssayerAutreChose, onFinish, onFilterByTag }) {
+function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onRevenirListe, onEssayerAutreChose, onFinish, onFilterByTag, onEditPerso }) {
   const [step, setStep] = useState("do"); // do | pas-maintenant | remarque | feedback
   const [remarque, setRemarque] = useState(null);
   const [effet, setEffet] = useState(null);
@@ -3010,6 +3013,14 @@ function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onReveni
         </Card>
       )}
       <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 14, fontStyle: "italic" }}>{exercise.objectif}</p>
+      {exercise.perso && onEditPerso && (
+        <button onClick={() => onEditPerso(exercise)} style={{
+          background: "none", border: "none", color: c.terracotta, fontSize: 12.5, fontWeight: 600,
+          cursor: "pointer", padding: 0, marginBottom: 14, display: "block",
+        }}>
+          ✎ Modifier ou supprimer cet exercice
+        </button>
+      )}
       {peutNoter && savedNote && (
         <Card c={c} style={{ background: c.sageSoft, border: "none", marginBottom: 14 }}>
           <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 4 }}>Ce que vous aviez noté la dernière fois :</div>
