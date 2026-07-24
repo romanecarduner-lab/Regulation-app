@@ -925,6 +925,8 @@ export default function App() {
   const [exoFeedback, setExoFeedback] = useState({});
   const [exoNotes, setExoNotes] = useState({});
   const [customExercises, setCustomExercises] = useState([]);
+  const [editingExercise, setEditingExercise] = useState(null);
+  const [selectedEntryIndex, setSelectedEntryIndex] = useState(null);
 
   // persisted data
   const [safetyPlan, setSafetyPlan] = useState({
@@ -984,6 +986,8 @@ export default function App() {
     setActiveExercise(null);
     setActiveExerciseRaison(null);
     setLastExerciseId(null);
+    setEditingExercise(null);
+    setSelectedEntryIndex(null);
     setLibraryFilters(freshFilters(avoidPrefs));
   }, [avoidPrefs]);
 
@@ -1035,10 +1039,32 @@ export default function App() {
     await saveJSON("exo:notes", next);
   };
   const saveCustomExercise = async (ex) => {
-    const next = [...customExercises, ex];
+    const exists = customExercises.some((e) => e.id === ex.id);
+    const next = exists ? customExercises.map((e) => (e.id === ex.id ? ex : e)) : [...customExercises, ex];
     setCustomExercises(next);
     await saveJSON("exo:custom", next);
-    goBackHome();
+    setEditingExercise(null);
+    goTo("mes-exercices-perso");
+  };
+
+  const deleteCustomExercise = async (id) => {
+    const next = customExercises.filter((e) => e.id !== id);
+    setCustomExercises(next);
+    await saveJSON("exo:custom", next);
+    if (exoFeedback[id]) {
+      const nf = { ...exoFeedback };
+      delete nf[id];
+      setExoFeedback(nf);
+      await saveJSON("exo:feedback", nf);
+    }
+    if (exoNotes[id]) {
+      const nn = { ...exoNotes };
+      delete nn[id];
+      setExoNotes(nn);
+      await saveJSON("exo:notes", nn);
+    }
+    setEditingExercise(null);
+    goTo("mes-exercices-perso");
   };
 
   const wipeAllData = async () => {
@@ -1096,6 +1122,7 @@ export default function App() {
             "library": { label: "Retour", onClick: goBack },
             "preferences": { label: "Retour", onClick: goBack },
             "exo-create": { label: "Retour", onClick: goBack },
+            "mes-exercices-perso": { label: "Retour", onClick: goBack },
             "tolerance-zone": { label: "Retour à l'accueil", onClick: goBackHome },
             "protection": { label: "Retour à l'accueil", onClick: goBackHome },
             "psychoed": { label: "Retour à l'accueil", onClick: goBackHome },
@@ -1103,6 +1130,7 @@ export default function App() {
             "nervous-system": { label: "Retour à l'accueil", onClick: goBackHome },
             "ce-qui-maide": { label: "Retour à l'accueil", onClick: goBackHome },
             "journal": { label: "Retour à l'accueil", onClick: goBackHome },
+            "journal-entry": { label: "Retour au journal", onClick: goBack },
             "journal-export": { label: "Retour au journal", onClick: goBack },
             "journal-export-preview": { label: "Modifier ma sélection", onClick: goBack },
             "rdv-export": { label: "Retour au journal", onClick: goBack },
@@ -1257,15 +1285,23 @@ export default function App() {
               goTo("exercise");
             }}
             onGoPreferences={() => goTo("preferences")}
-            onGoCreate={() => goTo("exo-create")} />
+            onGoCreate={() => { setEditingExercise(null); goTo("exo-create"); }}
+            onGoMesExercices={() => goTo("mes-exercices-perso")} />
         )}
 
         {screen === "preferences" && (
           <Preferences c={c} onBack={goBack} avoidPrefs={avoidPrefs} onSave={saveAvoidPrefs} />
         )}
 
+        {screen === "mes-exercices-perso" && (
+          <MesExercicesPerso c={c} customExercises={customExercises}
+            onEdit={(ex) => { setEditingExercise(ex); goTo("exo-create"); }}
+            onCreate={() => { setEditingExercise(null); goTo("exo-create"); }} />
+        )}
+
         {screen === "exo-create" && (
-          <CreateExercise c={c} onBack={goBack} onSave={saveCustomExercise} />
+          <CreateExercise c={c} onBack={goBack} onSave={saveCustomExercise}
+            existing={editingExercise} onDelete={deleteCustomExercise} />
         )}
 
         {screen === "tolerance-zone" && (
@@ -1320,7 +1356,19 @@ export default function App() {
         {screen === "journal" && (
           <Journal c={c} onBack={goBackHome} entries={entries}
             onGoExport={() => goTo("journal-export")}
-            onGoRdv={() => goTo("rdv-export")} />
+            onGoRdv={() => goTo("rdv-export")}
+            onSelectEntry={(i) => { setSelectedEntryIndex(i); goTo("journal-entry"); }} />
+        )}
+
+        {screen === "journal-entry" && (
+          <JournalEntryDetail c={c} entry={entries[selectedEntryIndex]} onBack={goBack}
+            onDelete={() => {
+              const next = entries.filter((_, i) => i !== selectedEntryIndex);
+              setEntries(next);
+              saveJSON("suivi:entries", next);
+              setSelectedEntryIndex(null);
+              goBack();
+            }} />
         )}
 
         {screen === "journal-export" && (
@@ -2385,7 +2433,7 @@ function ExerciseCardTags({ ex, c, feedback, customExercises, onFilterFamily, on
   );
 }
 
-function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExercises, onPick, onGoPreferences, onGoCreate, excludeExerciseId }) {
+function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExercises, onPick, onGoPreferences, onGoCreate, onGoMesExercices, excludeExerciseId }) {
   const [showFacets, setShowFacets] = useState(false);
   const [showAvoidPanel, setShowAvoidPanel] = useState(false);
   const [showThemes, setShowThemes] = useState(false);
@@ -2706,7 +2754,10 @@ function Library({ c, onBack, filters: f, setFilters: setF, feedback, customExer
         </Btn>
       )}
 
-      <Btn c={c} variant="secondary" onClick={onGoCreate}>Créer mon propre exercice <span>+</span></Btn>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <Btn c={c} variant="secondary" onClick={onGoCreate}>Créer mon propre exercice <span>+</span></Btn>
+        <Btn c={c} variant="ghost" onClick={onGoMesExercices}>Mes exercices personnalisés <span>→</span></Btn>
+      </div>
     </div>
   );
 }
@@ -3086,11 +3137,62 @@ function Preferences({ c, onBack, avoidPrefs, onSave }) {
   );
 }
 
-function CreateExercise({ c, onBack, onSave }) {
-  const [form, setForm] = useState({
-    titre: "", quandAide: "", duree: "2min", materiel: "", etapesText: "", aEviter: "", personne: "",
-    etats: [], besoins: [], canaux: [], protection: [], sensible: [],
+function MesExercicesPerso({ c, customExercises, onEdit, onCreate }) {
+  return (
+    <div>
+      <ScreenTitle c={c}>Mes exercices personnalisés</ScreenTitle>
+      <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 20 }}>
+        Retrouvez ici les exercices que vous avez construits vous-même. Vous pouvez les modifier ou les
+        supprimer à tout moment.
+      </p>
+
+      {customExercises.length === 0 ? (
+        <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 20 }}>
+          <p style={{ margin: 0, fontSize: 13.5, color: c.textSoft, lineHeight: 1.6 }}>
+            Vous n'avez pas encore créé d'exercice personnalisé.
+          </p>
+        </Card>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
+          {customExercises.map((ex) => (
+            <button key={ex.id} onClick={() => onEdit(ex)} style={{
+              textAlign: "left", cursor: "pointer", border: `1px solid ${c.border}`, background: c.card,
+              borderRadius: 16, padding: 14, display: "flex", alignItems: "center", gap: 12,
+            }}>
+              <FamilyBadge family={exerciseFamily(ex)} c={c} size={32} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: 700, fontSize: 14, color: c.text, marginBottom: 2 }}>{ex.titre}</div>
+                <div style={{ fontSize: 12, color: c.textSoft }}>{DUREE_LIST.find((d) => d.id === ex.duree)?.label}</div>
+              </div>
+              <span style={{ color: c.textSoft, fontSize: 13 }}>Modifier ›</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      <Btn c={c} variant="secondary" onClick={onCreate}>Créer un nouvel exercice <span>+</span></Btn>
+    </div>
+  );
+}
+
+function CreateExercise({ c, onBack, onSave, existing, onDelete }) {
+  const [form, setForm] = useState(() => {
+    if (!existing) {
+      return { titre: "", quandAide: "", duree: "2min", materiel: "", etapesText: "", aEviter: "", personne: "", etats: [], besoins: [], canaux: [], protection: [], sensible: [] };
+    }
+    return {
+      titre: existing.titre || "",
+      quandAide: existing.objectif && existing.objectif !== "Exercice personnalisé." ? existing.objectif : "",
+      duree: existing.duree || "2min",
+      materiel: existing.materiel || "",
+      etapesText: (existing.etapes || []).join("\n"),
+      aEviter: existing.precaution ? existing.precaution.replace(/^À éviter : /, "") : "",
+      personne: existing.personneRessource || "",
+      etats: existing.etats || [], besoins: existing.besoins || [], canaux: existing.canaux || [],
+      protection: existing.protection || [], sensible: existing.sensible || [],
+    };
   });
+  const [confirmSuppr, setConfirmSuppr] = useState(false);
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const toggleIn = (k, id) => setForm((f) => ({
     ...f, [k]: f[k].includes(id) ? f[k].filter((x) => x !== id) : [...f[k], id],
@@ -3099,7 +3201,7 @@ function CreateExercise({ c, onBack, onSave }) {
   const submit = () => {
     if (!form.titre.trim()) return;
     onSave({
-      id: "perso-" + Date.now(),
+      id: existing ? existing.id : "perso-" + Date.now(),
       titre: form.titre,
       etats: form.etats, besoins: form.besoins, protection: form.protection, canaux: form.canaux,
       duree: form.duree, materiel: form.materiel || null,
@@ -3111,7 +3213,7 @@ function CreateExercise({ c, onBack, onSave }) {
   };
   return (
     <div>
-      <ScreenTitle c={c}>Construire quelque chose qui me ressemble</ScreenTitle>
+      <ScreenTitle c={c}>{existing ? "Modifier mon exercice" : "Construire quelque chose qui me ressemble"}</ScreenTitle>
       <p style={{ color: c.textSoft, fontSize: 13, lineHeight: 1.6, marginBottom: 18 }}>
         Vous pouvez le nommer, l'enregistrer, le modifier ou le supprimer plus tard. Rien n'est obligatoire ici,
         chaque champ peut rester vide.
@@ -3191,7 +3293,23 @@ function CreateExercise({ c, onBack, onSave }) {
           ))}
         </div>
       </div>
-      <Btn c={c} variant="primary" onClick={submit}>Enregistrer mon exercice <span>✓</span></Btn>
+      <Btn c={c} variant="primary" onClick={submit} style={{ marginBottom: existing ? 12 : 0 }}>
+        {existing ? "Enregistrer les modifications ✓" : "Enregistrer mon exercice ✓"}
+      </Btn>
+
+      {existing && (
+        !confirmSuppr ? (
+          <Btn c={c} variant="ghost" onClick={() => setConfirmSuppr(true)}>Supprimer cet exercice</Btn>
+        ) : (
+          <Card c={c} style={{ background: c.terracottaSoft, border: "none" }}>
+            <p style={{ margin: "0 0 10px", fontSize: 13, color: c.text }}>Supprimer définitivement cet exercice ?</p>
+            <div style={{ display: "flex", gap: 10 }}>
+              <Btn c={c} variant="warn" onClick={() => onDelete(existing.id)}>Oui, supprimer</Btn>
+              <Btn c={c} variant="secondary" onClick={() => setConfirmSuppr(false)}>Annuler</Btn>
+            </div>
+          </Card>
+        )
+      )}
     </div>
   );
 }
@@ -4068,7 +4186,7 @@ function CeQuiMaide({ c, onBack, feedback, customExercises, entries, onPick, onG
   );
 }
 
-function Journal({ c, onBack, entries, onGoExport, onGoRdv }) {
+function Journal({ c, onBack, entries, onGoExport, onGoRdv, onSelectEntry }) {
   const [showHelp, setShowHelp] = useState(false);
   const [showStats, setShowStats] = useState(true);
   const stats = calculerStatistiques(entries);
@@ -4198,7 +4316,9 @@ function Journal({ c, onBack, entries, onGoExport, onGoRdv }) {
       )}
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {entries.map((e, i) => (
-          <Card key={i} c={c}>
+          <div key={i} onClick={() => onSelectEntry(i)} role="button" tabIndex={0}
+            onKeyDown={(ev) => { if (ev.key === "Enter") onSelectEntry(i); }}
+            style={{ cursor: "pointer", background: c.card, border: `1px solid ${c.border}`, borderRadius: 20, padding: 20 }}>
             <div style={{ fontSize: 11, color: c.textSoft, marginBottom: 6 }}>
               {new Date(e.date).toLocaleString("fr-FR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
             </div>
@@ -4213,9 +4333,85 @@ function Journal({ c, onBack, entries, onGoExport, onGoRdv }) {
                 Exercice « {e.exercice} » — effet ressenti : {e.effet}
               </div>
             )}
-          </Card>
+          </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function JournalEntryDetail({ c, entry, onDelete, onBack }) {
+  const [confirm, setConfirm] = useState(false);
+  if (!entry) return null;
+  const dateComplete = new Date(entry.date).toLocaleString("fr-FR", { weekday: "long", day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  return (
+    <div>
+      <ScreenTitle c={c}>{dateComplete}</ScreenTitle>
+      <Card c={c} style={{ marginBottom: 20 }}>
+        {entry.type === "check-in" ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div>
+              <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 3 }}>Type</div>
+              <div style={{ fontSize: 14, color: c.text }}>Observation ("Comment je me sens maintenant ?")</div>
+            </div>
+            {entry.etat && (
+              <div>
+                <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 3 }}>État repéré</div>
+                <div style={{ fontSize: 14, color: c.text }}>{NS_STATES.find((s) => s.id === entry.etat)?.label}</div>
+              </div>
+            )}
+            {entry.intensite !== null && entry.intensite !== undefined && (
+              <div>
+                <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 3 }}>Intensité indiquée</div>
+                <div style={{ fontSize: 14, color: c.text }}>{entry.intensite}/10</div>
+              </div>
+            )}
+            {entry.ffff && FFFF_INFO.find((f) => f.id === entry.ffff) && (
+              <div>
+                <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 3 }}>Réponse de protection reconnue</div>
+                <div style={{ fontSize: 14, color: c.text }}>{FFFF_INFO.find((f) => f.id === entry.ffff).label}</div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div>
+              <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 3 }}>Exercice essayé</div>
+              <div style={{ fontSize: 14, color: c.text }}>{entry.exercice}</div>
+            </div>
+            {entry.effet && (
+              <div>
+                <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 3 }}>Effet ressenti</div>
+                <div style={{ fontSize: 14, color: c.text }}>{entry.effet}</div>
+              </div>
+            )}
+            {entry.remarque && (
+              <div>
+                <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 3 }}>Ce qui a été remarqué</div>
+                <div style={{ fontSize: 14, color: c.text }}>{entry.remarque}</div>
+              </div>
+            )}
+            {entry.etat && (
+              <div>
+                <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 3 }}>État au moment de l'exercice</div>
+                <div style={{ fontSize: 14, color: c.text }}>{NS_STATES.find((s) => s.id === entry.etat)?.label}</div>
+              </div>
+            )}
+          </div>
+        )}
+      </Card>
+
+      {!confirm ? (
+        <Btn c={c} variant="ghost" onClick={() => setConfirm(true)}>Supprimer cette entrée</Btn>
+      ) : (
+        <Card c={c} style={{ background: c.terracottaSoft, border: "none" }}>
+          <p style={{ margin: "0 0 10px", fontSize: 13, color: c.text }}>Supprimer définitivement cette entrée ?</p>
+          <div style={{ display: "flex", gap: 10 }}>
+            <Btn c={c} variant="warn" onClick={onDelete}>Oui, supprimer</Btn>
+            <Btn c={c} variant="secondary" onClick={() => setConfirm(false)}>Annuler</Btn>
+          </div>
+        </Card>
+      )}
     </div>
   );
 }
