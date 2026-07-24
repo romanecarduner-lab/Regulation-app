@@ -2331,6 +2331,52 @@ const FAMILY_ICONS = {
   force: IconFlamme,
 };
 
+function IconAlerte({ color }) {
+  return (
+    <svg viewBox="0 0 32 32" width="18" height="18" fill="none">
+      <path d="M16 6 L28 26 H4 Z" stroke={color} strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M16 14v6" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="16" cy="23" r="1" fill={color} />
+    </svg>
+  );
+}
+
+function IconPersonnes({ color }) {
+  return (
+    <svg viewBox="0 0 32 32" width="18" height="18" fill="none">
+      <circle cx="12" cy="12" r="4" stroke={color} strokeWidth="1.6" />
+      <circle cx="21" cy="14" r="3.2" stroke={color} strokeWidth="1.6" opacity="0.7" />
+      <path d="M6 25c0-3.5 2.7-6 6-6s6 2.5 6 6" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M18.5 25c0-2.5 1.8-4.3 3.8-4.3s3.7 1.8 3.7 4.3" stroke={color} strokeWidth="1.6" strokeLinecap="round" opacity="0.7" />
+    </svg>
+  );
+}
+
+function IconPin({ color }) {
+  return (
+    <svg viewBox="0 0 32 32" width="18" height="18" fill="none">
+      <path d="M16 27c5-6 8-10 8-14a8 8 0 10-16 0c0 4 3 8 8 14z" stroke={color} strokeWidth="1.6" strokeLinejoin="round" />
+      <circle cx="16" cy="13" r="2.6" stroke={color} strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+function IconMessage({ color }) {
+  return (
+    <svg viewBox="0 0 32 32" width="18" height="18" fill="none">
+      <path d="M6 8h20a2 2 0 012 2v10a2 2 0 01-2 2H12l-5 4v-4H6a2 2 0 01-2-2V10a2 2 0 012-2z" stroke={color} strokeWidth="1.6" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconTelephone({ color }) {
+  return (
+    <svg viewBox="0 0 32 32" width="18" height="18" fill="none">
+      <path d="M9 6c1 0 3 3 3 4s-2 2-2 3c0 2 4 6 6 6 1 0 2-2 3-2s4 2 4 3c0 2-2 4-4 4-5 0-13-8-13-13 0-2 2-4 3-5z" stroke={color} strokeWidth="1.5" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function FamilyBadge({ family, c, size = 34 }) {
   const fam = FAMILIES[family];
   const Icon = FAMILY_ICONS[family] || IconCompass;
@@ -3317,12 +3363,12 @@ function CreateExercise({ c, onBack, onSave, existing, onDelete }) {
 function SafetyPlan({ c, onBack, plan, onChange, onSave, onGoExport }) {
   const [saved, setSaved] = useState(false);
   const fields = [
-    ["signes", "Quand je vais mal, les signes à surveiller sont…"],
-    ["personnes", "Les personnes que je peux contacter sont…"],
-    ["lieux", "Les lieux où je peux aller sont…"],
-    ["eviter", "Les choses à éviter quand je suis débordé·e sont…"],
-    ["phrases", "Les phrases qui peuvent m'aider sont…"],
-    ["numeros", "Les numéros d'urgence ou de soutien sont…"],
+    ["signes", "Quand je vais mal, les signes à surveiller sont…", IconAlerte, "terracotta"],
+    ["personnes", "Les personnes que je peux contacter sont…", IconPersonnes, "sage"],
+    ["lieux", "Les lieux où je peux aller sont…", IconPin, "blue"],
+    ["eviter", "Les choses à éviter quand je suis débordé·e sont…", IconShield, "stone"],
+    ["phrases", "Les phrases qui peuvent m'aider sont…", IconMessage, "violet"],
+    ["numeros", "Les numéros d'urgence ou de soutien sont…", IconTelephone, "force"],
   ];
   const aDuContenu = SAFETY_FIELDS.some(([key]) => plan[key] && plan[key].trim());
   return (
@@ -3335,9 +3381,14 @@ function SafetyPlan({ c, onBack, plan, onChange, onSave, onGoExport }) {
           une personne de confiance. Cette application ne remplace pas une aide humaine en situation de crise.
         </p>
       </Card>
-      {fields.map(([key, label]) => (
+      {fields.map(([key, label, Icon, color]) => (
         <div key={key} style={{ marginBottom: 16 }}>
-          <label style={{ fontSize: 13, color: c.textSoft, display: "block", marginBottom: 6 }}>{label}</label>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+            <div style={{ width: 24, height: 24, borderRadius: "50%", background: c[color + "Soft"], display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <Icon color={c[color]} />
+            </div>
+            <label style={{ fontSize: 13, color: c.textSoft }}>{label}</label>
+          </div>
           <textarea
             value={plan[key]}
             onChange={(e) => { onChange(key, e.target.value); setSaved(false); }}
@@ -4318,21 +4369,30 @@ function Journal({ c, onBack, entries, onGoExport, onGoRdv, onSelectEntry }) {
         {entries.map((e, i) => (
           <div key={i} onClick={() => onSelectEntry(i)} role="button" tabIndex={0}
             onKeyDown={(ev) => { if (ev.key === "Enter") onSelectEntry(i); }}
-            style={{ cursor: "pointer", background: c.card, border: `1px solid ${c.border}`, borderRadius: 20, padding: 20 }}>
-            <div style={{ fontSize: 11, color: c.textSoft, marginBottom: 6 }}>
-              {new Date(e.date).toLocaleString("fr-FR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
+            style={{ cursor: "pointer", background: c.card, border: `1px solid ${c.border}`, borderRadius: 20, padding: 20, display: "flex", gap: 12 }}>
+            <div style={{
+              width: 30, height: 30, borderRadius: "50%", flexShrink: 0, marginTop: 2,
+              background: e.type === "check-in" ? c.sageSoft : c.terracottaSoft,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              {e.type === "check-in" ? <IconCompass color={c.sage} /> : <IconEtincelle color={c.terracotta} />}
             </div>
-            {e.type === "check-in" ? (
-              <div style={{ fontSize: 14, color: c.text }}>
-                Observation — intensité {e.intensite}/10
-                {e.etat && <> · {NS_STATES.find((s) => s.id === e.etat)?.label}</>}
-                {e.ffff && FFFF_INFO.find((f) => f.id === e.ffff) && <> · {FFFF_INFO.find((f) => f.id === e.ffff).label}</>}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 11, color: c.textSoft, marginBottom: 6 }}>
+                {new Date(e.date).toLocaleString("fr-FR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
               </div>
-            ) : (
-              <div style={{ fontSize: 14, color: c.text }}>
-                Exercice « {e.exercice} » — effet ressenti : {e.effet}
-              </div>
-            )}
+              {e.type === "check-in" ? (
+                <div style={{ fontSize: 14, color: c.text }}>
+                  Observation — intensité {e.intensite}/10
+                  {e.etat && <> · {NS_STATES.find((s) => s.id === e.etat)?.label}</>}
+                  {e.ffff && FFFF_INFO.find((f) => f.id === e.ffff) && <> · {FFFF_INFO.find((f) => f.id === e.ffff).label}</>}
+                </div>
+              ) : (
+                <div style={{ fontSize: 14, color: c.text }}>
+                  Exercice « {e.exercice} » — effet ressenti : {e.effet}
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -4580,7 +4640,12 @@ function Settings({ c, theme, toggleTheme, onBack, onWipe, personalInfo, onChang
       </Card>
 
       <Card c={c} style={{ marginBottom: 14 }}>
-        <p style={{ margin: "0 0 4px", fontSize: 15, color: c.text, fontWeight: 600 }}>Informations personnelles</p>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+          <div style={{ width: 26, height: 26, borderRadius: "50%", background: c.sageSoft, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <IconPersonnes color={c.sage} />
+          </div>
+          <p style={{ margin: 0, fontSize: 15, color: c.text, fontWeight: 600 }}>Informations personnelles</p>
+        </div>
         <p style={{ margin: "0 0 14px", fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
           Ces informations sont facultatives. Elles permettent uniquement de personnaliser vos documents
           exportés (et le message d'accueil pour le prénom).
@@ -4615,7 +4680,12 @@ function Settings({ c, theme, toggleTheme, onBack, onWipe, personalInfo, onChang
           width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer",
           display: "flex", justifyContent: "space-between", alignItems: "center", padding: 0,
         }}>
-          <span style={{ color: c.text, fontSize: 15, fontWeight: 600 }}>Couleurs des exercices</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ width: 26, height: 26, borderRadius: "50%", background: c.violetSoft, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <IconEtincelle color={c.violet} />
+            </div>
+            <span style={{ color: c.text, fontSize: 15, fontWeight: 600 }}>Couleurs des exercices</span>
+          </div>
           <span style={{ color: c.textSoft }}>{showColors ? "–" : "+"}</span>
         </button>
         {showColors && (
