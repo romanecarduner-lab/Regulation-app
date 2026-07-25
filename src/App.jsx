@@ -612,7 +612,7 @@ const EXERCISES = [
 
   { id: "vider-mon-sac", titre: "Vider mon sac", etats: ["tolerance", "hyperactivation"], besoins: ["contenir"], protection: [], canaux: ["cognitif"], duree: "10min",
     materiel: "De quoi écrire librement — directement ici, ou sur papier. Si vous préférez un support visuel, vous pouvez aussi imprimer ou dessiner un sac.",
-    tags: ["langage"],
+    tags: ["langage", "creativite"],
     objectif: "Se donner un espace pour vider, par une écriture libre et sans filtre, ce qui pèse ou déborde en ce moment.",
     etapes: [
       "Donnez un titre à ce que vous voulez vider aujourd'hui — un sac, un poids, une préoccupation (par exemple « mon sac de fatigue » ou « mon sac de colère »).",
@@ -652,7 +652,7 @@ const EXERCISES = [
 
   { id: "des-nuages-passent", titre: "Des nuages passent", etats: ["hyperactivation", "tolerance"], besoins: ["mental"], protection: [], canaux: ["cognitif"], duree: "10min",
     materiel: "De quoi écrire librement — ici, ou sur papier. Si vous préférez un support visuel, vous pouvez imprimer une page de nuages à colorier et découper.",
-    tags: ["langage"],
+    tags: ["langage", "creativite"],
     objectif: "Exprimer librement ce qui stresse, puis lui donner une forme qui peut se déplacer et s'éloigner, plutôt que de rester figée.",
     etapes: [
       "Écrivez librement ce qui vous stresse en ce moment, sans trop réfléchir à la forme — comme si vous en vidiez le contenu.",
