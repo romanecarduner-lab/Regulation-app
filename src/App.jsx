@@ -581,6 +581,98 @@ const EXERCISES = [
     etapes: ["Une bulle grossit pendant l'inspiration et rapetisse pendant l'expiration — suivez son rythme à votre aise.", "Vous pouvez choisir le rythme qui vous convient (cohérence cardiaque, respiration carrée, 4-7-8, expiration allongée), activer ou couper le son, et vous arrêter à tout moment."],
     precaution: "Porter attention à sa respiration ne convient pas à tout le monde : cela peut, chez certaines personnes, augmenter l'inconfort ou la sensation d'alerte plutôt que de l'apaiser. Si c'est votre cas, vous pouvez arrêter et choisir un exercice d'orientation ou de contact avec le corps à la place.",
     sensible: ["respiration"] },
+
+  { id: "ecrire-un-haiku", titre: "Écrire un haïku", etats: ["tolerance", "hyperactivation"], besoins: ["sens"], protection: [], canaux: ["visuel", "cognitif"], duree: "5min", materiel: "De quoi noter (papier/stylo, ou directement ici).",
+    tags: ["creativite", "langage"],
+    objectif: "Aiguiser son attention à ce qui vous entoure, et la transformer en une toute petite forme d'écriture.",
+    etapes: [
+      "Portez votre attention à ce qui vous entoure : ce que vous voyez, entendez, sentez, goûtez ou touchez.",
+      "Y a-t-il un détail — une image, un son, une odeur — qui mérite d'être remarqué, même s'il n'a rien d'extraordinaire à première vue ?",
+      "Vous pouvez noter cette petite perle en trois lignes, spontanément, ou en suivant un guide : la première ligne pose le contexte (où ? quand ?), la deuxième ce qui s'est passé (qui ? quoi ?), la troisième votre ressenti.",
+      "Vous pouvez ensuite élaguer pour ne garder que l'essentiel — un haïku fait en général entre 8 et 15 mots au total.",
+      "Vous pouvez aussi intervertir les lignes si cela semble mieux : souvent, la ligne préférée devient la dernière.",
+    ],
+    precaution: null, sensible: ["ecrire"] },
+
+  { id: "mes-figures-ressources", titre: "Mes figures ressources", etats: ["tolerance", "hyperactivation"], besoins: ["lieu_ressource"], protection: [], canaux: ["imaginatif", "relationnel"], duree: "5min",
+    materiel: "Facultatif : de quoi noter. Si vous voulez aller plus loin : des photos ou images, une grande feuille, de quoi les coller et décorer.",
+    tags: ["creativite"],
+    objectif: "Renforcer le lien intérieur à des figures qui représentent, pour vous, un appui ou une ressource.",
+    etapes: [
+      "Pensez à une ou plusieurs figures qui pourraient être une ressource pour vous : une personne réelle par qui vous vous êtes senti·e vraiment aimé·e ; une figure spirituelle ; ou une figure symbolique — un personnage historique, un artiste, un personnage de film ou de roman, un animal ou un élément de la nature qui vous inspire.",
+      "Si une personne qui vous vient en tête est décédée, ne la choisissez que si son souvenir vous apaise plutôt qu'il ne vous attriste. Sinon, vous pouvez simplement choisir une autre figure.",
+      "Pour la figure choisie : quelles qualités, quelles valeurs importantes pour vous incarne-t-elle ?",
+      "Si vous le souhaitez, vous pouvez l'imaginer à vos côtés — un regard bienveillant, capable d'accueillir ce que vous vivez — et remarquer ce que cela vous fait sentir.",
+      "Vous pouvez aussi imaginer les mots qu'elle pourrait vous dire, ou une présence rassurante, seulement si cela vous convient.",
+      "Vous pouvez noter ici le nom de cette figure, ses qualités, et ce qui vous a semblé aidant.",
+      "Pour aller plus loin si vous le souhaitez : vous pouvez choisir une photo ou une image par figure, les rassembler sur une grande feuille, et afficher ce collage à un endroit que vous voyez souvent.",
+    ],
+    precaution: "Si penser à une figure réveille surtout de la tristesse ou du manque plutôt qu'un soutien, vous pouvez choisir une autre figure, ou arrêter l'exercice ici.",
+    sensible: ["imagination"] },
+
+  { id: "vider-mon-sac", titre: "Vider mon sac", etats: ["tolerance", "hyperactivation"], besoins: ["contenir"], protection: [], canaux: ["cognitif"], duree: "10min",
+    materiel: "De quoi écrire librement — directement ici, ou sur papier. Si vous préférez un support visuel, vous pouvez aussi imprimer ou dessiner un sac.",
+    tags: ["langage"],
+    objectif: "Se donner un espace pour vider, par une écriture libre et sans filtre, ce qui pèse ou déborde en ce moment.",
+    etapes: [
+      "Donnez un titre à ce que vous voulez vider aujourd'hui — un sac, un poids, une préoccupation (par exemple « mon sac de fatigue » ou « mon sac de colère »).",
+      "Si vous préférez un support visuel, vous pouvez imprimer ou dessiner un sac et écrire ce titre dessus.",
+      "Videz ce sac : écrivez librement, sans vous censurer ni vous relire, aussi longtemps qu'il le faut. Rien n'a besoin d'être bien écrit ni cohérent.",
+      "Une fois que vous avez fini, vous pouvez noter ici ce que vous en retenez : une réflexion, une conclusion, quelque chose qui vous semble important.",
+      "Si possible, terminez par quelque chose d'apaisant — un exercice d'orientation, de respiration, ou tout ce qui vous fait habituellement du bien.",
+    ],
+    precaution: "Écrire librement peut faire remonter des pensées ou des émotions fortes. Si cela devient trop difficile, vous pouvez arrêter à tout moment et choisir un exercice de stabilisation à la place.",
+    sensible: ["ecrire"] },
+
+  { id: "mes-sources-de-bien-etre", titre: "Mes sources de bien-être", etats: ["tolerance", "hypoactivation"], besoins: ["douceur"], protection: [], canaux: ["cognitif"], duree: "5min",
+    materiel: "De quoi noter. Si vous préférez un support visuel, vous pouvez aussi imprimer ou dessiner des ballons, un par source.",
+    tags: ["douceur"],
+    objectif: "Identifier ce qui vous procure du bien-être, pour mieux vous en souvenir dans les moments plus difficiles.",
+    etapes: [
+      "Qu'est-ce qui vous procure du bien-être ? Qui vous fait sentir léger·e et en paix ? Cela peut venir de pensées, d'émotions, de soins, de loisirs, de repos, de vacances, d'amour, d'amitié, de générosité, de bonnes nouvelles, d'un moment passé avec quelqu'un…",
+      "Vous pouvez noter ici chacune de ces sources, autant que vous voulez, sans ordre particulier.",
+      "Si vous préférez un support visuel, vous pouvez imprimer ou dessiner des ballons et en écrire une par ballon.",
+      "Vous pouvez ajouter vos réflexions autour, si cela vous parle.",
+    ],
+    precaution: null, sensible: ["ecrire"] },
+
+  { id: "revenir-au-corps", titre: "Revenir au corps", etats: ["hyperactivation", "tolerance"], besoins: ["corps"], protection: [], canaux: ["cognitif"], duree: "5min",
+    materiel: "Facultatif : de quoi noter vos réflexions. Si vous préférez un support visuel, vous pouvez imprimer ou dessiner une silhouette à remplir.",
+    tags: ["douceur"],
+    objectif: "Revenir dans le corps et reconnaître ses sensations, quand le mental s'emballe.",
+    etapes: [
+      "Si cela vous convient, fermez les yeux, respirez, et laissez-vous vous détendre pendant 2 à 5 minutes. Vous pouvez aussi garder les yeux ouverts si c'est plus confortable.",
+      "Remarquez ce qui se passe dans votre corps en ce moment : des zones plus détendues ou plus tendues, des formes ou des couleurs qui vous viendraient si vous deviez les représenter.",
+      "Si vous préférez un support visuel, vous pouvez imprimer ou dessiner une silhouette, et la remplir de formes et de couleurs douces à l'endroit où vous sentez du calme.",
+      "Vous pouvez aussi imaginer ou dessiner autour de la silhouette une couleur qui vous protège.",
+      "Prenez le temps de ressentir l'effet de l'exercice, et notez vos réflexions ici si vous le souhaitez.",
+    ],
+    precaution: "Fermer les yeux ou porter son attention sur les sensations internes du corps ne convient pas à tout le monde. Si cela augmente l'inconfort, vous pouvez garder les yeux ouverts, ou choisir un exercice d'orientation à la place.",
+    sensible: ["yeux_fermes", "interoception"] },
+
+  { id: "des-nuages-passent", titre: "Des nuages passent", etats: ["hyperactivation", "tolerance"], besoins: ["mental"], protection: [], canaux: ["cognitif"], duree: "10min",
+    materiel: "De quoi écrire librement — ici, ou sur papier. Si vous préférez un support visuel, vous pouvez imprimer une page de nuages à colorier et découper.",
+    tags: ["langage"],
+    objectif: "Exprimer librement ce qui stresse, puis lui donner une forme qui peut se déplacer et s'éloigner, plutôt que de rester figée.",
+    etapes: [
+      "Écrivez librement ce qui vous stresse en ce moment, sans trop réfléchir à la forme — comme si vous en vidiez le contenu.",
+      "Si vous préférez un support visuel, vous pouvez imprimer une page de nuages : écrivez par-dessus, comme s'ils n'étaient pas là.",
+      "Vous pouvez ensuite colorer chaque nuage — pâle, foncé, noir, ou blanc — selon la densité de ce qui vous stresse.",
+      "Si vous le souhaitez, découpez-les et collez-les sur un « ciel » que vous aurez dessiné ou imaginé, comme une façon de leur donner une place qui peut se déplacer.",
+    ],
+    precaution: null, sensible: ["ecrire"] },
+
+  { id: "alignement", titre: "L'alignement : outil de base", etats: ["tolerance", "hyperactivation"], besoins: ["choix"], protection: [], canaux: ["cognitif"], duree: "5min",
+    materiel: "De quoi noter. Si vous préférez un support visuel, vous pouvez imprimer ou dessiner une silhouette avec un cœur.",
+    tags: ["choix"],
+    objectif: "Prendre un instant pour écouter différentes voix en vous, avant de passer à l'action.",
+    etapes: [
+      "Avant d'agir, vous pouvez prendre un instant pour vous poser et écouter ce qui se passe en vous.",
+      "Complétez, si vous le souhaitez : « Ma tête me dit… », « Mon cœur me dit… », « Mon corps me dit… »",
+      "Si vous préférez un support visuel, vous pouvez imprimer ou dessiner une silhouette avec un cœur, et colorer les formes selon ce que vous ressentez.",
+      "Vous pouvez conclure par une phrase générale : « Mon être me suggère de… »",
+    ],
+    precaution: null, sensible: ["ecrire"] },
 ];
 
 /* ---------------------------------------------------------------
@@ -2976,7 +3068,7 @@ function BreathingBall({ c }) {
   );
 }
 
-const EXERCICES_AVEC_NOTE = ["lieu-ressource", "cercle-des-ressources", "figure-soutenante", "paysage-appuis", "le-contenant"];
+const EXERCICES_AVEC_NOTE = ["lieu-ressource", "cercle-des-ressources", "figure-soutenante", "paysage-appuis", "le-contenant", "ecrire-un-haiku", "mes-figures-ressources", "vider-mon-sac", "mes-sources-de-bien-etre", "revenir-au-corps", "des-nuages-passent", "alignement"];
 
 function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onRevenirListe, onEssayerAutreChose, onFinish, onFilterByTag, onEditPerso }) {
   const [step, setStep] = useState("do"); // do | pas-maintenant | remarque | feedback
@@ -3177,6 +3269,17 @@ function Exercise({ c, exercise, raison, savedNote, onSaveNote, onStop, onReveni
           <Btn c={c} variant="secondary" onClick={() => { onSaveNote(noteTexte); setNoteSaved(true); }}>
             {noteSaved ? "Enregistré ✓" : "Enregistrer ma note"}
           </Btn>
+          {PRINT_TEMPLATES[exercise.id] && (
+            <button onClick={() => {
+              const doc = genererPagePrintable(exercise);
+              telechargerOuPartagerPdf(doc, `page-${exercise.id}.pdf`);
+            }} style={{
+              background: "none", border: "none", color: c.textSoft, fontSize: 12, fontWeight: 600,
+              textDecoration: "underline", cursor: "pointer", padding: 0, display: "block", marginTop: 10,
+            }}>
+              🖨️ Imprimer une page pour cet exercice
+            </button>
+          )}
         </Card>
       )}
     </div>
@@ -3984,6 +4087,98 @@ function ajouterPiedDePage(doc) {
     doc.text(`${i} / ${nbPages}`, 195, 290, { align: "right" });
     doc.setTextColor(...PDF_COULEURS.text);
   }
+}
+
+function dessinerSac(doc) {
+  doc.setDrawColor(...PDF_COULEURS.textSoft);
+  doc.setLineWidth(0.8);
+  doc.roundedRect(65, 90, 80, 100, 16, 16, "S");
+  doc.line(70, 108, 140, 108);
+  doc.ellipse(105, 78, 14, 11, "S");
+}
+
+function dessinerNuages(doc) {
+  const positions = [[55, 100], [155, 95], [105, 130], [55, 175], [155, 180], [105, 215]];
+  positions.forEach(([x, y]) => {
+    doc.setDrawColor(...PDF_COULEURS.textSoft);
+    doc.setLineWidth(0.7);
+    doc.circle(x - 11, y, 10, "S");
+    doc.circle(x + 11, y, 10, "S");
+    doc.circle(x - 2, y - 9, 12, "S");
+    doc.circle(x + 2, y + 6, 11, "S");
+  });
+}
+
+function dessinerBallons(doc) {
+  const positions = [[55, 100], [105, 90], [155, 105], [65, 155], [105, 165], [150, 155]];
+  positions.forEach(([x, y]) => {
+    doc.setDrawColor(...PDF_COULEURS.textSoft);
+    doc.setLineWidth(0.7);
+    doc.ellipse(x, y, 15, 19, "S");
+    doc.line(x, y + 19, x, y + 55);
+  });
+}
+
+function dessinerSilhouette(doc, avecCoeur, cx, cy, r) {
+  doc.setDrawColor(...PDF_COULEURS.textSoft);
+  doc.setLineWidth(0.8);
+  doc.circle(cx, cy, r, "S");
+  doc.ellipse(cx, cy - r * 0.55, r * 0.22, r * 0.28, "S");
+  doc.roundedRect(cx - r * 0.35, cy - r * 0.45, r * 0.7, r * 0.75, 8, 8, "S");
+  doc.ellipse(cx, cy + r * 0.58, r * 0.65, r * 0.22, "S");
+  if (avecCoeur) {
+    const hy = cy - r * 0.1;
+    doc.circle(cx - 6, hy, 6.5, "S");
+    doc.circle(cx + 6, hy, 6.5, "S");
+    doc.line(cx - 12.5, hy + 4, cx, hy + 19);
+    doc.line(cx + 12.5, hy + 4, cx, hy + 19);
+  }
+}
+
+const PRINT_TEMPLATES = {
+  "vider-mon-sac": (doc) => dessinerSac(doc),
+  "mes-sources-de-bien-etre": (doc) => dessinerBallons(doc),
+  "des-nuages-passent": (doc) => dessinerNuages(doc),
+  "revenir-au-corps": (doc) => dessinerSilhouette(doc, false, 105, 165, 78),
+  "cercle-des-ressources": (doc) => { doc.setDrawColor(...PDF_COULEURS.textSoft); doc.setLineWidth(0.8); doc.circle(105, 165, 75, "S"); },
+  "alignement": (doc) => {
+    dessinerSilhouette(doc, true, 65, 165, 55);
+    doc.setFontSize(11);
+    doc.setTextColor(...PDF_COULEURS.text);
+    const labels = ["Ma tête me dit…", "Mon cœur me dit…", "Mon corps me dit…"];
+    let ly = 120;
+    labels.forEach((lbl) => {
+      doc.text(lbl, 135, ly);
+      doc.setDrawColor(...PDF_COULEURS.border);
+      doc.line(135, ly + 14, 195, ly + 14);
+      ly += 32;
+    });
+    doc.text("Mon être me suggère de…", 20, 245);
+    doc.line(20, 259, 195, 259);
+  },
+};
+
+function genererPagePrintable(exercise) {
+  const doc = new jsPDF();
+  let y = ajouterBandeauEntete(doc, exercise.titre, "Page à imprimer pour cet exercice");
+  doc.setFontSize(9.5);
+  doc.setTextColor(...PDF_COULEURS.textSoft);
+  doc.text("Vous pouvez dessiner, colorier ou écrire librement dans cet espace.", 15, y);
+  doc.setTextColor(...PDF_COULEURS.text);
+  y += 14;
+
+  if (PRINT_TEMPLATES[exercise.id]) {
+    PRINT_TEMPLATES[exercise.id](doc);
+  } else {
+    doc.setDrawColor(...PDF_COULEURS.border);
+    doc.setLineWidth(0.3);
+    for (let ly = y + 10; ly < 270; ly += 12) {
+      doc.line(20, ly, 190, ly);
+    }
+  }
+
+  ajouterPiedDePage(doc);
+  return doc;
 }
 
 function ajouterSectionStatistiques(doc, marge, y, entriesFiltrees) {
