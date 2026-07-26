@@ -502,8 +502,13 @@ const EXERCISES = [
 
   { id: "distance-juste", titre: "Dessiner la distance juste", etats: ["tolerance", "hyperactivation"], besoins: ["limites", "corps"], protection: [], canaux: ["imaginatif", "cognitif"], duree: "2min", materiel: null,
     tags: ["creativite", "limites"],
-    objectif: "Ajuster, au moins en pensée, une distance qui semble correcte aujourd'hui.",
-    etapes: ["Imaginez deux formes, ou dessinez-les si vous préférez.", "Déplacez-les mentalement ou sur le papier jusqu'à ce que la distance entre elles vous semble correcte aujourd'hui.", "Il n'y a pas d'interprétation automatique à en tirer — c'est votre seule observation qui compte."],
+    objectif: "Ajuster, au moins en pensée, une distance qui semble correcte aujourd'hui entre vous et une personne ou une situation.",
+    etapes: [
+      "Imaginez deux formes simples : l'une vous représente, l'autre représente une personne ou une situation à laquelle vous pensez — ou restez neutre si rien de précis ne vous vient.",
+      "Vous pouvez les dessiner si vous préférez, ou simplement les imaginer.",
+      "Déplacez-les mentalement (ou sur le papier) jusqu'à ce que la distance entre elles vous semble correcte aujourd'hui — ni trop proche, ni trop loin.",
+      "Il n'y a pas d'interprétation automatique à en tirer : c'est votre seule observation qui compte, et cette distance peut changer d'un jour à l'autre.",
+    ],
     precaution: null, sensible: [] },
   { id: "zone-tolerance-aujourdhui", titre: "Ma zone de tolérance aujourd'hui", etats: ["tolerance"], besoins: ["tolerance_renforcer"], protection: [], canaux: ["cognitif", "imaginatif"], duree: "5min", materiel: "Optionnel : de quoi dessiner.",
     tags: ["creativite"],
@@ -755,6 +760,32 @@ const EXERCISES = [
       "Prenez le temps de sentir que vous êtes ici, maintenant, dans cet endroit précis.",
     ],
     precaution: null, sensible: [] },
+
+  { id: "stylo-therapeute", titre: "Quand le stylo se fait thérapeute", etats: ["tolerance", "hyperactivation"], besoins: ["mental"], protection: [], canaux: ["cognitif"], duree: "5min",
+    materiel: "De quoi écrire librement — directement ici, ou sur papier.",
+    tags: ["langage", "creativite"],
+    objectif: "Laisser une émotion se déposer par écrit, pour la traverser plutôt que la combattre.",
+    etapes: [
+      "Commencez votre texte par « Je me sens » et laissez-le se remplir librement, sans trop réfléchir à la forme — pendant environ 5 minutes, ou moins si vous préférez.",
+      "Vous pouvez vous arrêter à tout moment : il n'y a aucune obligation d'écrire sans interruption.",
+      "Une fois votre texte terminé, vous pouvez le relire pour vous-même, à voix haute ou dans votre tête.",
+      "Si cela vous convient, imaginez une couleur qui correspond à ce que vous avez écrit — une couleur apaisante si les mots étaient plutôt en colère, ou une couleur vive si vous aviez l'impression d'être engourdi·e.",
+      "Accepter une émotion douloureuse ne veut pas dire l'aimer : c'est simplement une façon de la traverser plutôt que de la combattre.",
+    ],
+    precaution: "Écrire librement peut faire remonter des émotions fortes. Si cela devient trop difficile, vous pouvez arrêter à tout moment et choisir un exercice de stabilisation à la place.",
+    sensible: ["ecrire"] },
+
+  { id: "fruits-du-hasard", titre: "Cultiver les fruits du hasard", etats: ["tolerance"], besoins: ["mental"], protection: [], canaux: ["moteur", "visuel"], duree: "5min",
+    materiel: "Une feuille et un stylo, ou des crayons de couleur si vous en avez.",
+    tags: ["creativite", "jeu"],
+    objectif: "Laisser émerger une image à partir du hasard, sans chercher à contrôler le résultat.",
+    etapes: [
+      "Si cela vous convient, fermez les yeux et laissez votre stylo dessiner un gribouillage libre sur la feuille, sans chercher à contrôler le résultat. Vous pouvez aussi garder les yeux ouverts si vous préférez.",
+      "Regardez ensuite votre gribouillage sous tous les angles, en tournant la feuille si besoin — une image commence-t-elle à apparaître, même vaguement ?",
+      "Vous pouvez souligner, colorier ou compléter certaines parties pour faire ressortir cette image.",
+      "Il n'y a rien à réussir ici : faites-vous confiance, et laissez-vous aller — improviser fait partie de l'exercice.",
+    ],
+    precaution: null, sensible: ["ecrire", "yeux_fermes"] },
 ];
 
 /* ---------------------------------------------------------------
@@ -1189,7 +1220,7 @@ export default function App() {
   });
   const [avoidPrefs, setAvoidPrefs] = useState([]);
   const [exoFeedback, setExoFeedback] = useState({});
-  const [exoNotes, setExoNotes] = useState({});
+  const [exoCreations, setExoCreations] = useState({}); // { [exerciseId]: [{ date, texte, image }] }
   const [customExercises, setCustomExercises] = useState([]);
   const [editingExercise, setEditingExercise] = useState(null);
   const [selectedEntryIndex, setSelectedEntryIndex] = useState(null);
@@ -1200,7 +1231,7 @@ export default function App() {
     signes: "", personnes: "", lieux: "", eviter: "", phrases: "", numeros: "",
   });
   const [entries, setEntries] = useState([]);
-  const [exportChamps, setExportChamps] = useState({ stats: true, dates: true, etats: true, intensites: true, protection: true, exercices: true, retours: true });
+  const [exportChamps, setExportChamps] = useState({ stats: true, dates: true, etats: true, intensites: true, protection: true, exercices: true, retours: true, creations: false });
   const [exportPeriode, setExportPeriode] = useState("30");
   const [rdvPeriode, setRdvPeriode] = useState("30");
   const [rdvQuestion, setRdvQuestion] = useState("");
@@ -1221,7 +1252,17 @@ export default function App() {
       const zp = await loadJSON("zone:personnalisation", null);
       const ap = await loadJSON("exo:avoid", []);
       const fb = await loadJSON("exo:feedback", {});
-      const notes = await loadJSON("exo:notes", {});
+      const notesLegacy = await loadJSON("exo:notes", {});
+      const imagesLegacy = await loadJSON("exo:images", {});
+      let creations = await loadJSON("exo:creations", null);
+      if (!creations) {
+        creations = {};
+        const idsAMigrer = new Set([...Object.keys(notesLegacy), ...Object.keys(imagesLegacy)]);
+        idsAMigrer.forEach((id) => {
+          creations[id] = [{ date: new Date().toISOString(), texte: notesLegacy[id] || "", image: imagesLegacy[id] || null }];
+        });
+        if (idsAMigrer.size > 0) await saveJSON("exo:creations", creations);
+      }
       const ce = await loadJSON("exo:custom", []);
       const pi = await loadJSON("profil:info", null);
       const vb = await loadJSON("onboarding:vu", false);
@@ -1232,7 +1273,7 @@ export default function App() {
       if (zp) setZonePerso(zp);
       setAvoidPrefs(ap);
       setExoFeedback(fb);
-      setExoNotes(notes);
+      setExoCreations(creations);
       setCustomExercises(ce);
       if (pi) setPersonalInfo(pi);
       setAVuBienvenue(!!vb);
@@ -1307,12 +1348,20 @@ export default function App() {
     setExoFeedback(next);
     await saveJSON("exo:feedback", next);
   };
-  const saveExoNote = async (id, texte) => {
-    const next = { ...exoNotes };
-    if (texte && texte.trim()) next[id] = texte;
-    else delete next[id];
-    setExoNotes(next);
-    await saveJSON("exo:notes", next);
+  const ajouterCreation = async (id, texte, image) => {
+    const propre = texte ? texte.trim() : "";
+    if (!propre && !image) return;
+    const entree = { date: new Date().toISOString(), texte: propre, image: image || null };
+    const next = { ...exoCreations, [id]: [...(exoCreations[id] || []), entree] };
+    setExoCreations(next);
+    await saveJSON("exo:creations", next);
+  };
+  const supprimerCreation = async (id, index) => {
+    const liste = [...(exoCreations[id] || [])];
+    liste.splice(index, 1);
+    const next = { ...exoCreations, [id]: liste };
+    setExoCreations(next);
+    await saveJSON("exo:creations", next);
   };
   const saveCustomExercise = async (ex) => {
     const exists = customExercises.some((e) => e.id === ex.id);
@@ -1333,11 +1382,11 @@ export default function App() {
       setExoFeedback(nf);
       await saveJSON("exo:feedback", nf);
     }
-    if (exoNotes[id]) {
-      const nn = { ...exoNotes };
+    if (exoCreations[id]) {
+      const nn = { ...exoCreations };
       delete nn[id];
-      setExoNotes(nn);
-      await saveJSON("exo:notes", nn);
+      setExoCreations(nn);
+      await saveJSON("exo:creations", nn);
     }
     setEditingExercise(null);
     goTo("mes-exercices-perso");
@@ -1352,6 +1401,8 @@ export default function App() {
       await window.storage.delete("exo:avoid", false);
       await window.storage.delete("exo:feedback", false);
       await window.storage.delete("exo:notes", false);
+      await window.storage.delete("exo:images", false);
+      await window.storage.delete("exo:creations", false);
       await window.storage.delete("exo:custom", false);
       await window.storage.delete("profil:info", false);
       await window.storage.delete("onboarding:vu", false);
@@ -1361,7 +1412,7 @@ export default function App() {
     setZonePerso({ hyper: "", hypo: "", tolerance: "", signes: "" });
     setAvoidPrefs([]);
     setExoFeedback({});
-    setExoNotes({});
+    setExoCreations({});
     setCustomExercises([]);
     setPersonalInfo({ nom: "", prenom: "", dateNaissance: "" });
     setAVuBienvenue(false);
@@ -1637,7 +1688,9 @@ export default function App() {
 
         {screen === "exercise" && activeExercise && (
           <Exercise c={c} exercise={activeExercise} raison={activeExerciseRaison}
-            savedNote={exoNotes[activeExercise.id] || ""} onSaveNote={(texte) => saveExoNote(activeExercise.id, texte)}
+            creations={exoCreations[activeExercise.id] || []}
+            onAjouterCreation={(texte, image) => ajouterCreation(activeExercise.id, texte, image)}
+            onSupprimerCreation={(index) => supprimerCreation(activeExercise.id, index)}
             signalEtapes={signalEtapes}
             onStop={goBackHome}
             onRevenirListe={goBack}
@@ -1706,7 +1759,7 @@ export default function App() {
             onCreate={() => {
               const filtrees = entriesDansPeriode(entries, exportPeriode);
               const periodeLabel = PERIODES_JOURNAL.find((p) => p.id === exportPeriode)?.label || "";
-              const doc = genererPdfJournal(filtrees, exportChamps, periodeLabel, personalInfo, inclureReperesJournal ? safetyPlan : null);
+              const doc = genererPdfJournal(filtrees, exportChamps, periodeLabel, personalInfo, inclureReperesJournal ? safetyPlan : null, exoCreations, exportPeriode);
               telechargerOuPartagerPdf(doc, "mon-journal-de-suivi.pdf");
               goTo("journal");
             }}
@@ -3524,7 +3577,7 @@ function BreathingBall({ c }) {
   );
 }
 
-const EXERCICES_AVEC_NOTE = ["lieu-ressource", "cercle-des-ressources", "figure-soutenante", "paysage-appuis", "le-contenant", "ecrire-un-haiku", "mes-figures-ressources", "vider-mon-sac", "mes-sources-de-bien-etre", "revenir-au-corps", "des-nuages-passent", "alignement"];
+const EXERCICES_AVEC_NOTE = ["lieu-ressource", "cercle-des-ressources", "figure-soutenante", "paysage-appuis", "le-contenant", "ecrire-un-haiku", "mes-figures-ressources", "vider-mon-sac", "mes-sources-de-bien-etre", "revenir-au-corps", "des-nuages-passent", "alignement", "stylo-therapeute"];
 
 function jouerSignalDiscret(ctxRef) {
   try {
@@ -3661,16 +3714,41 @@ function OuiNonInteractif({ c, onTerminer, onAutreExercice }) {
   );
 }
 
-function Exercise({ c, exercise, raison, savedNote, onSaveNote, signalEtapes, onStop, onRevenirListe, onEssayerAutreChose, onFinish, onFilterByTag, onEditPerso }) {
+function redimensionnerImage(fichier, largeurMax = 900) {
+  return new Promise((resolve, reject) => {
+    const lecteur = new FileReader();
+    lecteur.onerror = () => reject(new Error("lecture impossible"));
+    lecteur.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("image invalide"));
+      img.onload = () => {
+        const ratio = Math.min(1, largeurMax / img.width);
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * ratio);
+        canvas.height = Math.round(img.height * ratio);
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", 0.82));
+      };
+      img.src = lecteur.result;
+    };
+    lecteur.readAsDataURL(fichier);
+  });
+}
+
+function Exercise({ c, exercise, raison, creations, onAjouterCreation, onSupprimerCreation, signalEtapes, onStop, onRevenirListe, onEssayerAutreChose, onFinish, onFilterByTag, onEditPerso }) {
   const [step, setStep] = useState("do"); // do | pas-maintenant | remarque | feedback
   const [remarque, setRemarque] = useState(null);
   const [effet, setEffet] = useState(null);
   const [varianteIdx, setVarianteIdx] = useState(0); // 0 = version principale
-  const [noteTexte, setNoteTexte] = useState(savedNote || "");
-  const [noteSaved, setNoteSaved] = useState(false);
+  const [nouveauTexte, setNouveauTexte] = useState("");
+  const [nouvelleImage, setNouvelleImage] = useState(null);
+  const [creationSaved, setCreationSaved] = useState(false);
+  const [importingImage, setImportingImage] = useState(false);
   const [etapeIndex, setEtapeIndex] = useState(0);
   const [voirTout, setVoirTout] = useState(false);
   const peutNoter = EXERCICES_AVEC_NOTE.includes(exercise.id);
+  const peutImporterImage = !!(exercise.tags && exercise.tags.includes("creativite"));
   const versions = [{ label: "Version principale", etapes: exercise.etapes }, ...(exercise.variantes || [])];
   const etapesAffichees = versions[varianteIdx]?.etapes || exercise.etapes;
   const derniereEtape = etapeIndex >= etapesAffichees.length - 1;
@@ -3770,10 +3848,17 @@ function Exercise({ c, exercise, raison, savedNote, onSaveNote, signalEtapes, on
           ✎ Modifier ou supprimer cet exercice
         </button>
       )}
-      {peutNoter && savedNote && (
+      {(peutNoter || peutImporterImage) && creations && creations.length > 0 && (
         <Card c={c} style={{ background: c.sageSoft, border: "none", marginBottom: 14 }}>
-          <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 4 }}>Ce que vous aviez noté la dernière fois :</div>
-          <p style={{ margin: 0, fontSize: 13, color: c.text, lineHeight: 1.6 }}>{savedNote}</p>
+          <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 4 }}>Ce que vous aviez enregistré la dernière fois :</div>
+          {creations[creations.length - 1].texte && (
+            <p style={{ margin: creations[creations.length - 1].image ? "0 0 8px" : 0, fontSize: 13, color: c.text, lineHeight: 1.6 }}>
+              {creations[creations.length - 1].texte}
+            </p>
+          )}
+          {creations[creations.length - 1].image && (
+            <img src={creations[creations.length - 1].image} alt="Dernière photo enregistrée pour cet exercice" style={{ width: "100%", borderRadius: 10, display: "block" }} />
+          )}
         </Card>
       )}
       {exercise.materiel && (
@@ -3864,26 +3949,98 @@ function Exercise({ c, exercise, raison, savedNote, onSaveNote, signalEtapes, on
         <Btn c={c} variant="ghost" onClick={() => setStep("pas-maintenant")}>Pas maintenant</Btn>
       </div>
 
-      {peutNoter && (
+      {(peutNoter || peutImporterImage) && (
         <Card c={c} style={{ background: c.bgAlt, border: "none" }}>
-          <p style={{ margin: "0 0 10px", fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
-            Vous pouvez noter ici ce que vous avez imaginé, pour vous en souvenir la prochaine fois — c'est
-            facultatif, et vous pourrez le modifier à tout moment.
+          <p style={{ margin: "0 0 12px", fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+            {peutNoter && peutImporterImage
+              ? "Vous pouvez noter ce que vous avez fait et/ou importer une photo, pour vous en souvenir la prochaine fois. Chaque enregistrement garde sa date, vous pouvez en ajouter plusieurs si vous refaites cet exercice."
+              : peutNoter
+              ? "Vous pouvez noter ce que vous avez fait, pour vous en souvenir la prochaine fois. Chaque enregistrement garde sa date, vous pouvez en ajouter plusieurs si vous refaites cet exercice."
+              : "Vous pouvez importer une photo de ce que vous avez fait, pour vous en souvenir la prochaine fois. Chaque enregistrement garde sa date, vous pouvez en ajouter plusieurs si vous refaites cet exercice."}
+            {" "}Entièrement facultatif.
           </p>
-          <textarea
-            value={noteTexte}
-            onChange={(e) => { setNoteTexte(e.target.value); setNoteSaved(false); }}
-            rows={3}
-            placeholder="Par exemple : un endroit, une présence, un contenant, ou ce que vous y avez déposé…"
-            aria-label="Votre note personnelle pour cet exercice"
-            style={{
-              width: "100%", borderRadius: 12, border: `1px solid ${c.border}`, background: c.card,
-              color: c.text, padding: 10, fontFamily: fontBody, fontSize: 13.5, resize: "vertical", marginBottom: 10,
-            }}
-          />
-          <Btn c={c} variant="secondary" onClick={() => { onSaveNote(noteTexte); setNoteSaved(true); }}>
-            {noteSaved ? "Enregistré ✓" : "Enregistrer ma note"}
+
+          {creations && creations.length > 0 && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
+              {creations.map((entree, i) => (
+                <div key={i} style={{ background: c.card, borderRadius: 12, padding: 12, border: `1px solid ${c.border}` }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: entree.texte || entree.image ? 8 : 0 }}>
+                    <span style={{ fontSize: 11, color: c.textSoft }}>
+                      {new Date(entree.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                    </span>
+                    <button onClick={() => onSupprimerCreation(i)} aria-label="Supprimer cette entrée" style={{
+                      background: "none", border: "none", color: c.textSoft, fontSize: 12, cursor: "pointer", padding: 0,
+                    }}>
+                      Supprimer
+                    </button>
+                  </div>
+                  {entree.texte && <p style={{ margin: entree.image ? "0 0 8px" : 0, fontSize: 13, color: c.text, lineHeight: 1.6 }}>{entree.texte}</p>}
+                  {entree.image && <img src={entree.image} alt="Photo enregistrée pour cet exercice" style={{ width: "100%", borderRadius: 10, display: "block" }} />}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {peutNoter && (
+            <textarea
+              value={nouveauTexte}
+              onChange={(e) => { setNouveauTexte(e.target.value); setCreationSaved(false); }}
+              rows={3}
+              placeholder="Par exemple : un endroit, une présence, un contenant, ou ce que vous y avez déposé…"
+              aria-label="Votre note personnelle pour cet exercice"
+              style={{
+                width: "100%", borderRadius: 12, border: `1px solid ${c.border}`, background: c.card,
+                color: c.text, padding: 10, fontFamily: fontBody, fontSize: 13.5, resize: "vertical", marginBottom: 10,
+              }}
+            />
+          )}
+
+          {peutImporterImage && (
+            <div style={{ marginBottom: 12 }}>
+              {nouvelleImage && (
+                <img src={nouvelleImage} alt="Photo à enregistrer" style={{ width: "100%", borderRadius: 12, display: "block", marginBottom: 10 }} />
+              )}
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <label style={{
+                  display: "inline-flex", alignItems: "center", gap: 6, background: c.card, border: `1px solid ${c.border}`,
+                  borderRadius: 999, padding: "9px 16px", fontSize: 12.5, color: c.text, cursor: "pointer", fontFamily: fontBody,
+                }}>
+                  📷 {nouvelleImage ? "Remplacer la photo" : "Ajouter une photo"}
+                  <input type="file" accept="image/*" style={{ display: "none" }}
+                    onChange={async (e) => {
+                      const fichier = e.target.files && e.target.files[0];
+                      if (!fichier) return;
+                      setImportingImage(true);
+                      try {
+                        const dataUrl = await redimensionnerImage(fichier);
+                        setNouvelleImage(dataUrl);
+                        setCreationSaved(false);
+                      } catch {
+                        // silence si l'import échoue — la personne peut réessayer
+                      }
+                      setImportingImage(false);
+                      e.target.value = "";
+                    }} />
+                </label>
+                {nouvelleImage && (
+                  <Btn c={c} variant="ghost" onClick={() => setNouvelleImage(null)} style={{ width: "auto", padding: "9px 16px" }}>
+                    Retirer
+                  </Btn>
+                )}
+              </div>
+              {importingImage && <p style={{ margin: "8px 0 0", fontSize: 12, color: c.textSoft }}>Import en cours…</p>}
+            </div>
+          )}
+
+          <Btn c={c} variant="secondary" onClick={() => {
+            onAjouterCreation(nouveauTexte, nouvelleImage);
+            setNouveauTexte("");
+            setNouvelleImage(null);
+            setCreationSaved(true);
+          }}>
+            {creationSaved ? "Enregistré ✓" : "Enregistrer cette entrée"}
           </Btn>
+
           {PRINT_TEMPLATES[exercise.id] && (
             <button onClick={() => {
               const doc = genererPagePrintable(exercise);
@@ -4615,6 +4772,7 @@ const CHAMPS_EXPORT = [
   { id: "protection", label: "Réponses de protection reconnues" },
   { id: "exercices", label: "Exercices essayés" },
   { id: "retours", label: "Retours après les exercices" },
+  { id: "creations", label: "Mes notes et photos personnelles des exercices" },
 ];
 
 function calculerStatistiques(entries) {
@@ -4776,6 +4934,68 @@ function ajouterSectionReperes(doc, marge, y, plan) {
     doc.setTextColor(...PDF_COULEURS.text);
     const valLines = doc.splitTextToSize(val.trim(), 175);
     doc.text(valLines, marge, y); y += valLines.length * 5.2 + 3;
+    y = ligneSeparatrice(doc, marge, y);
+  });
+  return y;
+}
+
+function entreesCreationsDansPeriode(exoCreations, periodeId) {
+  const p = PERIODES_JOURNAL.find((x) => x.id === periodeId);
+  const seuil = p && p.jours ? new Date(Date.now() - p.jours * 86400000) : null;
+  const resultats = [];
+  Object.entries(exoCreations || {}).forEach(([exId, liste]) => {
+    const ex = EXERCISES.find((e) => e.id === exId);
+    const titre = ex ? ex.titre : exId;
+    (liste || []).forEach((entree) => {
+      const d = new Date(entree.date);
+      if (!seuil || d >= seuil) {
+        resultats.push({ titre, ...entree });
+      }
+    });
+  });
+  resultats.sort((a, b) => new Date(b.date) - new Date(a.date));
+  return resultats;
+}
+
+function ajouterSectionCreations(doc, marge, y, exoCreations, periodeId) {
+  const liste = entreesCreationsDansPeriode(exoCreations, periodeId);
+  y = titreSection(doc, marge, y, "Mes notes et photos personnelles", PDF_COULEURS.blue);
+  if (liste.length === 0) {
+    doc.setFontSize(10);
+    doc.setTextColor(...PDF_COULEURS.textSoft);
+    doc.text("Aucune note ou photo enregistrée sur cette période.", marge, y);
+    doc.setTextColor(...PDF_COULEURS.text);
+    return y + 10;
+  }
+  liste.forEach((entree) => {
+    if (y > 250) { doc.addPage(); y = 20; }
+    doc.setFontSize(10.5);
+    doc.setFont(undefined, "bold");
+    doc.setTextColor(...PDF_COULEURS.text);
+    doc.text(entree.titre, marge, y); y += 5.5;
+    doc.setFont(undefined, "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(...PDF_COULEURS.textSoft);
+    doc.text(new Date(entree.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }), marge, y);
+    y += 6;
+    doc.setTextColor(...PDF_COULEURS.text);
+    if (entree.texte) {
+      doc.setFontSize(10);
+      const lignes = doc.splitTextToSize(entree.texte, 175);
+      doc.text(lignes, marge, y); y += lignes.length * 5 + 3;
+    }
+    if (entree.image) {
+      if (y > 210) { doc.addPage(); y = 20; }
+      try {
+        const largeur = 90;
+        const props = doc.getImageProperties(entree.image);
+        const hauteur = (props.height * largeur) / props.width;
+        doc.addImage(entree.image, "JPEG", marge, y, largeur, hauteur);
+        y += hauteur + 6;
+      } catch {
+        // image illisible — on continue sans elle
+      }
+    }
     y = ligneSeparatrice(doc, marge, y);
   });
   return y;
@@ -4993,7 +5213,7 @@ function ajouterSectionStatistiques(doc, marge, y, entriesFiltrees) {
   return ligneSeparatrice(doc, marge, y + 2);
 }
 
-function genererPdfJournal(entriesFiltrees, champs, periodeLabel, personalInfo, safetyPlan) {
+function genererPdfJournal(entriesFiltrees, champs, periodeLabel, personalInfo, safetyPlan, exoCreations, periodeId) {
   const doc = new jsPDF();
   const marge = 15;
   let y = ajouterBandeauEntete(doc, "Mon journal de suivi", `Période : ${periodeLabel}`);
@@ -5009,6 +5229,11 @@ function genererPdfJournal(entriesFiltrees, champs, periodeLabel, personalInfo, 
   const detailsActifs = champs.dates || champs.etats || champs.intensites || champs.protection || champs.exercices || champs.retours;
   if (detailsActifs) {
     y = ajouterEntreesJournal(doc, marge, y, entriesFiltrees, champs);
+  }
+
+  if (champs.creations) {
+    y += 4;
+    y = ajouterSectionCreations(doc, marge, y, exoCreations, periodeId);
   }
 
   if (safetyPlan && safetyPlanHasContent(safetyPlan)) {
