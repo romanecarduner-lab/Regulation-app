@@ -1880,31 +1880,62 @@ function Bienvenue({ c, personalInfo, onChangePersonalInfo, onTerminer }) {
   return (
     <div style={{ background: c.bg, minHeight: 620, fontFamily: fontBody }}>
       <div style={{ maxWidth: 480, margin: "0 auto", padding: "36px 18px", paddingBottom: "calc(36px + env(safe-area-inset-bottom))" }}>
-        <div style={{ fontFamily: fontDisplay, fontSize: 30, color: c.text, marginBottom: 14, lineHeight: 1.25 }}>
+
+        <div style={{ position: "relative", width: 84, height: 84, margin: "0 auto 20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ position: "absolute", width: 84, height: 84, borderRadius: "50%", background: c.sageSoft }} />
+          <div style={{ position: "absolute", width: 46, height: 46, borderRadius: "50%", background: c.terracottaSoft, opacity: 0.7, top: 2, left: 40 }} />
+          <IconLeaf color={c.sage} />
+        </div>
+
+        <div style={{ fontFamily: fontDisplay, fontSize: 30, color: c.text, marginBottom: 12, lineHeight: 1.25, textAlign: "center" }}>
           Bienvenue.
         </div>
-        <p style={{ color: c.textSoft, fontSize: 14.5, lineHeight: 1.65, marginBottom: 14 }}>
-          Cette application peut vous aider à observer ce qui se passe en vous, à mieux comprendre les réactions
-          de votre système nerveux, et à choisir un exercice de stabilisation adapté à votre rythme. Vous pouvez
-          avancer à votre rythme et arrêter à tout moment.
-        </p>
-        <p style={{ color: c.textSoft, fontSize: 14.5, lineHeight: 1.65, marginBottom: 26 }}>
-          Si vous avez besoin d'un rappel sur le fonctionnement d'un écran, cherchez le petit bouton{" "}
-          <span style={{
-            display: "inline-flex", width: 18, height: 18, borderRadius: "50%", border: `1px solid ${c.border}`,
-            alignItems: "center", justifyContent: "center", fontSize: 10.5, color: c.textSoft, verticalAlign: "middle",
-          }}>?</span>{" "}
-          — il apparaît par endroits pour donner une explication courte, si besoin.
+        <p style={{ color: c.textSoft, fontSize: 14.5, lineHeight: 1.65, marginBottom: 22, textAlign: "center" }}>
+          Un espace pour observer ce qui se passe en vous, mieux comprendre votre système nerveux, et trouver
+          un exercice adapté à votre rythme. Vous pouvez avancer à votre façon et arrêter à tout moment.
         </p>
 
-        <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 26 }}>
-          <p style={{ margin: "0 0 12px", fontSize: 13, color: c.text, fontWeight: 600 }}>
-            Vous pouvez indiquer votre prénom et votre nom, si vous le souhaitez
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 10, marginBottom: 22 }}>
+          {[
+            [IconLeaf, "sage", "Je repère"],
+            [IconWaves, "blue", "Je régule"],
+            [IconArchSteps, "terracotta", "Mon espace"],
+          ].map(([Icon, color, label], i) => (
+            <div key={i} style={{ flex: 1, textAlign: "center" }}>
+              <div style={{
+                width: 44, height: 44, borderRadius: "50%", background: c[color + "Soft"], margin: "0 auto 8px",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                <Icon color={c[color]} />
+              </div>
+              <div style={{ fontSize: 11.5, color: c.textSoft, lineHeight: 1.3 }}>{label}</div>
+            </div>
+          ))}
+        </div>
+
+        <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 22 }}>
+          <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+            Si vous avez besoin d'un rappel sur le fonctionnement d'un écran, cherchez le petit bouton{" "}
+            <span style={{
+              display: "inline-flex", width: 18, height: 18, borderRadius: "50%", border: `1px solid ${c.border}`,
+              alignItems: "center", justifyContent: "center", fontSize: 10.5, color: c.textSoft, verticalAlign: "middle",
+            }}>?</span>{" "}
+            — il apparaît par endroits pour donner une explication courte, si besoin.
           </p>
+        </Card>
+
+        <Card c={c} style={{ marginBottom: 26 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <div style={{ width: 26, height: 26, borderRadius: "50%", background: c.sageSoft, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <IconPersonnes color={c.sage} />
+            </div>
+            <p style={{ margin: 0, fontSize: 13, color: c.text, fontWeight: 600 }}>
+              Prénom et nom, si vous le souhaitez
+            </p>
+          </div>
           <p style={{ margin: "0 0 14px", fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
-            Ces informations sont entièrement facultatives — vous pouvez utiliser toute l'application sans les
-            renseigner. Elles servent uniquement à personnaliser l'accueil et vos documents exportés. Vous
-            pourrez les modifier plus tard dans les réglages.
+            Entièrement facultatif — vous pouvez utiliser toute l'application sans les renseigner. Ils
+            personnalisent seulement l'accueil et vos documents exportés. Modifiable plus tard dans les réglages.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             <div>
@@ -2129,13 +2160,31 @@ function CheckinSensations({ c, onBack, sensations, setSensations, onNext }) {
 }
 
 function CheckinState({ c, onBack, onSelect, onUnknown, value }) {
+  const [showHelp, setShowHelp] = useState(false);
   return (
     <div>
-      <ScreenTitle c={c}>Où en êtes-vous maintenant ?</ScreenTitle>
-      <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginBottom: 18 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+        <ScreenTitle c={c} style={{ margin: 0 }}>Où en êtes-vous maintenant ?</ScreenTitle>
+        <button onClick={() => setShowHelp((s) => !s)} aria-label="Comment se déroule ce parcours ?" style={{
+          width: 26, height: 26, borderRadius: "50%", border: `1px solid ${c.border}`, background: c.card,
+          color: c.textSoft, fontSize: 12, cursor: "pointer", flexShrink: 0,
+        }}>?</button>
+      </div>
+      <p style={{ color: c.textSoft, fontSize: 15, lineHeight: 1.6, marginTop: 8, marginBottom: 18 }}>
         Choisissez ce qui vous semble le plus proche de votre état en ce moment. Il n'est pas nécessaire d'être
         totalement certain·e. Vous pourrez modifier votre réponse.
       </p>
+      {showHelp && (
+        <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 18 }}>
+          <p style={{ margin: "0 0 8px", fontSize: 12.5, color: c.text, fontWeight: 600 }}>Comment se déroule ce parcours ?</p>
+          <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+            Quelques questions courtes, une par écran : votre état, son intensité, ce que vous ressentez dans
+            le corps, puis une éventuelle réaction de protection. À la fin, un résumé et — si vous le souhaitez
+            — un accès direct à des exercices adaptés. Vous pouvez revenir en arrière ou vous arrêter à tout
+            moment.
+          </p>
+        </Card>
+      )}
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {NS_STATES.map((s) => {
           const selected = value === s.id;
