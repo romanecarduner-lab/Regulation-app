@@ -876,7 +876,6 @@ const PSYCHOED_FICHES = [
   },
   {
     titre: "Comprendre le stress post-traumatique",
-    fichePsychoeducation: true,
     paragraphes: [
       "Un événement très difficile peut bouleverser profondément notre sentiment de sécurité.",
       "Pour la plupart des personnes, les réactions diminuent progressivement avec le temps. Chez d'autres, elles persistent ou apparaissent plusieurs semaines après l'événement et prennent une place importante dans le quotidien.",
@@ -895,7 +894,6 @@ const PSYCHOED_FICHES = [
   },
   {
     titre: "Qu'est-ce qu'un flashback ?",
-    fichePsychoeducation: true,
     paragraphes: [
       "Un flashback est une réactivation très vive d'un vécu passé.",
       "Pendant quelques instants, le cerveau et le corps peuvent réagir comme si le danger était de nouveau présent, même si une partie de la personne sait que l'événement est terminé.",
@@ -909,7 +907,6 @@ const PSYCHOED_FICHES = [
   },
   {
     titre: "Les cauchemars liés à un vécu difficile",
-    fichePsychoeducation: true,
     paragraphes: [
       "Après une expérience difficile ou traumatique, le sommeil peut être perturbé.",
       "Certaines personnes font des cauchemars qui répètent une partie de ce qui s'est passé. Pour d'autres, le rêve est différent, mais il provoque des émotions ou des sensations proches : peur, impuissance, enfermement, menace ou impossibilité de s'échapper.",
@@ -4285,10 +4282,7 @@ function Psychoeducation({ c, onBack, onAction }) {
         {PSYCHOED_FICHES.map((fiche, i) => {
           const isOpen = open === i;
           return (
-            <div key={i} style={{
-              border: `1px solid ${fiche.fichePsychoeducation ? c.terracotta : c.border}`,
-              borderRadius: 16, overflow: "hidden",
-            }}>
+            <div key={i} style={{ border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden" }}>
               <button
                 onClick={() => setOpen(isOpen ? null : i)}
                 style={{
@@ -4301,14 +4295,7 @@ function Psychoeducation({ c, onBack, onAction }) {
                   <div style={{ width: 28, height: 28, borderRadius: "50%", background: c.ocreSoft, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                     <IconBook color={c.ocre} />
                   </div>
-                  <div>
-                    {fiche.fichePsychoeducation && (
-                      <div style={{ fontSize: 10.5, color: c.terracottaText, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.3, marginBottom: 2 }}>
-                        Fiche de psychoéducation
-                      </div>
-                    )}
-                    <span>{fiche.titre}</span>
-                  </div>
+                  <span>{fiche.titre}</span>
                 </div>
                 <span style={{ color: c.textSoft }}>{isOpen ? "–" : "+"}</span>
               </button>
