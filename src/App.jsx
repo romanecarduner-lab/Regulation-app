@@ -806,29 +806,29 @@ const PSYCHOED_FICHES = [
   {
     titre: "Qu'est-ce que la régulation émotionnelle ?",
     resume: "Réguler une émotion, c'est apprendre à la traverser sans être submergé·e — pas la faire disparaître.",
-    paragraphes: [
+    pourMieuxComprendre: [
       "Réguler une émotion **ne veut pas dire la supprimer**, l'effacer ou faire comme si elle n'existait pas. Cela signifie retrouver progressivement une capacité à la traverser, sans être totalement submergé·e par elle.",
       "Concrètement, cela peut vouloir dire rester en lien avec ce qui se passe dans votre corps, avec vos pensées, et avec ce qui vous entoure, même quand l'émotion est intense. Une émotion « régulée » n'est pas une émotion qui a disparu : c'est une émotion qui reste vivable, qui laisse encore un peu de place pour réfléchir, choisir, ou demander de l'aide si besoin.",
-      "Ce n'est pas un état fixe. On peut se sentir bien régulé·e à un moment, puis débordé·e l'instant d'après, puis revenir vers plus de stabilité un peu plus tard. **Ces allers-retours sont normaux.** Ils ne sont pas un échec.",
     ],
+    aRetenir: "Ce n'est pas un état fixe. On peut se sentir bien régulé·e à un moment, puis débordé·e l'instant d'après, puis revenir vers plus de stabilité un peu plus tard. **Ces allers-retours sont normaux.** Ils ne sont pas un échec.",
   },
   {
     titre: "Pourquoi mon corps réagit-il aussi fort ?",
     resume: "Le corps réagit vite pour vous protéger. Ce n'est ni un choix, ni un manque de contrôle.",
-    paragraphes: [
+    pourMieuxComprendre: [
       "Le corps peut réagir très vite lorsqu'il perçoit une menace, parfois avant même que vous ayez eu le temps de comprendre ce qui se passe. C'est un mécanisme de protection ancien, qui n'attend pas toujours que la pensée ait fini son travail pour agir.",
       "Parfois, cette menace est bien réelle et actuelle. Parfois, elle réactive une mémoire ancienne : une situation présente peut ressembler, dans ce qu'elle déclenche dans le corps, à quelque chose de plus ancien et de difficile. Dans les deux cas, la réaction du corps est bien réelle, même si son origine n'est pas toujours évidente sur le moment.",
-      "**Ce n'est ni un choix, ni un manque de contrôle**, ni une exagération. C'est une réaction automatique. Elle peut évoluer avec le temps, en particulier si elle est accompagnée, notamment par un professionnel formé à ces questions.",
     ],
+    aRetenir: "**Ce n'est ni un choix, ni un manque de contrôle**, ni une exagération. C'est une réaction automatique. Elle peut évoluer avec le temps, en particulier si elle est accompagnée, notamment par un professionnel formé à ces questions.",
   },
   {
     titre: "Hyperactivation et hypoactivation",
     resume: "Face à une émotion intense, le système nerveux accélère (hyperactivation) ou ralentit (hypoactivation) — parfois les deux.",
-    paragraphes: [
+    pourMieuxComprendre: [
       "Face à une émotion intense, le système nerveux peut prendre deux grandes directions, parfois même successivement.",
       "Certaines réactions vont vers l'accélération : agitation, cœur qui bat plus vite, pensées rapides, panique, colère, envie de fuir ou de se défendre. C'est ce qu'on appelle l'hyperactivation. D'autres réactions vont au contraire vers le ralentissement : fatigue soudaine, sensation de vide, brouillard mental, figement, impression d'être coupé·e de soi ou des autres. C'est l'hypoactivation.",
-      "Ce sont deux grandes manières, très différentes en apparence, pour le système nerveux de **tenter de nous protéger** quand il perçoit qu'il y a trop à gérer. Personne ne réagit toujours de la même façon : on peut basculer de l'une à l'autre selon les situations, les périodes, ou même au cours d'une même journée.",
     ],
+    aRetenir: "Ce sont deux grandes manières, très différentes en apparence, pour le système nerveux de **tenter de nous protéger** quand il perçoit qu'il y a trop à gérer. Personne ne réagit toujours de la même façon : on peut basculer de l'une à l'autre selon les situations, les périodes, ou même au cours d'une même journée.",
     boutons: [
       { label: "Exercices pour l'hyperactivation", action: "etat-hyperactivation" },
       { label: "Exercices pour l'hypoactivation", action: "etat-hypoactivation" },
@@ -837,64 +837,68 @@ const PSYCHOED_FICHES = [
   {
     titre: "La stabilisation",
     resume: "La stabilisation aide à retrouver un peu de sécurité et d'ancrage, sans nier ce qui est difficile.",
-    paragraphes: [
+    pourMieuxComprendre: [
       "La stabilisation correspond à l'ensemble des outils qui peuvent aider à retrouver un peu de sécurité, d'ancrage, de présence ou de choix, quand une émotion ou une réaction du corps devient difficile à traverser.",
       "Elle **ne consiste pas à nier** ce qui est difficile, ni à forcer un retour au calme. Il s'agit plutôt d'aider le système nerveux à ne pas rester seul avec une intensité trop forte, en lui proposant un point d'appui : un contact, un repère sensoriel, un mouvement, une présence.",
-      "La stabilisation n'est pas une fin en soi et ne remplace pas un travail thérapeutique de fond. Elle peut simplement offrir un peu plus d'espace, ici et maintenant, pour respirer, réfléchir ou demander de l'aide.",
     ],
+    aRetenir: "La stabilisation n'est pas une fin en soi et ne remplace pas un travail thérapeutique de fond. Elle peut simplement offrir un peu plus d'espace, ici et maintenant, pour respirer, réfléchir ou demander de l'aide.",
   },
   {
     titre: "Pourquoi les exercices ne fonctionnent pas toujours ?",
     resume: "Un exercice peut aider un jour et pas un autre. Ce n'est pas un échec.",
-    paragraphes: [
+    pourMieuxComprendre: [
       "Le système nerveux **ne réagit pas sur commande**. Un exercice peut aider beaucoup un jour, un peu un autre jour, et ne rien changer une troisième fois. Ce n'est pas un échec, ni de votre part, ni de la part de l'exercice.",
       "Plusieurs choses peuvent expliquer cela : le niveau de fatigue, le contexte, l'intensité de ce qui est traversé, ou simplement le fait qu'un même outil ne convient pas à tout le monde ni à tout moment.",
+    ],
+    concretement: [
       "Si un exercice ne vous aide pas, vous pouvez en essayer un autre, revenir plus tard, ou choisir de ne rien faire de particulier sur le moment. Il peut aussi être utile d'en parler avec un professionnel, qui pourra vous aider à ajuster ce qui vous convient.",
     ],
   },
   {
     titre: "Créer sa boîte à outils personnelle",
     resume: "Ce qui aide est propre à chacun·e, et se découvre petit à petit.",
-    paragraphes: [
+    pourMieuxComprendre: [
       "Chaque personne peut repérer, petit à petit, **ce qui l'aide réellement** — et cela ne ressemble jamais tout à fait à ce qui aide quelqu'un d'autre.",
       "Cela peut passer par le mouvement, le contact avec une surface ou une texture, la respiration observée sans contrainte, le lien avec une personne de confiance, la créativité, le contact avec la nature, l'écriture, la musique, le silence, la chaleur, le froid, ou encore la présence d'un animal.",
-      "Construire sa boîte à outils, c'est accepter d'essayer, de garder ce qui aide un peu, de laisser de côté ce qui n'aide pas, et de continuer à l'ajuster au fil du temps. Rien n'a besoin d'être trouvé une fois pour toutes.",
     ],
+    aRetenir: "Construire sa boîte à outils, c'est accepter d'essayer, de garder ce qui aide un peu, de laisser de côté ce qui n'aide pas, et de continuer à l'ajuster au fil du temps. Rien n'a besoin d'être trouvé une fois pour toutes.",
     boutons: [{ label: "Découvrir la bibliothèque", action: "library" }],
   },
   {
     titre: "Comprendre les réponses Fight, Flight, Freeze, Fawn",
     resume: "Face à une menace, le corps peut lutter, fuir, se figer ou s'adapter à l'autre — des réponses de protection, pas des défauts.",
-    paragraphes: [
+    pourMieuxComprendre: [
       "Face à une menace réelle ou perçue, le système nerveux peut déclencher automatiquement l'une de ces réponses : lutter (Fight), fuir (Flight), se figer (Freeze), ou s'adapter à l'autre pour préserver le lien (Fawn).",
       "**Ces réponses ne sont pas choisies consciemment**, et elles ne disent rien de la valeur ou de la personnalité de quelqu'un. Elles ont une fonction : aider à survivre à une situation perçue comme dangereuse, ou à préserver un lien qui semblait nécessaire à la sécurité.",
-      "**Ces réponses ne sont pas des défauts de personnalité.** Elles sont des réponses de protection, apprises souvent très tôt. Les reconnaître — sans les juger — peut aider, petit à petit, à retrouver un peu plus de choix face à ce qui se déclenche automatiquement.",
     ],
+    aRetenir: "**Ces réponses ne sont pas des défauts de personnalité.** Elles sont des réponses de protection, apprises souvent très tôt. Les reconnaître — sans les juger — peut aider, petit à petit, à retrouver un peu plus de choix face à ce qui se déclenche automatiquement.",
     boutons: [{ label: "Reconnaître mes réponses de protection", action: "protection-screen" }],
   },
   {
     titre: "Pourquoi je cherche parfois à apaiser l'autre ?",
     resume: "Apaiser l'autre a pu être une vraie stratégie de sécurité, pas un défaut de caractère.",
-    paragraphes: [
+    pourMieuxComprendre: [
       "Certaines personnes ont appris, parfois très tôt dans leur histoire, que préserver le lien, éviter le conflit ou anticiper les besoins de l'autre était une manière de rester en sécurité. C'est ce qu'on appelle la réponse Fawn.",
       "**Cette stratégie a souvent été utile**, à un moment donné, dans un contexte particulier. Elle a pu permettre d'éviter une réaction difficile, de garder un lien important, ou simplement de traverser une situation qui semblait risquée.",
-      "Elle peut cependant devenir coûteuse lorsqu'elle se répète dans des contextes où elle n'est plus nécessaire, et qu'elle empêche de sentir ses propres limites, ses propres besoins, ou son propre « non ». Le reconnaître n'est pas un jugement : c'est une porte d'entrée possible vers un peu plus de choix.",
     ],
+    aRetenir: "Elle peut cependant devenir coûteuse lorsqu'elle se répète dans des contextes où elle n'est plus nécessaire, et qu'elle empêche de sentir ses propres limites, ses propres besoins, ou son propre « non ». Le reconnaître n'est pas un jugement : c'est une porte d'entrée possible vers un peu plus de choix.",
     boutons: [{ label: "Exercices pour la réponse Fawn", action: "protection-fawn" }],
   },
   {
     titre: "Comprendre le stress post-traumatique",
     resume: "Après un événement très difficile, certaines réactions peuvent persister — ce n'est ni une faiblesse, ni un manque de volonté.",
-    paragraphes: [
+    pourMieuxComprendre: [
       "Un événement très difficile peut bouleverser profondément notre sentiment de sécurité.",
       "Pour la plupart des personnes, les réactions diminuent progressivement avec le temps. Chez d'autres, elles persistent ou apparaissent plusieurs semaines après l'événement et prennent une place importante dans le quotidien.",
       "Lorsque ces difficultés durent dans le temps et entraînent une souffrance importante ou des difficultés dans la vie de tous les jours, on parle de trouble de stress post-traumatique (TSPT).",
       "Le TSPT peut se manifester de différentes façons. Par exemple : des souvenirs qui reviennent malgré soi ; des flashbacks ou la sensation que l'événement est en train de se reproduire ; des cauchemars ; une vigilance permanente ou des sursauts importants ; l'évitement de personnes, de lieux ou de situations qui rappellent l'événement ; des difficultés de sommeil ou de concentration ; une irritabilité inhabituelle ; la sensation d'être détaché·e de soi, de ses émotions ou de ce qui nous entoure.",
       "Chaque personne est différente. Il n'est pas nécessaire de présenter tous ces signes pour souffrir d'un psychotraumatisme.",
-      "**Ces réactions ne traduisent ni un manque de volonté, ni une faiblesse.** Elles correspondent à la manière dont le cerveau, le corps et le système nerveux se sont adaptés face à un événement qui les a dépassés.",
+    ],
+    concretement: [
       "Avec une prise en charge adaptée, ces difficultés peuvent évoluer et diminuer.",
       "Cette application ne remplace pas un accompagnement par un professionnel formé au psychotraumatisme. En revanche, elle peut vous aider à mieux comprendre ce que vous vivez et vous proposer des outils pour retrouver progressivement un sentiment de sécurité.",
     ],
+    aRetenir: "**Ces réactions ne traduisent ni un manque de volonté, ni une faiblesse.** Elles correspondent à la manière dont le cerveau, le corps et le système nerveux se sont adaptés face à un événement qui les a dépassés.",
     encart: {
       titre: "💡 Le savais-tu ?",
       texte: "Toutes les personnes confrontées à un événement traumatique ne développent pas un trouble de stress post-traumatique. À l'inverse, certaines réactions peuvent apparaître plusieurs semaines, voire plusieurs mois après l'événement.",
@@ -919,16 +923,18 @@ const PSYCHOED_FICHES = [
   {
     titre: "Les cauchemars liés à un vécu difficile",
     resume: "Certains cauchemars répètent ou évoquent un vécu difficile ; le corps peut rester mobilisé au réveil.",
-    paragraphes: [
+    pourMieuxComprendre: [
       "Après une expérience difficile ou traumatique, le sommeil peut être perturbé.",
       "Certaines personnes font des cauchemars qui répètent une partie de ce qui s'est passé. Pour d'autres, le rêve est différent, mais il provoque des émotions ou des sensations proches : peur, impuissance, enfermement, menace ou impossibilité de s'échapper.",
       "Au réveil, le corps peut rester mobilisé comme si le danger était encore présent. Le cœur peut battre rapidement, la respiration peut être courte, les muscles tendus, et il peut être difficile de retrouver immédiatement ses repères.",
       "**Ces réactions ne signifient pas que la personne régresse** ou qu'elle devrait être capable de mieux contrôler ses rêves. Les cauchemars font partie des manifestations possibles après un vécu traumatique, même s'ils peuvent également avoir d'autres causes.",
+    ],
+    concretement: [
       "Il n'est pas nécessaire de chercher immédiatement à comprendre ou à interpréter le rêve.",
       "La première étape peut simplement consister à aider le corps et l'esprit à reconnaître que le cauchemar est terminé et que l'on se trouve maintenant dans un autre lieu et à un autre moment.",
       "Il existe des approches thérapeutiques spécifiques pour travailler sur les cauchemars persistants. L'application ne remplace pas cet accompagnement et ne demandera pas à la personne de raconter, d'interpréter ou de modifier seule le contenu de son rêve.",
-      "Elle peut en revanche proposer quelques repères concrets pour revenir progressivement au moment présent après le réveil.",
     ],
+    aRetenir: "Elle peut en revanche proposer quelques repères concrets pour revenir progressivement au moment présent après le réveil.",
     boutons: [{ label: "M'aider à me réorienter après un cauchemar", action: "repere" }],
   },
 ];
