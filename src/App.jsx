@@ -807,9 +807,9 @@ const PSYCHOED_FICHES = [
     titre: "Qu'est-ce que la régulation émotionnelle ?",
     resume: "Réguler une émotion, c'est apprendre à la traverser sans être submergé·e — pas la faire disparaître.",
     paragraphes: [
-      "Réguler une émotion ne veut pas dire la supprimer, l'effacer ou faire comme si elle n'existait pas. Cela signifie retrouver progressivement une capacité à la traverser, sans être totalement submergé·e par elle.",
+      "Réguler une émotion **ne veut pas dire la supprimer**, l'effacer ou faire comme si elle n'existait pas. Cela signifie retrouver progressivement une capacité à la traverser, sans être totalement submergé·e par elle.",
       "Concrètement, cela peut vouloir dire rester en lien avec ce qui se passe dans votre corps, avec vos pensées, et avec ce qui vous entoure, même quand l'émotion est intense. Une émotion « régulée » n'est pas une émotion qui a disparu : c'est une émotion qui reste vivable, qui laisse encore un peu de place pour réfléchir, choisir, ou demander de l'aide si besoin.",
-      "Ce n'est pas un état fixe. On peut se sentir bien régulé·e à un moment, puis débordé·e l'instant d'après, puis revenir vers plus de stabilité un peu plus tard. Ces allers-retours sont normaux. Ils ne sont pas un échec.",
+      "Ce n'est pas un état fixe. On peut se sentir bien régulé·e à un moment, puis débordé·e l'instant d'après, puis revenir vers plus de stabilité un peu plus tard. **Ces allers-retours sont normaux.** Ils ne sont pas un échec.",
     ],
   },
   {
@@ -818,7 +818,7 @@ const PSYCHOED_FICHES = [
     paragraphes: [
       "Le corps peut réagir très vite lorsqu'il perçoit une menace, parfois avant même que vous ayez eu le temps de comprendre ce qui se passe. C'est un mécanisme de protection ancien, qui n'attend pas toujours que la pensée ait fini son travail pour agir.",
       "Parfois, cette menace est bien réelle et actuelle. Parfois, elle réactive une mémoire ancienne : une situation présente peut ressembler, dans ce qu'elle déclenche dans le corps, à quelque chose de plus ancien et de difficile. Dans les deux cas, la réaction du corps est bien réelle, même si son origine n'est pas toujours évidente sur le moment.",
-      "Ce n'est ni un choix, ni un manque de contrôle, ni une exagération. C'est une réaction automatique. Elle peut évoluer avec le temps, en particulier si elle est accompagnée, notamment par un professionnel formé à ces questions.",
+      "**Ce n'est ni un choix, ni un manque de contrôle**, ni une exagération. C'est une réaction automatique. Elle peut évoluer avec le temps, en particulier si elle est accompagnée, notamment par un professionnel formé à ces questions.",
     ],
   },
   {
@@ -827,7 +827,7 @@ const PSYCHOED_FICHES = [
     paragraphes: [
       "Face à une émotion intense, le système nerveux peut prendre deux grandes directions, parfois même successivement.",
       "Certaines réactions vont vers l'accélération : agitation, cœur qui bat plus vite, pensées rapides, panique, colère, envie de fuir ou de se défendre. C'est ce qu'on appelle l'hyperactivation. D'autres réactions vont au contraire vers le ralentissement : fatigue soudaine, sensation de vide, brouillard mental, figement, impression d'être coupé·e de soi ou des autres. C'est l'hypoactivation.",
-      "Ce sont deux grandes manières, très différentes en apparence, pour le système nerveux de tenter de nous protéger quand il perçoit qu'il y a trop à gérer. Personne ne réagit toujours de la même façon : on peut basculer de l'une à l'autre selon les situations, les périodes, ou même au cours d'une même journée.",
+      "Ce sont deux grandes manières, très différentes en apparence, pour le système nerveux de **tenter de nous protéger** quand il perçoit qu'il y a trop à gérer. Personne ne réagit toujours de la même façon : on peut basculer de l'une à l'autre selon les situations, les périodes, ou même au cours d'une même journée.",
     ],
     boutons: [
       { label: "Exercices pour l'hyperactivation", action: "etat-hyperactivation" },
@@ -839,7 +839,7 @@ const PSYCHOED_FICHES = [
     resume: "La stabilisation aide à retrouver un peu de sécurité et d'ancrage, sans nier ce qui est difficile.",
     paragraphes: [
       "La stabilisation correspond à l'ensemble des outils qui peuvent aider à retrouver un peu de sécurité, d'ancrage, de présence ou de choix, quand une émotion ou une réaction du corps devient difficile à traverser.",
-      "Elle ne consiste pas à nier ce qui est difficile, ni à forcer un retour au calme. Il s'agit plutôt d'aider le système nerveux à ne pas rester seul avec une intensité trop forte, en lui proposant un point d'appui : un contact, un repère sensoriel, un mouvement, une présence.",
+      "Elle **ne consiste pas à nier** ce qui est difficile, ni à forcer un retour au calme. Il s'agit plutôt d'aider le système nerveux à ne pas rester seul avec une intensité trop forte, en lui proposant un point d'appui : un contact, un repère sensoriel, un mouvement, une présence.",
       "La stabilisation n'est pas une fin en soi et ne remplace pas un travail thérapeutique de fond. Elle peut simplement offrir un peu plus d'espace, ici et maintenant, pour respirer, réfléchir ou demander de l'aide.",
     ],
   },
@@ -847,7 +847,7 @@ const PSYCHOED_FICHES = [
     titre: "Pourquoi les exercices ne fonctionnent pas toujours ?",
     resume: "Un exercice peut aider un jour et pas un autre. Ce n'est pas un échec.",
     paragraphes: [
-      "Le système nerveux ne réagit pas sur commande. Un exercice peut aider beaucoup un jour, un peu un autre jour, et ne rien changer une troisième fois. Ce n'est pas un échec, ni de votre part, ni de la part de l'exercice.",
+      "Le système nerveux **ne réagit pas sur commande**. Un exercice peut aider beaucoup un jour, un peu un autre jour, et ne rien changer une troisième fois. Ce n'est pas un échec, ni de votre part, ni de la part de l'exercice.",
       "Plusieurs choses peuvent expliquer cela : le niveau de fatigue, le contexte, l'intensité de ce qui est traversé, ou simplement le fait qu'un même outil ne convient pas à tout le monde ni à tout moment.",
       "Si un exercice ne vous aide pas, vous pouvez en essayer un autre, revenir plus tard, ou choisir de ne rien faire de particulier sur le moment. Il peut aussi être utile d'en parler avec un professionnel, qui pourra vous aider à ajuster ce qui vous convient.",
     ],
@@ -856,7 +856,7 @@ const PSYCHOED_FICHES = [
     titre: "Créer sa boîte à outils personnelle",
     resume: "Ce qui aide est propre à chacun·e, et se découvre petit à petit.",
     paragraphes: [
-      "Chaque personne peut repérer, petit à petit, ce qui l'aide réellement — et cela ne ressemble jamais tout à fait à ce qui aide quelqu'un d'autre.",
+      "Chaque personne peut repérer, petit à petit, **ce qui l'aide réellement** — et cela ne ressemble jamais tout à fait à ce qui aide quelqu'un d'autre.",
       "Cela peut passer par le mouvement, le contact avec une surface ou une texture, la respiration observée sans contrainte, le lien avec une personne de confiance, la créativité, le contact avec la nature, l'écriture, la musique, le silence, la chaleur, le froid, ou encore la présence d'un animal.",
       "Construire sa boîte à outils, c'est accepter d'essayer, de garder ce qui aide un peu, de laisser de côté ce qui n'aide pas, et de continuer à l'ajuster au fil du temps. Rien n'a besoin d'être trouvé une fois pour toutes.",
     ],
@@ -867,8 +867,8 @@ const PSYCHOED_FICHES = [
     resume: "Face à une menace, le corps peut lutter, fuir, se figer ou s'adapter à l'autre — des réponses de protection, pas des défauts.",
     paragraphes: [
       "Face à une menace réelle ou perçue, le système nerveux peut déclencher automatiquement l'une de ces réponses : lutter (Fight), fuir (Flight), se figer (Freeze), ou s'adapter à l'autre pour préserver le lien (Fawn).",
-      "Ces réponses ne sont pas choisies consciemment, et elles ne disent rien de la valeur ou de la personnalité de quelqu'un. Elles ont une fonction : aider à survivre à une situation perçue comme dangereuse, ou à préserver un lien qui semblait nécessaire à la sécurité.",
-      "Ces réponses ne sont pas des défauts de personnalité. Elles sont des réponses de protection, apprises souvent très tôt. Les reconnaître — sans les juger — peut aider, petit à petit, à retrouver un peu plus de choix face à ce qui se déclenche automatiquement.",
+      "**Ces réponses ne sont pas choisies consciemment**, et elles ne disent rien de la valeur ou de la personnalité de quelqu'un. Elles ont une fonction : aider à survivre à une situation perçue comme dangereuse, ou à préserver un lien qui semblait nécessaire à la sécurité.",
+      "**Ces réponses ne sont pas des défauts de personnalité.** Elles sont des réponses de protection, apprises souvent très tôt. Les reconnaître — sans les juger — peut aider, petit à petit, à retrouver un peu plus de choix face à ce qui se déclenche automatiquement.",
     ],
     boutons: [{ label: "Reconnaître mes réponses de protection", action: "protection-screen" }],
   },
@@ -877,7 +877,7 @@ const PSYCHOED_FICHES = [
     resume: "Apaiser l'autre a pu être une vraie stratégie de sécurité, pas un défaut de caractère.",
     paragraphes: [
       "Certaines personnes ont appris, parfois très tôt dans leur histoire, que préserver le lien, éviter le conflit ou anticiper les besoins de l'autre était une manière de rester en sécurité. C'est ce qu'on appelle la réponse Fawn.",
-      "Cette stratégie a souvent été utile, à un moment donné, dans un contexte particulier. Elle a pu permettre d'éviter une réaction difficile, de garder un lien important, ou simplement de traverser une situation qui semblait risquée.",
+      "**Cette stratégie a souvent été utile**, à un moment donné, dans un contexte particulier. Elle a pu permettre d'éviter une réaction difficile, de garder un lien important, ou simplement de traverser une situation qui semblait risquée.",
       "Elle peut cependant devenir coûteuse lorsqu'elle se répète dans des contextes où elle n'est plus nécessaire, et qu'elle empêche de sentir ses propres limites, ses propres besoins, ou son propre « non ». Le reconnaître n'est pas un jugement : c'est une porte d'entrée possible vers un peu plus de choix.",
     ],
     boutons: [{ label: "Exercices pour la réponse Fawn", action: "protection-fawn" }],
@@ -891,7 +891,7 @@ const PSYCHOED_FICHES = [
       "Lorsque ces difficultés durent dans le temps et entraînent une souffrance importante ou des difficultés dans la vie de tous les jours, on parle de trouble de stress post-traumatique (TSPT).",
       "Le TSPT peut se manifester de différentes façons. Par exemple : des souvenirs qui reviennent malgré soi ; des flashbacks ou la sensation que l'événement est en train de se reproduire ; des cauchemars ; une vigilance permanente ou des sursauts importants ; l'évitement de personnes, de lieux ou de situations qui rappellent l'événement ; des difficultés de sommeil ou de concentration ; une irritabilité inhabituelle ; la sensation d'être détaché·e de soi, de ses émotions ou de ce qui nous entoure.",
       "Chaque personne est différente. Il n'est pas nécessaire de présenter tous ces signes pour souffrir d'un psychotraumatisme.",
-      "Ces réactions ne traduisent ni un manque de volonté, ni une faiblesse. Elles correspondent à la manière dont le cerveau, le corps et le système nerveux se sont adaptés face à un événement qui les a dépassés.",
+      "**Ces réactions ne traduisent ni un manque de volonté, ni une faiblesse.** Elles correspondent à la manière dont le cerveau, le corps et le système nerveux se sont adaptés face à un événement qui les a dépassés.",
       "Avec une prise en charge adaptée, ces difficultés peuvent évoluer et diminuer.",
       "Cette application ne remplace pas un accompagnement par un professionnel formé au psychotraumatisme. En revanche, elle peut vous aider à mieux comprendre ce que vous vivez et vous proposer des outils pour retrouver progressivement un sentiment de sécurité.",
     ],
@@ -908,7 +908,7 @@ const PSYCHOED_FICHES = [
       "Un flashback est une réactivation très vive d'un vécu passé.",
       "Pendant quelques instants, le cerveau et le corps peuvent réagir comme si le danger était de nouveau présent, même si une partie de la personne sait que l'événement est terminé.",
       "Un flashback ne prend pas toujours la forme d'une image ou d'un souvenir précis. Il peut aussi se manifester par : des sensations corporelles ; une émotion très intense ; une impression de danger ; un son, une odeur ou une image ; la sensation que « cela recommence » ; une difficulté temporaire à se repérer dans le présent.",
-      "Cela ne signifie pas que la personne devient folle, qu'elle perd volontairement le contrôle ou que tout le travail déjà réalisé est annulé. Il s'agit d'une réaction possible après une expérience vécue comme traumatique ou submergeante.",
+      "**Cela ne signifie pas que la personne devient folle**, qu'elle perd volontairement le contrôle ou que tout le travail déjà réalisé est annulé. Il s'agit d'une réaction possible après une expérience vécue comme traumatique ou submergeante.",
       "L'objectif n'est pas de forcer le flashback à disparaître, ni d'explorer seul ce qu'il contient. Il peut d'abord être utile de retrouver progressivement quelques repères du moment présent : où je suis, quelle est la date, ce que je vois autour de moi et les appuis que je peux sentir.",
       "Cette application ne permet pas de traiter le vécu à l'origine des flashbacks. Ce travail nécessite, lorsqu'il est possible et indiqué, un accompagnement professionnel adapté.",
       "Elle peut cependant proposer un soutien pour se réorienter doucement pendant ou après un flashback, à condition que cela reste suffisamment sécurisant pour la personne.",
@@ -922,7 +922,7 @@ const PSYCHOED_FICHES = [
       "Après une expérience difficile ou traumatique, le sommeil peut être perturbé.",
       "Certaines personnes font des cauchemars qui répètent une partie de ce qui s'est passé. Pour d'autres, le rêve est différent, mais il provoque des émotions ou des sensations proches : peur, impuissance, enfermement, menace ou impossibilité de s'échapper.",
       "Au réveil, le corps peut rester mobilisé comme si le danger était encore présent. Le cœur peut battre rapidement, la respiration peut être courte, les muscles tendus, et il peut être difficile de retrouver immédiatement ses repères.",
-      "Ces réactions ne signifient pas que la personne régresse ou qu'elle devrait être capable de mieux contrôler ses rêves. Les cauchemars font partie des manifestations possibles après un vécu traumatique, même s'ils peuvent également avoir d'autres causes.",
+      "**Ces réactions ne signifient pas que la personne régresse** ou qu'elle devrait être capable de mieux contrôler ses rêves. Les cauchemars font partie des manifestations possibles après un vécu traumatique, même s'ils peuvent également avoir d'autres causes.",
       "Il n'est pas nécessaire de chercher immédiatement à comprendre ou à interpréter le rêve.",
       "La première étape peut simplement consister à aider le corps et l'esprit à reconnaître que le cauchemar est terminé et que l'on se trouve maintenant dans un autre lieu et à un autre moment.",
       "Il existe des approches thérapeutiques spécifiques pour travailler sur les cauchemars persistants. L'application ne remplace pas cet accompagnement et ne demandera pas à la personne de raconter, d'interpréter ou de modifier seule le contenu de son rêve.",
@@ -1160,6 +1160,7 @@ export default function App() {
   const [customExercises, setCustomExercises] = useState([]);
   const [editingExercise, setEditingExercise] = useState(null);
   const [selectedEntryIndex, setSelectedEntryIndex] = useState(null);
+  const [selectedFicheIndex, setSelectedFicheIndex] = useState(null);
 
   // persisted data
   const [safetyPlan, setSafetyPlan] = useState({
@@ -1225,6 +1226,7 @@ export default function App() {
     setLastExerciseId(null);
     setEditingExercise(null);
     setSelectedEntryIndex(null);
+    setSelectedFicheIndex(null);
     setLibraryFilters(freshFilters(avoidPrefs));
   }, [avoidPrefs]);
 
@@ -1385,6 +1387,7 @@ export default function App() {
             "tolerance-zone": { label: "Retour à l'accueil", onClick: goBackHome },
             "protection": { label: "Retour à l'accueil", onClick: goBackHome },
             "psychoed": { label: "Retour à l'accueil", onClick: goBackHome },
+            "psychoed-fiche": { label: "Retour", onClick: goBack },
             "repere-immediat": { label: "Retour à l'accueil", onClick: goBackHome },
             "safety": { label: "Retour", onClick: goBack },
             "nervous-system": { label: "Retour à l'accueil", onClick: goBackHome },
@@ -1584,7 +1587,11 @@ export default function App() {
         )}
 
         {screen === "psychoed" && (
-          <Psychoeducation c={c} onBack={goBackHome}
+          <Psychoeducation c={c} onSelectFiche={(i) => { setSelectedFicheIndex(i); goTo("psychoed-fiche"); }} />
+        )}
+
+        {screen === "psychoed-fiche" && selectedFicheIndex !== null && (
+          <PsychoedFiche c={c} fiche={PSYCHOED_FICHES[selectedFicheIndex]}
             onAction={(action) => {
               if (action === "repere") { goTo("repere-immediat"); return; }
               if (action === "protection-screen") { goTo("protection"); return; }
@@ -1965,6 +1972,20 @@ function Bienvenue({ c, personalInfo, onChangePersonalInfo, onTerminer }) {
                 style={inputStyle} />
             </div>
           </div>
+        </Card>
+
+        <Card c={c} style={{ background: c.bgAlt, border: "none", marginBottom: 26 }}>
+          <p style={{ margin: "0 0 10px", fontSize: 13, color: c.text, fontWeight: 600 }}>
+            📲 Ajouter cette application à votre écran d'accueil
+          </p>
+          <p style={{ margin: "0 0 8px", fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+            <strong>Sur iPhone :</strong> dans Safari, touchez le bouton Partager (le carré avec une flèche),
+            puis « Sur l'écran d'accueil ».
+          </p>
+          <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+            <strong>Sur Android :</strong> dans Chrome, touchez le menu (les trois points en haut à droite),
+            puis « Ajouter à l'écran d'accueil ».
+          </p>
         </Card>
 
         <Btn c={c} variant="primary" onClick={onTerminer}>Commencer <span>→</span></Btn>
@@ -4333,8 +4354,11 @@ function Protection({ c, onBack, onExercises }) {
   );
 }
 
-function Psychoeducation({ c, onBack, onAction }) {
-  const [open, setOpen] = useState(null);
+function texteAvecGras(texte) {
+  return texte.split(/\*\*(.+?)\*\*/g).map((part, i) => (i % 2 === 1 ? <strong key={i}>{part}</strong> : part));
+}
+
+function Psychoeducation({ c, onSelectFiche }) {
   return (
     <div>
       <ScreenTitle c={c}>Psychoéducation</ScreenTitle>
@@ -4342,62 +4366,73 @@ function Psychoeducation({ c, onBack, onAction }) {
         Des fiches courtes, lisibles en moins de deux minutes chacune.
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {PSYCHOED_FICHES.map((fiche, i) => {
-          const isOpen = open === i;
+        {PSYCHOED_FICHES.map((fiche, i) => (
+          <button key={i} onClick={() => onSelectFiche(i)} style={{
+            width: "100%", textAlign: "left", padding: 14, cursor: "pointer",
+            border: `1px solid ${c.border}`, borderRadius: 16, background: c.card,
+            display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 28, height: 28, borderRadius: "50%", background: c.ocreSoft, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <IconBook color={c.ocre} />
+              </div>
+              <span style={{ fontWeight: 600, fontSize: 14, color: c.text }}>{fiche.titre}</span>
+            </div>
+            <span style={{ color: c.textSoft }}>›</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const COULEURS_PARAGRAPHE = ["sage", "blue", "terracotta", "violet", "ocre", "stone", "force"];
+
+function PsychoedFiche({ c, fiche, onAction }) {
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18 }}>
+        <div style={{ width: 44, height: 44, borderRadius: "50%", background: c.ocreSoft, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <IconBook color={c.ocre} />
+        </div>
+        <ScreenTitle c={c} style={{ margin: 0 }}>{fiche.titre}</ScreenTitle>
+      </div>
+
+      {fiche.resume && (
+        <Card c={c} style={{ background: c.sageSoft, border: "none", marginBottom: 22 }}>
+          <p style={{ margin: 0, fontSize: 15, color: c.text, fontWeight: 700, lineHeight: 1.55 }}>
+            {texteAvecGras(fiche.resume)}
+          </p>
+        </Card>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 22 }}>
+        {fiche.paragraphes.map((p, i) => {
+          const coul = COULEURS_PARAGRAPHE[i % COULEURS_PARAGRAPHE.length];
           return (
-            <div key={i} style={{ border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden" }}>
-              <button
-                onClick={() => setOpen(isOpen ? null : i)}
-                style={{
-                  width: "100%", textAlign: "left", padding: 14, cursor: "pointer", border: "none",
-                  background: c.card, color: c.text, fontWeight: 600, fontSize: 14,
-                  display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10,
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ width: 28, height: 28, borderRadius: "50%", background: c.ocreSoft, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <IconBook color={c.ocre} />
-                  </div>
-                  <span>{fiche.titre}</span>
-                </div>
-                <span style={{ color: c.textSoft }}>{isOpen ? "–" : "+"}</span>
-              </button>
-              {isOpen && (
-                <div style={{ padding: "0 14px 18px" }}>
-                  {fiche.resume && (
-                    <p style={{
-                      margin: "0 0 14px", fontSize: 14.5, color: c.text, fontWeight: 600, lineHeight: 1.5,
-                      paddingLeft: 12, borderLeft: `3px solid ${c.sage}`,
-                    }}>
-                      {fiche.resume}
-                    </p>
-                  )}
-                  {fiche.paragraphes.map((p, pi) => (
-                    <p key={pi} style={{ margin: pi === 0 ? "0 0 14px" : "0 0 14px", fontSize: 13, color: c.textSoft, lineHeight: 1.7 }}>
-                      {p}
-                    </p>
-                  ))}
-                  {fiche.encart && (
-                    <Card c={c} style={{ background: c.blueSoft, border: "none", marginBottom: 14 }}>
-                      <p style={{ margin: "0 0 6px", fontSize: 12.5, color: c.text, fontWeight: 700 }}>{fiche.encart.titre}</p>
-                      <p style={{ margin: 0, fontSize: 12.5, color: c.text, lineHeight: 1.6 }}>{fiche.encart.texte}</p>
-                    </Card>
-                  )}
-                  {fiche.boutons && fiche.boutons.length > 0 && (
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 4 }}>
-                      {fiche.boutons.map((b, bi) => (
-                        <Btn key={bi} c={c} variant="secondary" onClick={() => onAction(b.action)}>
-                          {b.label} <span>→</span>
-                        </Btn>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
+            <div key={i} style={{ background: c[coul + "Soft"], borderRadius: 16, padding: 16 }}>
+              <p style={{ margin: 0, fontSize: 14.5, color: c.text, lineHeight: 1.8 }}>{texteAvecGras(p)}</p>
             </div>
           );
         })}
       </div>
+
+      {fiche.encart && (
+        <Card c={c} style={{ background: c.blueSoft, border: "none", marginBottom: 22 }}>
+          <p style={{ margin: "0 0 6px", fontSize: 13, color: c.text, fontWeight: 700 }}>{fiche.encart.titre}</p>
+          <p style={{ margin: 0, fontSize: 13, color: c.text, lineHeight: 1.6 }}>{texteAvecGras(fiche.encart.texte)}</p>
+        </Card>
+      )}
+
+      {fiche.boutons && fiche.boutons.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {fiche.boutons.map((b, bi) => (
+            <Btn key={bi} c={c} variant="secondary" onClick={() => onAction(b.action)}>
+              {b.label} <span>→</span>
+            </Btn>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -5506,6 +5541,20 @@ function Settings({ c, theme, toggleTheme, onBack, onWipe, personalInfo, onChang
             </p>
           </div>
         )}
+      </Card>
+
+      <Card c={c} style={{ marginBottom: 14 }}>
+        <p style={{ margin: "0 0 10px", fontSize: 15, color: c.text, fontWeight: 600 }}>
+          📲 Ajouter cette application à votre écran d'accueil
+        </p>
+        <p style={{ margin: "0 0 8px", fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+          <strong>Sur iPhone :</strong> dans Safari, touchez le bouton Partager (le carré avec une flèche),
+          puis « Sur l'écran d'accueil ».
+        </p>
+        <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+          <strong>Sur Android :</strong> dans Chrome, touchez le menu (les trois points en haut à droite),
+          puis « Ajouter à l'écran d'accueil ».
+        </p>
       </Card>
 
       <Card c={c} style={{ marginBottom: 14 }}>
