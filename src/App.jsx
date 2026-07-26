@@ -494,10 +494,10 @@ const EXERCISES = [
     objectif: "Emprunter, pour un instant, la capacité à prendre son temps d'un personnage imaginé.",
     etapes: ["Imaginez un personnage qui sait prendre son temps avant de répondre — réel, fictif, animal ou inventé.", "Que dirait-il à votre place ?", "Si imaginer un personnage ne vous convient pas aujourd'hui : pensez simplement à une personne réelle que vous connaissez et qui prend son temps avant de répondre. Que dirait-elle ?"],
     precaution: "Ce que dirait ce personnage n'est pas présenté comme « la bonne réponse », seulement comme une possibilité parmi d'autres.", sensible: ["imagination"] },
-  { id: "bouton-non-consequence", titre: "Le bouton non, sans conséquence", etats: ["tolerance"], besoins: ["choix", "limites"], protection: [], canaux: ["cognitif"], duree: "30s", materiel: null,
+  { id: "bouton-non-consequence", titre: "Le bouton non, sans conséquence", type: "oui-non-interactif", etats: ["tolerance"], besoins: ["choix", "limites"], protection: [], canaux: ["cognitif"], duree: "30s", materiel: null,
     tags: ["choix"],
     objectif: "Vérifier concrètement que dire non à un exercice est possible et respecté.",
-    etapes: ["Voulez-vous continuer cet exercice ? Oui / Non.", "Si vous choisissez Non : très bien. Vous pouvez simplement revenir à l'accueil — ce non est entièrement respecté, sans qu'il soit nécessaire de vous justifier."],
+    etapes: ["Souhaitez-vous faire cet exercice ? Oui / Non.", "Quelle que soit votre réponse, elle est respectée sans qu'il soit nécessaire de vous justifier."],
     precaution: null, sensible: [] },
 
   { id: "distance-juste", titre: "Dessiner la distance juste", etats: ["tolerance", "hyperactivation"], besoins: ["limites", "corps"], protection: [], canaux: ["imaginatif", "cognitif"], duree: "2min", materiel: null,
@@ -904,15 +904,16 @@ const PSYCHOED_FICHES = [
   {
     titre: "Qu'est-ce qu'un flashback ?",
     resume: "Un flashback fait revivre un vécu passé comme s'il était présent. Ce n'est pas un signe de folie.",
-    paragraphes: [
-      "Un flashback est une réactivation très vive d'un vécu passé.",
-      "Pendant quelques instants, le cerveau et le corps peuvent réagir comme si le danger était de nouveau présent, même si une partie de la personne sait que l'événement est terminé.",
-      "Un flashback ne prend pas toujours la forme d'une image ou d'un souvenir précis. Il peut aussi se manifester par : des sensations corporelles ; une émotion très intense ; une impression de danger ; un son, une odeur ou une image ; la sensation que « cela recommence » ; une difficulté temporaire à se repérer dans le présent.",
+    pourMieuxComprendre: [
+      "Un flashback est une réactivation très vive d'un vécu passé. Pendant quelques instants, le cerveau et le corps peuvent réagir comme si le danger était de nouveau présent, même si une partie de la personne sait que l'événement est terminé.",
+      "Il ne prend pas toujours la forme d'une image ou d'un souvenir précis. Il peut aussi se manifester par : des sensations corporelles ; une émotion très intense ; une impression de danger ; un son, une odeur ou une image ; la sensation que « cela recommence » ; une difficulté temporaire à se repérer dans le présent.",
       "**Cela ne signifie pas que la personne devient folle**, qu'elle perd volontairement le contrôle ou que tout le travail déjà réalisé est annulé. Il s'agit d'une réaction possible après une expérience vécue comme traumatique ou submergeante.",
+    ],
+    concretement: [
       "L'objectif n'est pas de forcer le flashback à disparaître, ni d'explorer seul ce qu'il contient. Il peut d'abord être utile de retrouver progressivement quelques repères du moment présent : où je suis, quelle est la date, ce que je vois autour de moi et les appuis que je peux sentir.",
       "Cette application ne permet pas de traiter le vécu à l'origine des flashbacks. Ce travail nécessite, lorsqu'il est possible et indiqué, un accompagnement professionnel adapté.",
-      "Elle peut cependant proposer un soutien pour se réorienter doucement pendant ou après un flashback, à condition que cela reste suffisamment sécurisant pour la personne.",
     ],
+    aRetenir: "Elle peut cependant proposer un soutien pour se réorienter doucement pendant ou après un flashback, à condition que cela reste suffisamment sécurisant pour la personne.",
     boutons: [{ label: "M'aider à retrouver le présent", action: "repere" }],
   },
   {
@@ -1075,7 +1076,7 @@ function ScreenTitle({ children, c, style }) {
   );
 }
 
-function ScrollToTopButton({ c }) {
+function ScrollToTopButton({ c, vvOffset }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -1093,7 +1094,7 @@ function ScrollToTopButton({ c }) {
       aria-label="Revenir en haut de la page"
       style={{
         position: "fixed",
-        bottom: "calc(90px + env(safe-area-inset-bottom))",
+        bottom: `calc(90px + env(safe-area-inset-bottom) + ${vvOffset || 0}px)`,
         right: 18,
         width: 42,
         height: 42,
@@ -1138,6 +1139,26 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [aVuBienvenue, setAVuBienvenue] = useState(true);
   const [signalEtapes, setSignalEtapes] = useState({ actif: false, type: "son" });
+  const [vvOffset, setVvOffset] = useState(0);
+
+  // Recale les boutons "fixed" sur la zone réellement visible (Safari iOS réduit/agrandit
+  // sa barre d'adresse pendant le scroll, ce qui peut sinon faire "flotter" un élément fixed
+  // au milieu du contenu au lieu de rester en bas de l'écran).
+  useEffect(() => {
+    if (!window.visualViewport) return;
+    const vv = window.visualViewport;
+    const majDecalage = () => {
+      const decalage = window.innerHeight - vv.height - vv.offsetTop;
+      setVvOffset(Math.max(0, Math.round(decalage)));
+    };
+    majDecalage();
+    vv.addEventListener("resize", majDecalage);
+    vv.addEventListener("scroll", majDecalage);
+    return () => {
+      vv.removeEventListener("resize", majDecalage);
+      vv.removeEventListener("scroll", majDecalage);
+    };
+  }, []);
 
   // draft check-in state
   const [intensity, setIntensity] = useState(null);
@@ -1731,7 +1752,7 @@ export default function App() {
             onClick={() => goTo("crisis")}
             style={{
               position: "fixed",
-              bottom: "calc(22px + env(safe-area-inset-bottom))",
+              bottom: `calc(22px + env(safe-area-inset-bottom) + ${vvOffset}px)`,
               left: "50%",
               transform: "translateX(-50%)",
               maxWidth: 440,
@@ -1753,7 +1774,7 @@ export default function App() {
           </button>
         )}
 
-        <ScrollToTopButton c={c} />
+        <ScrollToTopButton c={c} vvOffset={vvOffset} />
       </div>
     </div>
   );
@@ -3571,6 +3592,63 @@ function BoutonEcouter({ c, texte }) {
   );
 }
 
+function OuiNonInteractif({ c, onTerminer, onAutreExercice }) {
+  const [etape, setEtape] = useState("question"); // question | apres-non | apres-oui
+
+  if (etape === "question") {
+    return (
+      <Card c={c} style={{ marginBottom: 20 }}>
+        <p style={{ margin: "0 0 18px", fontSize: 16, color: c.text, lineHeight: 1.6, fontWeight: 600 }}>
+          Souhaitez-vous faire cet exercice ?
+        </p>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button onClick={() => setEtape("apres-oui")} style={{
+            flex: 1, padding: "18px 10px", borderRadius: 14, cursor: "pointer", fontFamily: fontBody,
+            border: `2px solid ${c.sage}`, background: c.sageSoft, color: c.text, fontSize: 16, fontWeight: 700,
+          }}>
+            Oui
+          </button>
+          <button onClick={() => setEtape("apres-non")} style={{
+            flex: 1, padding: "18px 10px", borderRadius: 14, cursor: "pointer", fontFamily: fontBody,
+            border: `2px solid ${c.terracotta}`, background: c.terracottaSoft, color: c.text, fontSize: 16, fontWeight: 700,
+          }}>
+            Non
+          </button>
+        </div>
+      </Card>
+    );
+  }
+
+  if (etape === "apres-non") {
+    return (
+      <Card c={c} style={{ marginBottom: 20 }}>
+        <p style={{ margin: "0 0 20px", fontSize: 15, color: c.text, lineHeight: 1.7 }}>
+          Votre non est entendu et respecté. Vous n'avez rien à expliquer ni à justifier. Observez simplement
+          ce que cela vous fait d'avoir dit non et de constater qu'il ne se passe rien de négatif.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <Btn c={c} variant="primary" onClick={onTerminer}>Terminer l'exercice</Btn>
+          <Btn c={c} variant="secondary" onClick={onAutreExercice}>Choisir un autre exercice</Btn>
+        </div>
+      </Card>
+    );
+  }
+
+  return (
+    <Card c={c} style={{ marginBottom: 20 }}>
+      <p style={{ margin: "0 0 20px", fontSize: 15, color: c.text, lineHeight: 1.7 }}>
+        Votre oui est également respecté. L'objectif de cet exercice est de vous permettre d'expérimenter un
+        « non » sans conséquence. Vous pouvez essayer maintenant, ou conserver votre réponse : il n'y a pas de
+        bonne réponse à donner.
+      </p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <Btn c={c} variant="secondary" onClick={() => setEtape("question")}>Essayer de répondre non</Btn>
+        <Btn c={c} variant="primary" onClick={onTerminer}>Je garde mon oui et je termine</Btn>
+      </div>
+    </Card>
+  );
+}
+
 function Exercise({ c, exercise, raison, savedNote, onSaveNote, signalEtapes, onStop, onRevenirListe, onEssayerAutreChose, onFinish, onFilterByTag, onEditPerso }) {
   const [step, setStep] = useState("do"); // do | pas-maintenant | remarque | feedback
   const [remarque, setRemarque] = useState(null);
@@ -3707,6 +3785,11 @@ function Exercise({ c, exercise, raison, savedNote, onSaveNote, signalEtapes, on
       )}
       {exercise.type === "breathing" ? (
         <BreathingBall c={c} />
+      ) : exercise.type === "oui-non-interactif" ? (
+        <OuiNonInteractif c={c}
+          onTerminer={() => setStep("remarque")}
+          onAutreExercice={onEssayerAutreChose}
+        />
       ) : (
         <>
           <BoutonEcouter c={c} texte={voirTout ? etapesAffichees.join(". ") : etapesAffichees[etapeIndex]} />
@@ -3762,7 +3845,7 @@ function Exercise({ c, exercise, raison, savedNote, onSaveNote, signalEtapes, on
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: peutNoter ? 20 : 0 }}>
-        {(voirTout || derniereEtape || etapesAffichees.length <= 1) && (
+        {exercise.type !== "oui-non-interactif" && (voirTout || derniereEtape || etapesAffichees.length <= 1) && (
           <Btn c={c} variant="primary" onClick={() => setStep("remarque")}>J'ai terminé <span>✓</span></Btn>
         )}
         <Btn c={c} variant="secondary" onClick={onEssayerAutreChose}>Faire autrement</Btn>
@@ -4388,7 +4471,20 @@ function Psychoeducation({ c, onSelectFiche }) {
 
 const COULEURS_PARAGRAPHE = ["sage", "blue", "terracotta", "violet", "ocre", "stone", "force"];
 
+function SectionLabel({ c, color, texte }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 8 }}>
+      <span style={{ width: 7, height: 7, borderRadius: "50%", background: c[color], flexShrink: 0 }} />
+      <span style={{ fontSize: 11, fontWeight: 700, color: c[color + "Text"] || c[color], textTransform: "uppercase", letterSpacing: 0.4 }}>
+        {texte}
+      </span>
+    </div>
+  );
+}
+
 function PsychoedFiche({ c, fiche, onAction }) {
+  const nouveauFormat = !!fiche.pourMieuxComprendre;
+
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18 }}>
@@ -4398,24 +4494,76 @@ function PsychoedFiche({ c, fiche, onAction }) {
         <ScreenTitle c={c} style={{ margin: 0 }}>{fiche.titre}</ScreenTitle>
       </div>
 
-      {fiche.resume && (
-        <Card c={c} style={{ background: c.sageSoft, border: "none", marginBottom: 22 }}>
-          <p style={{ margin: 0, fontSize: 15, color: c.text, fontWeight: 700, lineHeight: 1.55 }}>
-            {texteAvecGras(fiche.resume)}
-          </p>
-        </Card>
-      )}
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 22 }}>
-        {fiche.paragraphes.map((p, i) => {
-          const coul = COULEURS_PARAGRAPHE[i % COULEURS_PARAGRAPHE.length];
-          return (
-            <div key={i} style={{ background: c[coul + "Soft"], borderRadius: 16, padding: 16 }}>
-              <p style={{ margin: 0, fontSize: 14.5, color: c.text, lineHeight: 1.8 }}>{texteAvecGras(p)}</p>
+      {nouveauFormat ? (
+        <Card c={c} style={{ marginBottom: 22 }}>
+          {fiche.resume && (
+            <div style={{ marginBottom: 20 }}>
+              <SectionLabel c={c} color="sage" texte="L'essentiel" />
+              <p style={{ margin: 0, fontSize: 16, color: c.text, fontWeight: 700, lineHeight: 1.55, paddingLeft: 10, borderLeft: `3px solid ${c.sage}` }}>
+                {texteAvecGras(fiche.resume)}
+              </p>
             </div>
-          );
-        })}
-      </div>
+          )}
+
+          <div style={{ borderTop: `1px solid ${c.border}`, marginBottom: 20 }} />
+
+          <div style={{ marginBottom: fiche.concretement ? 20 : 0 }}>
+            <SectionLabel c={c} color="blue" texte="Pour mieux comprendre" />
+            {fiche.pourMieuxComprendre.map((p, i) => (
+              <p key={i} style={{ margin: i === fiche.pourMieuxComprendre.length - 1 ? 0 : "0 0 14px", fontSize: 14.5, color: c.textSoft, lineHeight: 1.8 }}>
+                {texteAvecGras(p)}
+              </p>
+            ))}
+          </div>
+
+          {fiche.concretement && (
+            <>
+              <div style={{ borderTop: `1px solid ${c.border}`, marginTop: 20, marginBottom: 20 }} />
+              <div>
+                <SectionLabel c={c} color="terracotta" texte="Concrètement" />
+                {fiche.concretement.map((p, i) => (
+                  <p key={i} style={{ margin: i === fiche.concretement.length - 1 ? 0 : "0 0 14px", fontSize: 14.5, color: c.textSoft, lineHeight: 1.8 }}>
+                    {texteAvecGras(p)}
+                  </p>
+                ))}
+              </div>
+            </>
+          )}
+
+          {fiche.aRetenir && (
+            <>
+              <div style={{ borderTop: `1px solid ${c.border}`, marginTop: 20, marginBottom: 16 }} />
+              <div>
+                <SectionLabel c={c} color="sage" texte="À retenir" />
+                <p style={{ margin: 0, fontSize: 14.5, color: c.text, fontWeight: 600, lineHeight: 1.7 }}>
+                  {texteAvecGras(fiche.aRetenir)}
+                </p>
+              </div>
+            </>
+          )}
+        </Card>
+      ) : (
+        <>
+          {fiche.resume && (
+            <Card c={c} style={{ background: c.sageSoft, border: "none", marginBottom: 22 }}>
+              <p style={{ margin: 0, fontSize: 15, color: c.text, fontWeight: 700, lineHeight: 1.55 }}>
+                {texteAvecGras(fiche.resume)}
+              </p>
+            </Card>
+          )}
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 22 }}>
+            {fiche.paragraphes.map((p, i) => {
+              const coul = COULEURS_PARAGRAPHE[i % COULEURS_PARAGRAPHE.length];
+              return (
+                <div key={i} style={{ background: c[coul + "Soft"], borderRadius: 16, padding: 16 }}>
+                  <p style={{ margin: 0, fontSize: 14.5, color: c.text, lineHeight: 1.8 }}>{texteAvecGras(p)}</p>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
 
       {fiche.encart && (
         <Card c={c} style={{ background: c.blueSoft, border: "none", marginBottom: 22 }}>
