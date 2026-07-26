@@ -163,7 +163,7 @@ const EXERCISES = [
   { id: "sentir-support", titre: "Sentir le support", etats: ["hyperactivation"], besoins: ["appuis"], protection: [], canaux: ["tactile"], duree: "30s", materiel: null,
     objectif: "Diriger l'attention vers les zones de votre corps soutenues par l'environnement.",
     etapes: ["Sans chercher à sentir tout votre corps, remarquez seulement ce qui est soutenu : vos pieds par le sol, vos jambes par le fauteuil, votre dos par le dossier.", "Choisissez une seule zone. Vous n'avez pas besoin de la modifier.", "Demandez-vous simplement : « Qu'est-ce qui me porte à cet endroit précis ? »"],
-    precaution: null, sensible: ["toucher_corps"] },
+    precaution: "Vous pouvez arrêter à tout moment et revenir à ce que vous voyez autour de vous si l'attention au corps devient inconfortable.", sensible: ["toucher_corps"] },
   { id: "pousser-le-sol", titre: "Pousser le sol", etats: ["hyperactivation"], besoins: ["appuis", "mobiliser_fight"], protection: [], canaux: ["moteur"], duree: "30s", materiel: null,
     objectif: "Créer un appui et donner une direction à une énergie de mobilisation.",
     etapes: ["Posez les pieds au sol si cela vous est possible.", "Appuyez doucement, comme pour éloigner le sol de vous — pas au maximum, juste assez pour sentir vos jambes travailler.", "Maintenez quelques secondes, puis diminuez progressivement la pression."],
@@ -174,7 +174,7 @@ const EXERCISES = [
     precaution: null, sensible: [] },
   { id: "le-contenant", titre: "Le contenant", etats: ["hyperactivation", "mixte"], besoins: ["contenir"], protection: [], canaux: ["imaginatif", "cognitif"], duree: "5min", materiel: "Optionnel : une feuille et un stylo pour la version concrète.",
     objectif: "Donner temporairement une place à une pensée, une image ou une préoccupation qui prend toute la place — sans la supprimer ni la nier.",
-    etapes: ["Si l'imagination vous convient aujourd'hui : imaginez un contenant adapté (boîte, coffre, armoire…). Décidez sa taille, sa matière, s'il a un verrou, qui peut l'ouvrir, où il se trouve.", "Donnez à ce qui vous préoccupe une forme symbolique — un mot, une couleur, un objet — sans avoir besoin de le raconter en détail. Déposez cette représentation dans le contenant, puis fermez-le.", "Si l'imagination ne vous convient pas : écrivez seulement quelques mots sur une feuille, pliez-la, placez-la dans une enveloppe ou un tiroir, avec par exemple « pas maintenant » ou « à reprendre avec… ».", "Vous pourrez décider plus tard de le rouvrir, seul·e ou avec votre thérapeute."],
+    etapes: ["Si l'imagination vous convient aujourd'hui : imaginez un contenant adapté (boîte, coffre, armoire…). Décidez sa taille, sa matière, s'il a un verrou, qui peut l'ouvrir, où il se trouve.", "Donnez à ce qui vous préoccupe une forme symbolique — un mot, une couleur, un objet — sans avoir besoin de le raconter en détail. Déposez cette représentation dans le contenant, puis fermez-le.", "Si l'imagination ne vous convient pas : écrivez seulement quelques mots sur une feuille, pliez-la, placez-la dans une enveloppe ou un tiroir, avec par exemple « pas maintenant » ou « à reprendre avec… ».", "Vous pourrez décider plus tard de le rouvrir, seul·e ou avec votre thérapeute.", "Terminez en remarquant quelque chose autour de vous, ici et maintenant."],
     precaution: "Cet exercice ne demande jamais de détailler un contenu traumatique. Il ne s'agit pas d'enfermer définitivement une émotion, seulement de lui donner une place pour plus tard.", sensible: ["imagination", "ecrire"] },
   { id: "parking-pensees", titre: "Le parking à pensées", etats: ["hyperactivation", "tolerance"], besoins: ["contenir", "mental"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: null,
     objectif: "Pour les pensées répétitives, les tâches ou les inquiétudes qui tournent en boucle.",
@@ -183,14 +183,14 @@ const EXERCISES = [
   { id: "bords-du-corps", titre: "Les bords du corps", etats: ["hyperactivation"], besoins: ["contenir", "corps"], protection: [], canaux: ["tactile"], duree: "30s", materiel: null,
     objectif: "Retrouver une sensation de limites corporelles lorsque l'émotion paraît prendre toute la place.",
     etapes: ["Choisissez une zone neutre ou suffisamment tolérable : les mains, les avant-bras, les pieds, les épaules.", "Frottez doucement le tissu de votre vêtement, ou pressez vos mains l'une contre l'autre.", "Remarquez simplement : « ici, il y a un bord. » Vous n'avez pas besoin de sentir tout votre corps."],
-    precaution: null, sensible: ["toucher_corps"] },
+    precaution: "Vous pouvez arrêter à tout moment et revenir à ce que vous voyez autour de vous si l'attention au corps devient inconfortable.", sensible: ["toucher_corps"] },
   { id: "pousser-mur", titre: "Pousser le mur", etats: ["hyperactivation"], besoins: ["mobiliser_fight"], protection: ["fight"], canaux: ["moteur"], duree: "2min", materiel: null,
     objectif: "Donner à l'énergie de lutte une action contenue et contrôlée.",
     etapes: ["Vérifiez d'abord que le mur est stable et que votre corps vous permet cet exercice.", "Placez les mains contre le mur. Choisissez vous-même la force.", "Poussez quelques secondes, sentez la résistance, puis diminuez progressivement. Vous pouvez recommencer une ou deux fois."],
     variantes: [
       { label: "Avec un objet, en insistant sur le choix", etapes: ["Poussez contre un mur ou un objet stable, avec la force que vous choisissez.", "Arrêtez.", "Décidez volontairement si vous recommencez ou non — c'est cette décision qui est le cœur de cette version, pas la force employée."] },
     ],
-    precaution: null, sensible: ["mouvement"] },
+    precaution: "Vérifiez d'abord que votre corps vous permet cet exercice sans douleur. Vous pouvez arrêter à tout moment.", sensible: ["mouvement"] },
   { id: "tordre-tissu", titre: "Tordre sans détruire", etats: ["hyperactivation"], besoins: ["mobiliser_fight"], protection: ["fight"], canaux: ["moteur", "tactile"], duree: "2min", materiel: "Une serviette ou un tissu solide.",
     objectif: "Donner une action contenue à une énergie de colère, sans escalade.",
     etapes: ["Tenez le tissu entre vos mains et tordez-le progressivement, en choisissant vous-même la force.", "Diminuez lentement. Vous pouvez recommencer."],
@@ -201,11 +201,11 @@ const EXERCISES = [
     precaution: null, sensible: [] },
   { id: "marcher-destination", titre: "Marcher avec une destination", etats: ["hyperactivation"], besoins: ["mobiliser_flight"], protection: ["flight"], canaux: ["moteur"], duree: "2min", materiel: null,
     objectif: "Donner une direction à une énergie de fuite.",
-    etapes: ["Choisissez un point visible et accessible. Marchez jusqu'à ce point, arrêtez-vous, regardez autour de vous.", "Choisissez ensuite de rester là, de revenir, ou de choisir un autre point. Vous gardez la direction du mouvement."],
+    etapes: ["Seulement si cela est possible pour vous et sans douleur : choisissez un point visible et accessible. Marchez jusqu'à ce point, arrêtez-vous, regardez autour de vous.", "Choisissez ensuite de rester là, de revenir, ou de choisir un autre point. Vous gardez la direction du mouvement.", "Si marcher n'est pas possible aujourd'hui, vous pouvez faire ce même choix de direction avec le regard seulement."],
     precaution: null, sensible: ["mouvement"] },
   { id: "urgent-ou-intense", titre: "Urgent ou intense ?", etats: ["hyperactivation"], besoins: ["mobiliser_flight", "mental"], protection: ["flight"], canaux: ["cognitif"], duree: "2min", materiel: null,
     objectif: "Différencier l'intensité ressentie dans le corps d'une urgence réellement extérieure.",
-    etapes: ["Posez-vous ces trois questions : Y a-t-il un danger concret immédiat ? Une action doit-elle vraiment être faite dans les prochaines minutes ? Puis-je attendre cinq minutes avant de décider ?", "Si vous ne savez pas, vous pouvez demander l'avis d'une personne de confiance."],
+    etapes: ["Si vous êtes en danger ou avez un doute sérieux sur votre sécurité, cherchez de l'aide immédiatement plutôt que de continuer cet exercice.", "Posez-vous ces trois questions : Y a-t-il un danger concret immédiat ? Une action doit-elle vraiment être faite dans les prochaines minutes ? Puis-je attendre cinq minutes avant de décider ?", "Si vous ne savez pas, vous pouvez demander l'avis d'une personne de confiance."],
     precaution: null, sensible: [] },
   { id: "plus-petit-mouvement", titre: "Le plus petit mouvement possible", etats: ["hypoactivation", "mixte"], besoins: ["mouvement"], protection: ["freeze"], canaux: ["moteur"], duree: "30s", materiel: null,
     objectif: "Rendre l'action accessible lorsqu'un mouvement complet semble impossible.",
@@ -270,9 +270,10 @@ const EXERCISES = [
     objectif: "Construire progressivement un lieu ressource — réel, imaginaire, ou inspiré de plusieurs endroits — sur lequel vous gardez le contrôle.",
     etapes: ["Vérifiez d'abord si l'imagination vous convient aujourd'hui. Si non, vous pouvez partir d'une photo, d'un lieu réel ou d'un objet.", "Pensez à un endroit où vous vous sentez un peu plus tranquille ou simplement moins en difficulté. Il n'a pas besoin d'être parfait.", "Décidez qui peut y entrer, à quelle distance se trouvent les autres, s'il y a une porte, une limite, une lumière, un abri.", "Vous pouvez garder les yeux ouverts. Remarquez une seule chose concernant cet endroit, puis une deuxième seulement si vous le souhaitez.", "Remarquez l'effet : un peu plus d'espace ? rien de particulier ? de l'inconfort ? Si c'est inconfortable, vous pouvez arrêter et revenir à l'orientation externe.", "Si cela vous convient, associez ce lieu à une image, un mot, un geste ou un objet, pour pouvoir y revenir plus facilement."],
     precaution: "Ce lieu n'a pas besoin d'être un « lieu sûr » parfait — certaines personnes ne trouvent aucun lieu entièrement sûr, et c'est tout à fait normal. Si l'exercice augmente la détresse ou la dissociation, mieux vaut s'arrêter et choisir un exercice plus concret.", sensible: ["imagination", "yeux_fermes"] },
-  { id: "oui-non-jns", titre: "Mon oui, mon non, mon je ne sais pas", etats: ["tolerance", "hyperactivation"], besoins: ["limites"], protection: ["fawn"], canaux: ["cognitif", "relationnel"], duree: "2min", materiel: null,
+  { id: "oui-non-jns", titre: "Mon oui, mon non, mon je ne sais pas", type: "question-3choix", etats: ["tolerance", "hyperactivation"], besoins: ["limites"], protection: ["fawn"], canaux: ["cognitif", "relationnel"], duree: "2min", materiel: null,
     objectif: "Entraîner le repérage de vos propres oui, non, et « je ne sais pas encore ».",
-    etapes: ["Entraînez-vous sur des situations très simples et neutres : boire de l'eau maintenant ? continuer cet exercice ?", "Si une situation vous vient à l'esprit, vous pouvez vous en servir ici. Sinon, continuez avec les exemples neutres.", "Votre réponse est-elle plutôt oui, non, ou je ne sais pas encore ?", "« Je ne sais pas encore » est une réponse tout aussi valable que les autres."],
+    etapes: ["Entraînez-vous sur des situations très simples et neutres : boire de l'eau maintenant ? continuer cet exercice ?", "Si une situation vous vient à l'esprit, vous pouvez vous en servir ici. Sinon, continuez avec les exemples neutres."],
+    questionFinale: "Votre réponse est plutôt oui, non, ou je ne sais pas encore ?",
     precaution: null, sensible: [] },
   { id: "phrase-temps", titre: "La phrase qui crée du temps", etats: ["tolerance", "hyperactivation"], besoins: ["limites"], protection: ["fawn"], canaux: ["relationnel", "cognitif"], duree: "30s", materiel: null,
     objectif: "Se donner un peu de temps avant de répondre à quelqu'un.",
@@ -368,10 +369,11 @@ const EXERCISES = [
     objectif: "Chercher un endroit un peu plus supportable, sans viser la perfection.",
     etapes: ["Sans chercher l'endroit parfait, regardez autour de vous. Quel endroit semble 5 % plus facile que les autres ? (une chaise, une fenêtre, dos contre un mur, plus loin d'une personne, dehors…)", "Pouvez-vous vous en rapprocher légèrement ?"],
     precaution: null, sensible: ["mouvement"] },
-  { id: "dix-secondes-inutiles", titre: "Les dix secondes inutiles", etats: ["hyperactivation", "tolerance"], besoins: ["mental", "limites"], protection: ["fawn"], canaux: ["cognitif"], duree: "30s", materiel: null,
+  { id: "dix-secondes-inutiles", titre: "Les dix secondes inutiles", type: "question-3choix", etats: ["hyperactivation", "tolerance"], besoins: ["mental", "limites"], protection: ["fawn"], canaux: ["cognitif"], duree: "30s", materiel: null,
     tags: ["choix", "rythme"],
     objectif: "Se donner un très court répit avant de devoir décider ou répondre à quelqu'un.",
-    etapes: ["Pendant dix secondes, vous n'avez aucune décision à prendre.", "Puis : avez-vous besoin de dix secondes de plus ? (oui / non / je ne sais pas)"],
+    etapes: ["Pendant dix secondes, vous n'avez aucune décision à prendre."],
+    questionFinale: "Avez-vous besoin de dix secondes de plus ?",
     precaution: null, sensible: [] },
   { id: "bouton-volume", titre: "Le bouton volume", etats: ["hypoactivation"], besoins: ["mouvement", "choix"], protection: [], canaux: ["cognitif", "moteur"], duree: "30s", materiel: null,
     tags: ["proprioception", "choix"],
@@ -456,8 +458,8 @@ const EXERCISES = [
   { id: "tribunal-ferme", titre: "Le tribunal fermé pour aujourd'hui", etats: ["tolerance", "hyperactivation"], besoins: ["honte"], protection: [], canaux: ["cognitif", "ecriture"], duree: "2min", materiel: "Optionnel : de quoi écrire.",
     tags: ["ecriture", "langage"],
     objectif: "Suspendre temporairement le jugement sur soi-même, sans l'effacer ni le nier.",
-    etapes: ["Pendant deux minutes, aucun verdict n'est autorisé.", "Vous pouvez seulement écrire : ce qui s'est passé ; ce qui a été ressenti ; ce qui manque comme information.", "Le tribunal peut rester fermé plus longtemps si vous le souhaitez."],
-    precaution: null, sensible: ["ecrire"] },
+    etapes: ["Pendant deux minutes, aucun verdict n'est autorisé.", "Vous pouvez seulement écrire, en quelques mots : ce qui s'est passé ; ce qui a été ressenti ; ce qui manque comme information. Pas besoin de détailler un souvenir difficile.", "Le tribunal peut rester fermé plus longtemps si vous le souhaitez."],
+    precaution: "Évitez de décrire un contenu traumatique en détail. Vous pouvez arrêter à tout moment.", sensible: ["ecrire"] },
 
   { id: "trois-facons", titre: "Trois façons", etats: ["tolerance"], besoins: ["choix"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: null,
     tags: ["choix", "jeu"],
@@ -493,7 +495,7 @@ const EXERCISES = [
     tags: ["imagination", "creativite"],
     objectif: "Emprunter, pour un instant, la capacité à prendre son temps d'un personnage imaginé.",
     etapes: ["Imaginez un personnage qui sait prendre son temps avant de répondre — réel, fictif, animal ou inventé.", "Que dirait-il à votre place ?", "Si imaginer un personnage ne vous convient pas aujourd'hui : pensez simplement à une personne réelle que vous connaissez et qui prend son temps avant de répondre. Que dirait-elle ?"],
-    precaution: "Ce que dirait ce personnage n'est pas présenté comme « la bonne réponse », seulement comme une possibilité parmi d'autres.", sensible: ["imagination"] },
+    precaution: "Ce que dirait ce personnage n'est pas présenté comme « la bonne réponse », seulement comme une possibilité parmi d'autres. Vous restez libre de ne pas reprendre cette réponse.", sensible: ["imagination"] },
   { id: "bouton-non-consequence", titre: "Le bouton non, sans conséquence", type: "oui-non-interactif", etats: ["tolerance"], besoins: ["choix", "limites"], protection: [], canaux: ["cognitif"], duree: "30s", materiel: null,
     tags: ["choix"],
     objectif: "Vérifier concrètement que dire non à un exercice est possible et respecté.",
@@ -509,7 +511,7 @@ const EXERCISES = [
       "Déplacez-les mentalement (ou sur le papier) jusqu'à ce que la distance entre elles vous semble correcte aujourd'hui — ni trop proche, ni trop loin.",
       "Il n'y a pas d'interprétation automatique à en tirer : c'est votre seule observation qui compte, et cette distance peut changer d'un jour à l'autre.",
     ],
-    precaution: null, sensible: [] },
+    precaution: "Si imaginer ces formes augmente l'inconfort ou une sensation de dissociation, vous pouvez arrêter et revenir à ce qui vous entoure.", sensible: ["imagination"] },
   { id: "zone-tolerance-aujourdhui", titre: "Ma zone de tolérance aujourd'hui", etats: ["tolerance"], besoins: ["tolerance_renforcer"], protection: [], canaux: ["cognitif", "imaginatif"], duree: "5min", materiel: "Optionnel : de quoi dessiner.",
     tags: ["creativite"],
     objectif: "Représenter, même approximativement, l'état de sa zone de tolérance aujourd'hui.",
@@ -582,10 +584,10 @@ const EXERCISES = [
     etapes: ["Qu'est-ce qui pourrait être difficile dans ce moment à venir ?", "De quoi auriez-vous besoin pour vous sentir un peu plus soutenu·e : une personne prévenue, une phrase préparée, une limite de temps, une sortie possible ?", "Quelle est une phrase ou une action que vous pourriez utiliser si cela devient difficile pendant ce moment ?"],
     precaution: null, sensible: [] },
 
-  { id: "heure-fermeture-ruminations", titre: "Une heure de fermeture pour les ruminations", etats: ["tolerance", "hyperactivation"], besoins: ["mental"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: null,
+  { id: "heure-fermeture-ruminations", titre: "Un rendez-vous avec mes préoccupations", etats: ["tolerance", "hyperactivation"], besoins: ["mental"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: null,
     tags: ["langage"],
-    objectif: "Poser une limite horaire souple face à des pensées qui reviennent en boucle.",
-    etapes: ["Choisissez une heure de « fermeture » pour les ruminations d'aujourd'hui — par exemple 21h.", "Si une pensée revient après cette heure, vous pouvez simplement noter : « Reprise demain, à l'heure d'ouverture. »", "Ce n'est pas toujours facile à tenir, mais poser une limite horaire peut aider à retrouver un peu de structure."],
+    objectif: "Donner un rendez-vous à une pensée qui revient en boucle, plutôt que d'essayer de la supprimer.",
+    etapes: ["Notez la pensée ou la préoccupation qui revient, et choisissez une heure courte pour y revenir aujourd'hui — par exemple dans une heure, ou ce soir.", "Si elle revient avant ce rendez-vous, vous pouvez simplement noter : « Rendez-vous prévu, j'y reviens à [l'heure choisie]. »", "Si la pensée revient quand même avant l'heure prévue, ce n'est pas un échec : c'est fréquent, et cela ne veut pas dire que la méthode ne fonctionne pas."],
     precaution: null, sensible: [] },
 
   { id: "ou-etait-mon-attention", titre: "Où était mon attention ?", etats: ["tolerance", "hyperactivation"], besoins: ["limites"], protection: ["fawn"], canaux: ["cognitif", "relationnel"], duree: "2min", materiel: null,
@@ -638,15 +640,15 @@ const EXERCISES = [
   { id: "vider-mon-sac", titre: "Vider mon sac", etats: ["tolerance", "hyperactivation"], besoins: ["contenir"], protection: [], canaux: ["cognitif"], duree: "10min",
     materiel: "De quoi écrire librement — directement ici, ou sur papier. Si vous préférez un support visuel, vous pouvez aussi imprimer ou dessiner un sac.",
     tags: ["langage", "creativite"],
-    objectif: "Se donner un espace pour vider, par une écriture libre et sans filtre, ce qui pèse ou déborde en ce moment.",
+    objectif: "Se donner un espace bref pour vider, par une écriture libre, ce qui pèse ou déborde en ce moment.",
     etapes: [
       "Donnez un titre à ce que vous voulez vider aujourd'hui — un sac, un poids, une préoccupation (par exemple « mon sac de fatigue » ou « mon sac de colère »).",
       "Si vous préférez un support visuel, vous pouvez imprimer ou dessiner un sac et écrire ce titre dessus.",
-      "Videz ce sac : écrivez librement, sans vous censurer ni vous relire, aussi longtemps qu'il le faut. Rien n'a besoin d'être bien écrit ni cohérent.",
-      "Une fois que vous avez fini, vous pouvez noter ici ce que vous en retenez : une réflexion, une conclusion, quelque chose qui vous semble important.",
-      "Si possible, terminez par quelque chose d'apaisant — un exercice d'orientation, de respiration, ou tout ce qui vous fait habituellement du bien.",
+      "Videz ce sac : écrivez librement, sans vous censurer, pendant 2 à 5 minutes maximum. Rien n'a besoin d'être bien écrit ni cohérent. Vous n'avez pas besoin de décrire un souvenir difficile en détail — quelques mots ou une image suffisent.",
+      "Vous pouvez vous arrêter ici si vous le souhaitez. Il n'y a rien à conclure ni à résoudre.",
+      "Terminez en revenant à ce qui vous entoure maintenant : un objet que vous voyez, un son, ou un appui sous vos pieds.",
     ],
-    precaution: "Écrire librement peut faire remonter des pensées ou des émotions fortes. Si cela devient trop difficile, vous pouvez arrêter à tout moment et choisir un exercice de stabilisation à la place.",
+    precaution: "Écrire librement peut faire remonter des pensées ou des émotions fortes. Évitez de décrire un contenu traumatique en détail. Si cela devient trop difficile, vous pouvez arrêter à tout moment et choisir un exercice de stabilisation à la place.",
     sensible: ["ecrire"] },
 
   { id: "mes-sources-de-bien-etre", titre: "Mes sources de bien-être", etats: ["tolerance", "hypoactivation"], besoins: ["douceur"], protection: [], canaux: ["cognitif"], duree: "5min",
@@ -664,28 +666,29 @@ const EXERCISES = [
   { id: "revenir-au-corps", titre: "Revenir au corps", etats: ["hyperactivation", "tolerance"], besoins: ["corps"], protection: [], canaux: ["cognitif"], duree: "5min",
     materiel: "Facultatif : de quoi noter vos réflexions. Si vous préférez un support visuel, vous pouvez imprimer ou dessiner une silhouette à remplir.",
     tags: ["douceur"],
-    objectif: "Revenir dans le corps et reconnaître ses sensations, quand le mental s'emballe.",
+    objectif: "Revenir dans le corps par étapes brèves, en gardant les appuis extérieurs comme point de départ et de retour.",
     etapes: [
-      "Si cela vous convient, fermez les yeux, respirez, et laissez-vous vous détendre pendant 2 à 5 minutes. Vous pouvez aussi garder les yeux ouverts si c'est plus confortable.",
-      "Remarquez ce qui se passe dans votre corps en ce moment : des zones plus détendues ou plus tendues, des formes ou des couleurs qui vous viendraient si vous deviez les représenter.",
-      "Si vous préférez un support visuel, vous pouvez imprimer ou dessiner une silhouette, et la remplir de formes et de couleurs douces à l'endroit où vous sentez du calme.",
-      "Vous pouvez aussi imaginer ou dessiner autour de la silhouette une couleur qui vous protège.",
-      "Prenez le temps de ressentir l'effet de l'exercice, et notez vos réflexions ici si vous le souhaitez.",
+      "Commencez les yeux ouverts : remarquez un appui autour de vous — vos pieds au sol, votre dos contre un support, ou un objet que vous touchez.",
+      "Portez ensuite, brièvement, attention à une seule zone neutre de votre corps — vos mains, par exemple — sans chercher à la détendre ni à ressentir quoi que ce soit de précis.",
+      "Remarquez simplement ce qui s'y trouve : chaleur, poids, contact — sans obligation d'y rester longtemps. Vous pouvez revenir à l'appui extérieur à tout moment.",
+      "Si vous le souhaitez seulement, et en dernier, vous pouvez imaginer une couleur qui vous protège, ou remplir une silhouette de formes douces — cette étape reste facultative et secondaire.",
+      "Terminez en revenant à un appui extérieur, comme au début, et notez vos réflexions ici si vous le souhaitez.",
     ],
-    precaution: "Fermer les yeux ou porter son attention sur les sensations internes du corps ne convient pas à tout le monde. Si cela augmente l'inconfort, vous pouvez garder les yeux ouverts, ou choisir un exercice d'orientation à la place.",
-    sensible: ["yeux_fermes", "interoception"] },
+    precaution: "Porter son attention sur les sensations internes du corps ne convient pas à tout le monde, surtout quand le système nerveux est très activé. Gardez les yeux ouverts si c'est plus confortable, restez sur une zone neutre, et revenez à un appui extérieur dès que nécessaire.",
+    sensible: ["interoception"] },
 
   { id: "des-nuages-passent", titre: "Des nuages passent", etats: ["hyperactivation", "tolerance"], besoins: ["mental"], protection: [], canaux: ["cognitif"], duree: "10min",
     materiel: "De quoi écrire librement — ici, ou sur papier. Si vous préférez un support visuel, vous pouvez imprimer une page de nuages à colorier et découper.",
     tags: ["langage", "creativite"],
     objectif: "Exprimer librement ce qui stresse, puis lui donner une forme qui peut se déplacer et s'éloigner, plutôt que de rester figée.",
     etapes: [
-      "Écrivez librement ce qui vous stresse en ce moment, sans trop réfléchir à la forme — comme si vous en vidiez le contenu.",
+      "Écrivez librement ce qui vous stresse en ce moment, pendant 2 à 5 minutes — un mot par préoccupation suffit si vous préférez rester bref.",
       "Si vous préférez un support visuel, vous pouvez imprimer une page de nuages : écrivez par-dessus, comme s'ils n'étaient pas là.",
       "Vous pouvez ensuite colorer chaque nuage — pâle, foncé, noir, ou blanc — selon la densité de ce qui vous stresse.",
       "Si vous le souhaitez, découpez-les et collez-les sur un « ciel » que vous aurez dessiné ou imaginé, comme une façon de leur donner une place qui peut se déplacer.",
+      "Terminez en remarquant quelque chose autour de vous, ici et maintenant.",
     ],
-    precaution: null, sensible: ["ecrire"] },
+    precaution: "Évitez de décrire un contenu traumatique en détail — un mot ou une image suffit. Vous pouvez arrêter à tout moment.", sensible: ["ecrire"] },
 
   { id: "alignement", titre: "L'alignement : outil de base", etats: ["tolerance", "hyperactivation"], besoins: ["choix"], protection: [], canaux: ["cognitif"], duree: "5min",
     materiel: "De quoi noter. Si vous préférez un support visuel, vous pouvez imprimer ou dessiner une silhouette avec un cœur.",
@@ -697,7 +700,7 @@ const EXERCISES = [
       "Si vous préférez un support visuel, vous pouvez imprimer ou dessiner une silhouette avec un cœur, et colorer les formes selon ce que vous ressentez.",
       "Vous pouvez conclure par une phrase générale : « Mon être me suggère de… »",
     ],
-    precaution: null, sensible: ["ecrire"] },
+    precaution: "Vous pouvez répondre seulement aux catégories qui vous parlent — passer « Mon corps me dit » si l'attention corporelle est inconfortable aujourd'hui ne pose aucun problème.", sensible: ["ecrire"] },
 
   { id: "retrouver-elan", titre: "Retrouver progressivement de l'élan", etats: ["hypoactivation"], besoins: ["mouvement"], protection: ["freeze"], canaux: ["moteur", "tactile"], duree: "10min", materiel: null,
     tags: ["progressif"],
@@ -761,18 +764,17 @@ const EXERCISES = [
     ],
     precaution: null, sensible: [] },
 
-  { id: "stylo-therapeute", titre: "Quand le stylo se fait thérapeute", etats: ["tolerance", "hyperactivation"], besoins: ["mental"], protection: [], canaux: ["cognitif"], duree: "5min",
+  { id: "stylo-therapeute", titre: "Déposer quelques mots", etats: ["tolerance", "hyperactivation"], besoins: ["mental"], protection: [], canaux: ["cognitif"], duree: "5min",
     materiel: "De quoi écrire librement — directement ici, ou sur papier.",
     tags: ["langage", "creativite"],
-    objectif: "Laisser une émotion se déposer par écrit, pour la traverser plutôt que la combattre.",
+    objectif: "Poser par écrit, en quelques phrases, ce que vous ressentez maintenant.",
     etapes: [
-      "Commencez votre texte par « Je me sens » et laissez-le se remplir librement, sans trop réfléchir à la forme — pendant environ 5 minutes, ou moins si vous préférez.",
-      "Vous pouvez vous arrêter à tout moment : il n'y a aucune obligation d'écrire sans interruption.",
-      "Une fois votre texte terminé, vous pouvez le relire pour vous-même, à voix haute ou dans votre tête.",
-      "Si cela vous convient, imaginez une couleur qui correspond à ce que vous avez écrit — une couleur apaisante si les mots étaient plutôt en colère, ou une couleur vive si vous aviez l'impression d'être engourdi·e.",
-      "Accepter une émotion douloureuse ne veut pas dire l'aimer : c'est simplement une façon de la traverser plutôt que de la combattre.",
+      "Écrivez quelques phrases commençant par « Je me sens » — pas besoin d'aller plus loin que ce qui vous vient facilement, ni de structurer votre texte.",
+      "Vous pouvez vous arrêter à tout moment : il n'y a aucune obligation d'écrire sans interruption, ni d'aller jusqu'au bout.",
+      "Il n'est pas nécessaire de relire ce texte tout de suite, surtout si vous êtes encore très activé·e — vous pourrez le relire plus tard si vous le souhaitez, à un moment plus calme.",
+      "Terminez en remarquant quelque chose de présent autour de vous — un son, un objet, un appui sous vos pieds.",
     ],
-    precaution: "Écrire librement peut faire remonter des émotions fortes. Si cela devient trop difficile, vous pouvez arrêter à tout moment et choisir un exercice de stabilisation à la place.",
+    precaution: "Écrire librement peut faire remonter des émotions fortes. Évitez de décrire un contenu traumatique en détail. Si cela devient trop difficile, vous pouvez arrêter à tout moment et choisir un exercice de stabilisation à la place.",
     sensible: ["ecrire"] },
 
   { id: "fruits-du-hasard", titre: "Cultiver les fruits du hasard", etats: ["tolerance"], besoins: ["mental"], protection: [], canaux: ["moteur", "visuel"], duree: "5min",
@@ -3704,6 +3706,55 @@ function BoutonEcouter({ c, texte }) {
   );
 }
 
+function QuestionTroisChoix({ c, question, onTerminer, boucleSiOui }) {
+  const [reponse, setReponse] = useState(null); // null | "oui" | "non" | "jsp"
+
+  if (reponse === null) {
+    return (
+      <Card c={c} style={{ marginBottom: 20 }}>
+        <p style={{ margin: "0 0 16px", fontSize: 15.5, color: c.text, lineHeight: 1.6, fontWeight: 600 }}>
+          {question}
+        </p>
+        <div style={{ display: "flex", gap: 8 }}>
+          {[
+            ["Oui", "oui", "sage"],
+            ["Non", "non", "terracotta"],
+            ["Je ne sais pas", "jsp", "blue"],
+          ].map(([label, valeur, color]) => (
+            <button key={label} onClick={() => setReponse(valeur)} style={{
+              flex: 1, padding: "14px 6px", borderRadius: 14, cursor: "pointer", fontFamily: fontBody,
+              border: `2px solid ${c[color]}`, background: c[color + "Soft"], color: c.text, fontSize: 13.5, fontWeight: 700,
+            }}>
+              {label}
+            </button>
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  if (reponse === "oui" && boucleSiOui) {
+    return (
+      <Card c={c} style={{ marginBottom: 20 }}>
+        <p style={{ margin: "0 0 20px", fontSize: 15, color: c.text, lineHeight: 1.7 }}>
+          D'accord. Prenez encore dix secondes, sans rien décider — à votre rythme.
+        </p>
+        <Btn c={c} variant="primary" onClick={() => setReponse(null)}>Continuer</Btn>
+      </Card>
+    );
+  }
+
+  return (
+    <Card c={c} style={{ marginBottom: 20 }}>
+      <p style={{ margin: "0 0 20px", fontSize: 15, color: c.text, lineHeight: 1.7 }}>
+        D'accord. Il n'y a pas de bonne réponse ici — c'est votre seule observation qui compte, et elle peut
+        changer d'un moment à l'autre.
+      </p>
+      <Btn c={c} variant="primary" onClick={onTerminer}>Terminer l'exercice</Btn>
+    </Card>
+  );
+}
+
 function OuiNonInteractif({ c, onTerminer, onAutreExercice }) {
   const [etape, setEtape] = useState("question"); // question | apres-non | apres-oui
 
@@ -3980,6 +4031,10 @@ function Exercise({ c, exercise, raison, creations, onAjouterCreation, onSupprim
               )}
             </div>
           )}
+          {exercise.type === "question-3choix" && (voirTout || derniereEtape || etapesAffichees.length <= 1) && (
+            <QuestionTroisChoix c={c} question={exercise.questionFinale} onTerminer={() => setStep("remarque")}
+              boucleSiOui={exercise.id === "dix-secondes-inutiles"} />
+          )}
         </>
       )}
       {exercise.precaution && (
@@ -3989,7 +4044,7 @@ function Exercise({ c, exercise, raison, creations, onAjouterCreation, onSupprim
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: peutNoter ? 20 : 0 }}>
-        {exercise.type !== "oui-non-interactif" && (voirTout || derniereEtape || etapesAffichees.length <= 1) && (
+        {exercise.type !== "oui-non-interactif" && exercise.type !== "question-3choix" && (voirTout || derniereEtape || etapesAffichees.length <= 1) && (
           <Btn c={c} variant="primary" onClick={() => setStep("remarque")}>J'ai terminé <span>✓</span></Btn>
         )}
         <Btn c={c} variant="secondary" onClick={onEssayerAutreChose}>Faire autrement</Btn>
