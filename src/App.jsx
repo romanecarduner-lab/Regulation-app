@@ -1325,6 +1325,7 @@ export default function App() {
   if (loading) {
     return (
       <div style={{ background: c.bg, minHeight: 500, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: fontBody, color: c.textSoft }}>
+        <style>{"*, *::before, *::after { box-sizing: border-box; }"}</style>
         Chargement…
       </div>
     );
@@ -1346,6 +1347,7 @@ export default function App() {
 
   return (
     <div style={{ background: c.bg, minHeight: 620, fontFamily: fontBody, transition: "background .3s" }}>
+      <style>{"*, *::before, *::after { box-sizing: border-box; }"}</style>
       <div style={{
         maxWidth: 480, margin: "0 auto", padding: "22px 18px 0", position: "relative",
         paddingBottom: "calc(22px + 54px + 24px + env(safe-area-inset-bottom))",
@@ -1879,6 +1881,7 @@ function Bienvenue({ c, personalInfo, onChangePersonalInfo, onTerminer }) {
   const inputStyle = { width: "100%", borderRadius: 12, border: `1px solid ${c.border}`, background: c.card, color: c.text, padding: 10, fontFamily: fontBody, fontSize: 14 };
   return (
     <div style={{ background: c.bg, minHeight: 620, fontFamily: fontBody }}>
+      <style>{"*, *::before, *::after { box-sizing: border-box; }"}</style>
       <div style={{ maxWidth: 480, margin: "0 auto", padding: "36px 18px", paddingBottom: "calc(36px + env(safe-area-inset-bottom))" }}>
 
         <div style={{ position: "relative", width: 84, height: 84, margin: "0 auto 20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
