@@ -1392,6 +1392,52 @@ export default function App() {
     goTo("mes-exercices-perso");
   };
 
+  const exporterSauvegarde = () => {
+    const sauvegarde = {
+      version: 1,
+      exporteLe: new Date().toISOString(),
+      securitePlan: safetyPlan,
+      suiviEntries: entries,
+      zonePersonnalisation: zonePerso,
+      exoAvoid: avoidPrefs,
+      exoFeedback: exoFeedback,
+      exoCreations: exoCreations,
+      exoCustom: customExercises,
+      profilInfo: personalInfo,
+      reglagesSignal: signalEtapes,
+      settingsTheme: theme,
+    };
+    const blob = new Blob([JSON.stringify(sauvegarde, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `sauvegarde-stabilisation-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const importerSauvegarde = async (fichier) => {
+    try {
+      const texte = await fichier.text();
+      const data = JSON.parse(texte);
+      if (data.securitePlan) { setSafetyPlan(data.securitePlan); await saveJSON("securite:plan", data.securitePlan); }
+      if (data.suiviEntries) { setEntries(data.suiviEntries); await saveJSON("suivi:entries", data.suiviEntries); }
+      if (data.zonePersonnalisation) { setZonePerso(data.zonePersonnalisation); await saveJSON("zone:personnalisation", data.zonePersonnalisation); }
+      if (data.exoAvoid) { setAvoidPrefs(data.exoAvoid); await saveJSON("exo:avoid", data.exoAvoid); }
+      if (data.exoFeedback) { setExoFeedback(data.exoFeedback); await saveJSON("exo:feedback", data.exoFeedback); }
+      if (data.exoCreations) { setExoCreations(data.exoCreations); await saveJSON("exo:creations", data.exoCreations); }
+      if (data.exoCustom) { setCustomExercises(data.exoCustom); await saveJSON("exo:custom", data.exoCustom); }
+      if (data.profilInfo) { setPersonalInfo(data.profilInfo); await saveJSON("profil:info", data.profilInfo); }
+      if (data.reglagesSignal) { setSignalEtapes(data.reglagesSignal); await saveJSON("reglages:signal", data.reglagesSignal); }
+      if (data.settingsTheme) { setTheme(data.settingsTheme); await saveJSON("settings:theme", data.settingsTheme); }
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   const wipeAllData = async () => {
     try {
       await window.storage.delete("securite:plan", false);
@@ -1804,7 +1850,8 @@ export default function App() {
         {screen === "settings" && (
           <Settings c={c} theme={theme} toggleTheme={toggleTheme} onBack={goBackHome} onWipe={wipeAllData}
             personalInfo={personalInfo} onChangePersonalInfo={updatePersonalInfo} onSavePersonalInfo={persistPersonalInfo}
-            signalEtapes={signalEtapes} onChangeSignalEtapes={updateSignalEtapes} />
+            signalEtapes={signalEtapes} onChangeSignalEtapes={updateSignalEtapes}
+            onExporterSauvegarde={exporterSauvegarde} onImporterSauvegarde={importerSauvegarde} />
         )}
 
         {screen === "mon-espace" && <MonEspaceHub c={c} goTo={goTo} />}
@@ -5839,7 +5886,8 @@ function RdvExportPreview({ c, onBack, periode, entries, question, onCreate, onC
   );
 }
 
-function Settings({ c, theme, toggleTheme, onBack, onWipe, personalInfo, onChangePersonalInfo, onSavePersonalInfo, signalEtapes, onChangeSignalEtapes }) {
+function Settings({ c, theme, toggleTheme, onBack, onWipe, personalInfo, onChangePersonalInfo, onSavePersonalInfo, signalEtapes, onChangeSignalEtapes, onExporterSauvegarde, onImporterSauvegarde }) {
+  const [etatImport, setEtatImport] = useState(null); // null | "encours" | "ok" | "erreur"
   const [confirm, setConfirm] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const [savedInfo, setSavedInfo] = useState(false);
@@ -5998,6 +6046,37 @@ function Settings({ c, theme, toggleTheme, onBack, onWipe, personalInfo, onChang
           </a>
         </p>
         <p style={{ margin: 0, fontSize: 11, color: c.textSoft, opacity: 0.8 }}>{MENTION_PROPRIETE}</p>
+      </Card>
+
+      <Card c={c} style={{ marginBottom: 14 }}>
+        <p style={{ margin: "0 0 4px", fontSize: 15, color: c.text, fontWeight: 600 }}>Sauvegarder mes données</p>
+        <p style={{ margin: "0 0 14px", fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+          Toutes vos données restent uniquement sur cet appareil. Pour éviter de les perdre (changement de
+          téléphone, réinitialisation…), vous pouvez exporter un fichier de sauvegarde, puis le réimporter plus
+          tard ou sur un autre appareil.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <Btn c={c} variant="secondary" onClick={onExporterSauvegarde}>Exporter une sauvegarde</Btn>
+          <label style={{
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+            padding: "14px 20px", borderRadius: 16, border: `1px solid ${c.border}`, background: c.card,
+            color: c.text, fontSize: 15, fontWeight: 600, cursor: "pointer", fontFamily: fontBody,
+          }}>
+            Importer une sauvegarde
+            <input type="file" accept="application/json,.json" style={{ display: "none" }}
+              onChange={async (e) => {
+                const fichier = e.target.files && e.target.files[0];
+                if (!fichier) return;
+                setEtatImport("encours");
+                const ok = await onImporterSauvegarde(fichier);
+                setEtatImport(ok ? "ok" : "erreur");
+                e.target.value = "";
+              }} />
+          </label>
+          {etatImport === "encours" && <p style={{ margin: 0, fontSize: 12.5, color: c.textSoft }}>Import en cours…</p>}
+          {etatImport === "ok" && <p style={{ margin: 0, fontSize: 12.5, color: c.sageText }}>Sauvegarde importée avec succès.</p>}
+          {etatImport === "erreur" && <p style={{ margin: 0, fontSize: 12.5, color: c.terracottaText }}>Ce fichier n'a pas pu être lu. Vérifiez qu'il s'agit bien d'une sauvegarde exportée depuis cette application.</p>}
+        </div>
       </Card>
 
       <Card c={c} style={{ marginBottom: 14 }}>
