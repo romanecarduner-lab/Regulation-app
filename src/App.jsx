@@ -805,6 +805,7 @@ const FFFF_CHECKIN_OPTIONS = [
 const PSYCHOED_FICHES = [
   {
     titre: "Qu'est-ce que la régulation émotionnelle ?",
+    resume: "Réguler une émotion, c'est apprendre à la traverser sans être submergé·e — pas la faire disparaître.",
     paragraphes: [
       "Réguler une émotion ne veut pas dire la supprimer, l'effacer ou faire comme si elle n'existait pas. Cela signifie retrouver progressivement une capacité à la traverser, sans être totalement submergé·e par elle.",
       "Concrètement, cela peut vouloir dire rester en lien avec ce qui se passe dans votre corps, avec vos pensées, et avec ce qui vous entoure, même quand l'émotion est intense. Une émotion « régulée » n'est pas une émotion qui a disparu : c'est une émotion qui reste vivable, qui laisse encore un peu de place pour réfléchir, choisir, ou demander de l'aide si besoin.",
@@ -813,6 +814,7 @@ const PSYCHOED_FICHES = [
   },
   {
     titre: "Pourquoi mon corps réagit-il aussi fort ?",
+    resume: "Le corps réagit vite pour vous protéger. Ce n'est ni un choix, ni un manque de contrôle.",
     paragraphes: [
       "Le corps peut réagir très vite lorsqu'il perçoit une menace, parfois avant même que vous ayez eu le temps de comprendre ce qui se passe. C'est un mécanisme de protection ancien, qui n'attend pas toujours que la pensée ait fini son travail pour agir.",
       "Parfois, cette menace est bien réelle et actuelle. Parfois, elle réactive une mémoire ancienne : une situation présente peut ressembler, dans ce qu'elle déclenche dans le corps, à quelque chose de plus ancien et de difficile. Dans les deux cas, la réaction du corps est bien réelle, même si son origine n'est pas toujours évidente sur le moment.",
@@ -821,6 +823,7 @@ const PSYCHOED_FICHES = [
   },
   {
     titre: "Hyperactivation et hypoactivation",
+    resume: "Face à une émotion intense, le système nerveux accélère (hyperactivation) ou ralentit (hypoactivation) — parfois les deux.",
     paragraphes: [
       "Face à une émotion intense, le système nerveux peut prendre deux grandes directions, parfois même successivement.",
       "Certaines réactions vont vers l'accélération : agitation, cœur qui bat plus vite, pensées rapides, panique, colère, envie de fuir ou de se défendre. C'est ce qu'on appelle l'hyperactivation. D'autres réactions vont au contraire vers le ralentissement : fatigue soudaine, sensation de vide, brouillard mental, figement, impression d'être coupé·e de soi ou des autres. C'est l'hypoactivation.",
@@ -833,6 +836,7 @@ const PSYCHOED_FICHES = [
   },
   {
     titre: "La stabilisation",
+    resume: "La stabilisation aide à retrouver un peu de sécurité et d'ancrage, sans nier ce qui est difficile.",
     paragraphes: [
       "La stabilisation correspond à l'ensemble des outils qui peuvent aider à retrouver un peu de sécurité, d'ancrage, de présence ou de choix, quand une émotion ou une réaction du corps devient difficile à traverser.",
       "Elle ne consiste pas à nier ce qui est difficile, ni à forcer un retour au calme. Il s'agit plutôt d'aider le système nerveux à ne pas rester seul avec une intensité trop forte, en lui proposant un point d'appui : un contact, un repère sensoriel, un mouvement, une présence.",
@@ -841,6 +845,7 @@ const PSYCHOED_FICHES = [
   },
   {
     titre: "Pourquoi les exercices ne fonctionnent pas toujours ?",
+    resume: "Un exercice peut aider un jour et pas un autre. Ce n'est pas un échec.",
     paragraphes: [
       "Le système nerveux ne réagit pas sur commande. Un exercice peut aider beaucoup un jour, un peu un autre jour, et ne rien changer une troisième fois. Ce n'est pas un échec, ni de votre part, ni de la part de l'exercice.",
       "Plusieurs choses peuvent expliquer cela : le niveau de fatigue, le contexte, l'intensité de ce qui est traversé, ou simplement le fait qu'un même outil ne convient pas à tout le monde ni à tout moment.",
@@ -849,6 +854,7 @@ const PSYCHOED_FICHES = [
   },
   {
     titre: "Créer sa boîte à outils personnelle",
+    resume: "Ce qui aide est propre à chacun·e, et se découvre petit à petit.",
     paragraphes: [
       "Chaque personne peut repérer, petit à petit, ce qui l'aide réellement — et cela ne ressemble jamais tout à fait à ce qui aide quelqu'un d'autre.",
       "Cela peut passer par le mouvement, le contact avec une surface ou une texture, la respiration observée sans contrainte, le lien avec une personne de confiance, la créativité, le contact avec la nature, l'écriture, la musique, le silence, la chaleur, le froid, ou encore la présence d'un animal.",
@@ -858,6 +864,7 @@ const PSYCHOED_FICHES = [
   },
   {
     titre: "Comprendre les réponses Fight, Flight, Freeze, Fawn",
+    resume: "Face à une menace, le corps peut lutter, fuir, se figer ou s'adapter à l'autre — des réponses de protection, pas des défauts.",
     paragraphes: [
       "Face à une menace réelle ou perçue, le système nerveux peut déclencher automatiquement l'une de ces réponses : lutter (Fight), fuir (Flight), se figer (Freeze), ou s'adapter à l'autre pour préserver le lien (Fawn).",
       "Ces réponses ne sont pas choisies consciemment, et elles ne disent rien de la valeur ou de la personnalité de quelqu'un. Elles ont une fonction : aider à survivre à une situation perçue comme dangereuse, ou à préserver un lien qui semblait nécessaire à la sécurité.",
@@ -867,6 +874,7 @@ const PSYCHOED_FICHES = [
   },
   {
     titre: "Pourquoi je cherche parfois à apaiser l'autre ?",
+    resume: "Apaiser l'autre a pu être une vraie stratégie de sécurité, pas un défaut de caractère.",
     paragraphes: [
       "Certaines personnes ont appris, parfois très tôt dans leur histoire, que préserver le lien, éviter le conflit ou anticiper les besoins de l'autre était une manière de rester en sécurité. C'est ce qu'on appelle la réponse Fawn.",
       "Cette stratégie a souvent été utile, à un moment donné, dans un contexte particulier. Elle a pu permettre d'éviter une réaction difficile, de garder un lien important, ou simplement de traverser une situation qui semblait risquée.",
@@ -876,6 +884,7 @@ const PSYCHOED_FICHES = [
   },
   {
     titre: "Comprendre le stress post-traumatique",
+    resume: "Après un événement très difficile, certaines réactions peuvent persister — ce n'est ni une faiblesse, ni un manque de volonté.",
     paragraphes: [
       "Un événement très difficile peut bouleverser profondément notre sentiment de sécurité.",
       "Pour la plupart des personnes, les réactions diminuent progressivement avec le temps. Chez d'autres, elles persistent ou apparaissent plusieurs semaines après l'événement et prennent une place importante dans le quotidien.",
@@ -894,6 +903,7 @@ const PSYCHOED_FICHES = [
   },
   {
     titre: "Qu'est-ce qu'un flashback ?",
+    resume: "Un flashback fait revivre un vécu passé comme s'il était présent. Ce n'est pas un signe de folie.",
     paragraphes: [
       "Un flashback est une réactivation très vive d'un vécu passé.",
       "Pendant quelques instants, le cerveau et le corps peuvent réagir comme si le danger était de nouveau présent, même si une partie de la personne sait que l'événement est terminé.",
@@ -907,6 +917,7 @@ const PSYCHOED_FICHES = [
   },
   {
     titre: "Les cauchemars liés à un vécu difficile",
+    resume: "Certains cauchemars répètent ou évoquent un vécu difficile ; le corps peut rester mobilisé au réveil.",
     paragraphes: [
       "Après une expérience difficile ou traumatique, le sommeil peut être perturbé.",
       "Certaines personnes font des cauchemars qui répètent une partie de ce qui s'est passé. Pour d'autres, le rêve est différent, mais il provoque des émotions ou des sensations proches : peur, impuissance, enfermement, menace ou impossibilité de s'échapper.",
@@ -4353,8 +4364,16 @@ function Psychoeducation({ c, onBack, onAction }) {
               </button>
               {isOpen && (
                 <div style={{ padding: "0 14px 18px" }}>
+                  {fiche.resume && (
+                    <p style={{
+                      margin: "0 0 14px", fontSize: 14.5, color: c.text, fontWeight: 600, lineHeight: 1.5,
+                      paddingLeft: 12, borderLeft: `3px solid ${c.sage}`,
+                    }}>
+                      {fiche.resume}
+                    </p>
+                  )}
                   {fiche.paragraphes.map((p, pi) => (
-                    <p key={pi} style={{ margin: pi === 0 ? "0 0 10px" : "0 0 10px", fontSize: 13, color: c.textSoft, lineHeight: 1.65 }}>
+                    <p key={pi} style={{ margin: pi === 0 ? "0 0 14px" : "0 0 14px", fontSize: 13, color: c.textSoft, lineHeight: 1.7 }}>
                       {p}
                     </p>
                   ))}
