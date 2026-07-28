@@ -2272,6 +2272,9 @@ function CheckinIntensity({ c, onBack, onSubmit, value }) {
           <div style={{ textAlign: "center", fontFamily: fontDisplay, fontSize: 56, color: c.text, marginBottom: 6 }}>
             {val}
           </div>
+          <p style={{ textAlign: "center", fontSize: 12, color: c.textSoft, marginBottom: 8 }}>
+            Faites glisser le curseur pour ajuster
+          </p>
           <input
             type="range" min={0} max={10} value={val}
             onChange={(e) => setVal(Number(e.target.value))}
