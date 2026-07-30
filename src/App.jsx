@@ -788,6 +788,50 @@ const EXERCISES = [
       "Il n'y a rien à réussir ici : faites-vous confiance, et laissez-vous aller — improviser fait partie de l'exercice.",
     ],
     precaution: null, sensible: ["ecrire", "yeux_fermes"] },
+
+  { id: "fonctions-cognitives", titre: "Solliciter mes fonctions cognitives", etats: ["dissociation", "hypoactivation"], besoins: ["orienter"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: null,
+    objectif: "Mobiliser volontairement certaines capacités cognitives, ce qui peut parfois aider à sortir d'un état dissociatif.",
+    etapes: [
+      "Choisissez l'une de ces tâches, celle qui vous semble la plus faisable aujourd'hui : compter à rebours à partir de 100 en retirant 7 à chaque fois ; réciter les mois de l'année à l'envers ; ou nommer 5 animaux, 5 villes, ou 5 objets d'une même catégorie.",
+      "Il n'y a pas besoin d'aller vite ni d'être exact·e — l'objectif est de mobiliser votre attention, pas de réussir un calcul.",
+      "Si une tâche est trop difficile aujourd'hui, vous pouvez en choisir une plus simple, ou vous arrêter.",
+    ],
+    precaution: null, sensible: [] },
+
+  { id: "tour-cinq-sens", titre: "Le tour des cinq sens", etats: ["hyperactivation", "dissociation"], besoins: ["orienter"], protection: [], canaux: ["visuel", "auditif", "tactile"], duree: "2min", materiel: null,
+    objectif: "Passer en revue les cinq sens, un par un, pour se réancrer dans le moment présent.",
+    etapes: [
+      "Nommez 5 choses que vous pouvez voir autour de vous.",
+      "Nommez 4 choses que vous pouvez entendre.",
+      "Nommez 3 choses que vous pouvez toucher, là où vous êtes.",
+      "Nommez 2 choses que vous pouvez sentir (odeur) — ou, si rien ne vous vient, 2 odeurs que vous aimez habituellement.",
+      "Nommez 1 chose que vous pourriez goûter maintenant, ou que vous aimez habituellement.",
+    ],
+    precaution: "Si une étape ne fonctionne pas (par exemple sentir ou goûter), vous pouvez la remplacer par un souvenir de cette sensation, ou simplement la passer.", sensible: [] },
+
+  { id: "eau-mains-visage", titre: "Eau sur les mains ou le visage", etats: ["hyperactivation"], besoins: ["corps"], protection: [], canaux: ["tactile"], duree: "30s", materiel: "De l'eau (robinet, bouteille, ou un gant humide).",
+    objectif: "Utiliser le contact de l'eau pour aider le corps à redescendre en intensité.",
+    etapes: [
+      "Si vous avez accès à de l'eau, faites-la couler sur vos mains, ou passez un peu d'eau fraîche sur votre visage.",
+      "Concentrez-vous simplement sur la sensation du contact, sans chercher à penser à autre chose.",
+    ],
+    precaution: "Adaptez la température de l'eau à ce qui vous convient — fraîche suffit, pas besoin qu'elle soit glacée.", sensible: [] },
+
+  { id: "tension-musculaire", titre: "Tension musculaire volontaire", etats: ["hyperactivation", "dissociation"], besoins: ["corps"], protection: [], canaux: ["tactile", "moteur"], duree: "30s", materiel: null,
+    objectif: "Utiliser une tension musculaire volontaire et son relâchement comme point d'ancrage sensoriel.",
+    etapes: [
+      "Choisissez l'une de ces options, celle qui vous est le plus accessible maintenant : serrer les poings puis les desserrer plusieurs fois ; vous cramponner à votre chaise ou à un objet stable aussi fort que possible ; ou appuyer fort sur vos talons contre le sol.",
+      "Portez attention à la tension, puis au relâchement, dans les muscles concernés.",
+    ],
+    precaution: null, sensible: ["toucher_corps"] },
+
+  { id: "recompense-apres", titre: "Se prévoir une récompense", etats: ["tolerance", "hyperactivation"], besoins: ["douceur"], protection: [], canaux: ["cognitif"], duree: "30s", materiel: null,
+    objectif: "Se donner un repère agréable à venir, pour aider à tenir ce moment difficile.",
+    etapes: [
+      "Pensez à une chose simple que vous pourriez vous accorder une fois ce moment difficile passé — une boisson, un moment de repos, un appel à quelqu'un, un épisode de série.",
+      "Vous n'avez pas besoin de la mériter pour vous l'autoriser : le seul fait d'y penser peut déjà aider à tenir un peu.",
+    ],
+    precaution: null, sensible: [] },
 ];
 
 /* ---------------------------------------------------------------
