@@ -268,7 +268,7 @@ const EXERCISES = [
     precaution: null, sensible: [] },
   { id: "lieu-ressource", titre: "Construire un lieu ressource", etats: ["tolerance", "hyperactivation"], besoins: ["lieu_ressource"], protection: [], canaux: ["imaginatif"], duree: "10min", materiel: null,
     objectif: "Construire progressivement un lieu ressource — réel, imaginaire, ou inspiré de plusieurs endroits — sur lequel vous gardez le contrôle.",
-    etapes: ["Vérifiez d'abord si l'imagination vous convient aujourd'hui. Si non, vous pouvez partir d'une photo, d'un lieu réel ou d'un objet.", "Pensez à un endroit où vous vous sentez un peu plus tranquille ou simplement moins en difficulté. Il n'a pas besoin d'être parfait.", "Décidez qui peut y entrer, à quelle distance se trouvent les autres, s'il y a une porte, une limite, une lumière, un abri.", "Vous pouvez garder les yeux ouverts. Remarquez une seule chose concernant cet endroit, puis une deuxième seulement si vous le souhaitez.", "Remarquez l'effet : un peu plus d'espace ? rien de particulier ? de l'inconfort ? Si c'est inconfortable, vous pouvez arrêter et revenir à l'orientation externe.", "Si cela vous convient, associez ce lieu à une image, un mot, un geste ou un objet, pour pouvoir y revenir plus facilement."],
+    etapes: ["Vérifiez d'abord si l'imagination vous convient aujourd'hui. Si non, vous pouvez partir d'une photo, d'un lieu réel ou d'un objet.", "Pensez à un endroit où vous vous sentez un peu plus tranquille ou simplement moins en difficulté. Il n'a pas besoin d'être parfait.", "Décidez qui peut y entrer, à quelle distance se trouvent les autres, s'il y a une porte, une limite, une lumière, un abri.", "Vous pouvez garder les yeux ouverts. Remarquez une seule chose concernant cet endroit, puis une deuxième seulement si vous le souhaitez.", "Remarquez l'effet : un peu plus d'espace ? rien de particulier ? de l'inconfort ? Si c'est inconfortable, vous pouvez arrêter et revenir à l'orientation externe.", "Si cela vous convient, choisissez un mot-clé qui résume ce lieu. Vous pouvez l'associer à un geste simple : poser une main sur le bras, toucher un objet, poser les pieds au sol, redresser légèrement le dos.", "Notez ce que vous remarquez : ce lieu vous semble-t-il accessible ? vous procure-t-il un peu de sécurité ou de stabilité ? pourriez-vous le réutiliser dans un moment un peu difficile ?"],
     precaution: "Ce lieu n'a pas besoin d'être un « lieu sûr » parfait — certaines personnes ne trouvent aucun lieu entièrement sûr, et c'est tout à fait normal. Si l'exercice augmente la détresse ou la dissociation, mieux vaut s'arrêter et choisir un exercice plus concret.", sensible: ["imagination", "yeux_fermes"] },
   { id: "oui-non-jns", titre: "Mon oui, mon non, mon je ne sais pas", type: "question-3choix", etats: ["tolerance", "hyperactivation"], besoins: ["limites"], protection: ["fawn"], canaux: ["cognitif", "relationnel"], duree: "2min", materiel: null,
     objectif: "Entraîner le repérage de vos propres oui, non, et « je ne sais pas encore ».",
@@ -832,6 +832,50 @@ const EXERCISES = [
       "Vous n'avez pas besoin de la mériter pour vous l'autoriser : le seul fait d'y penser peut déjà aider à tenir un peu.",
     ],
     precaution: null, sensible: [] },
+
+  { id: "je-remarque-que-je-pense", titre: "Je remarque que je pense que…", etats: ["tolerance", "hyperactivation"], besoins: ["mental"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: null,
+    tags: ["langage"],
+    objectif: "Prendre un peu de distance avec une pensée qui revient, sans chercher à la faire disparaître.",
+    etapes: [
+      "Repérez une pensée qui revient souvent, surtout dans les moments de stress ou de repli — par exemple « je suis nul·le » ou « je n'y arriverai pas ».",
+      "Reformulez-la en ajoutant simplement devant : « Je remarque que je pense que… ». Par exemple : « je remarque que je pense que je suis nul·le ».",
+      "Vous pouvez aussi essayer : l'imaginer posée devant vous sur une feuille, à distance ; la dire avec une voix exagérée, comme un personnage de dessin animé ; ou la visualiser écrite dans une bulle de bande dessinée au-dessus de votre tête.",
+      "Remarquez ce que cela change, même légèrement, de la formuler ainsi plutôt que de la vivre comme un fait.",
+    ],
+    precaution: null, sensible: [] },
+
+  { id: "lettre-a-mon-emotion", titre: "Une lettre à mon émotion", etats: ["tolerance", "hyperactivation"], besoins: ["mental"], protection: [], canaux: ["cognitif"], duree: "5min", materiel: "De quoi écrire librement — ici, ou sur papier.",
+    tags: ["langage", "creativite"],
+    objectif: "Écrire à une émotion comme si elle était une personne, pour amorcer un lien avec elle plutôt que de la fuir.",
+    etapes: [
+      "Choisissez une émotion qui revient souvent, ou qui vous semble difficile à accueillir.",
+      "Écrivez-lui une courte lettre, comme si vous lui parliez directement. Vous pouvez vous inspirer de ces débuts de phrase : « Je t'ai longtemps ignorée, parce que… » ; « Tu m'as fait peur, parce que… » ; « Je comprends aujourd'hui que tu étais là pour… » ; « Je ne suis pas encore prêt·e à t'écouter pleinement, mais… » ; « Je veux apprendre à te rencontrer sans me fuir. »",
+      "Vous n'avez pas besoin d'aller plus loin que quelques phrases, ni de décrire en détail ce qui a déclenché cette émotion.",
+    ],
+    precaution: "Écrire librement peut faire remonter des émotions fortes. Vous pouvez arrêter à tout moment.",
+    sensible: ["ecrire"] },
+
+  { id: "demander-sans-justifier", titre: "Demander sans tout justifier", etats: ["tolerance"], besoins: ["limites"], protection: [], canaux: ["relationnel", "cognitif"], duree: "2min", materiel: null,
+    tags: ["langage"],
+    objectif: "S'entraîner à formuler une demande simple, dans une relation suffisamment sûre, sans avoir à tout expliquer.",
+    etapes: [
+      "Pensez à une petite demande que vous pourriez faire, dans une relation qui vous semble suffisamment sûre.",
+      "Remarquez ce que vous auriez tendance à ajouter pour vous justifier, et essayez de voir ce que vous pourriez enlever pour garder une demande plus simple.",
+      "Vous pouvez vous inspirer de ces exemples : « Est-ce que tu peux me prévenir si tu as du retard ? » ; « J'ai besoin de réfléchir avant de répondre. » ; « Je préfère qu'on en reparle demain. » ; « Je ne veux pas entrer dans les détails, mais j'ai besoin d'un peu de soutien. » ; « Peux-tu me dire clairement ce que tu attends de moi ? »",
+      "Une fois votre phrase trouvée, formulée ou seulement imaginée, remarquez ce que cela vous fait : cela vous semble-t-il faisable ? difficile ? Il n'y a pas de bonne réponse.",
+    ],
+    precaution: null, sensible: [] },
+
+  { id: "redefinir-aller-mieux", titre: "Redéfinir « aller mieux » pour moi", etats: ["tolerance"], besoins: ["douceur"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: null,
+    tags: ["langage"],
+    objectif: "Définir ce que « aller mieux » veut dire pour vous, à partir de signes modestes et concrets plutôt que d'un retour à « avant ».",
+    etapes: [
+      "« Aller mieux » n'a pas besoin de vouloir dire redevenir exactement la personne d'avant, ou ne plus jamais être touché·e par rien.",
+      "Pensez à trois signes, même modestes, qui vous diraient que quelque chose avance pour vous.",
+      "Pensez à une chose que vous voudriez arrêter de vous exiger pour considérer que vous allez mieux.",
+      "Vous pouvez aussi repérer ce que vous préférez éviter de vous demander : aller bien tout le temps, ne plus jamais réagir fortement, tout comprendre, pardonner, minimiser, ou faire seul·e ce qui mériterait un accompagnement.",
+    ],
+    precaution: null, sensible: [] },
 ];
 
 /* ---------------------------------------------------------------
@@ -1086,8 +1130,10 @@ async function loadJSON(key, fallback) {
 async function saveJSON(key, value) {
   try {
     await window.storage.set(key, JSON.stringify(value), false);
+    return true;
   } catch (e) {
     console.error("Erreur de sauvegarde", e);
+    return false;
   }
 }
 
@@ -1252,6 +1298,7 @@ export default function App() {
   // draft check-in state
   const [intensity, setIntensity] = useState(null);
   const [sensations, setSensations] = useState([]);
+  const [bodyZones, setBodyZones] = useState({});
   const [nsState, setNsState] = useState(null);
   const [ffffState, setFfffState] = useState(null);
   const [etatExploration, setEtatExploration] = useState(null);
@@ -1328,16 +1375,28 @@ export default function App() {
     })();
   }, []);
 
+  const [domaineActuel, setDomaineActuel] = useState(null);
+  const [storageError, setStorageError] = useState(false);
+  const verifierSauvegarde = (ok) => { setStorageError(!ok); return ok; };
+  const DOMAINES = {
+    "checkin-state": { label: "Je repère", icon: "🧭" },
+    "library": { label: "Je régule", icon: "🌊" },
+    "mon-espace": { label: "Mon espace", icon: "🏡" },
+  };
+
   const goTo = useCallback((s) => {
     setHistory((h) => [...h, screen]);
     setScreen(s);
+    if (DOMAINES[s]) setDomaineActuel(s);
   }, [screen]);
 
   const goBackHome = useCallback(() => {
     setHistory([]);
     setScreen("home");
+    setDomaineActuel(null);
     setIntensity(null);
     setSensations([]);
+    setBodyZones({});
     setNsState(null);
     setFfffState(null);
     setEtatExploration(null);
@@ -1370,13 +1429,13 @@ export default function App() {
     const next = { ...safetyPlan, [field]: value };
     setSafetyPlan(next);
   };
-  const persistSafetyPlan = () => saveJSON("securite:plan", safetyPlan);
+  const persistSafetyPlan = async () => verifierSauvegarde(await saveJSON("securite:plan", safetyPlan));
 
   const updateZonePerso = (field, value) => setZonePerso((prev) => ({ ...prev, [field]: value }));
-  const persistZonePerso = () => saveJSON("zone:personnalisation", zonePerso);
+  const persistZonePerso = async () => verifierSauvegarde(await saveJSON("zone:personnalisation", zonePerso));
 
   const updatePersonalInfo = (field, value) => setPersonalInfo((prev) => ({ ...prev, [field]: value }));
-  const persistPersonalInfo = () => saveJSON("profil:info", personalInfo);
+  const persistPersonalInfo = async () => verifierSauvegarde(await saveJSON("profil:info", personalInfo));
   const updateSignalEtapes = (next) => {
     setSignalEtapes(next);
     saveJSON("reglages:signal", next);
@@ -1385,7 +1444,7 @@ export default function App() {
   const addEntry = async (entry) => {
     const next = [{ ...entry, date: new Date().toISOString() }, ...entries].slice(0, 200);
     setEntries(next);
-    await saveJSON("suivi:entries", next);
+    verifierSauvegarde(await saveJSON("suivi:entries", next));
   };
 
   const saveAvoidPrefs = async (next) => { setAvoidPrefs(next); await saveJSON("exo:avoid", next); };
@@ -1400,7 +1459,7 @@ export default function App() {
     const entree = { date: new Date().toISOString(), texte: propre, image: image || null };
     const next = { ...exoCreations, [id]: [...(exoCreations[id] || []), entree] };
     setExoCreations(next);
-    await saveJSON("exo:creations", next);
+    verifierSauvegarde(await saveJSON("exo:creations", next));
   };
   const supprimerCreation = async (id, index) => {
     const liste = [...(exoCreations[id] || [])];
@@ -1413,7 +1472,7 @@ export default function App() {
     const exists = customExercises.some((e) => e.id === ex.id);
     const next = exists ? customExercises.map((e) => (e.id === ex.id ? ex : e)) : [...customExercises, ex];
     setCustomExercises(next);
-    await saveJSON("exo:custom", next);
+    verifierSauvegarde(await saveJSON("exo:custom", next));
     setEditingExercise(null);
     goTo("mes-exercices-perso");
   };
@@ -1542,12 +1601,32 @@ export default function App() {
         paddingBottom: "calc(22px + 54px + 24px + env(safe-area-inset-bottom))",
       }}>
 
+        {storageError && (
+          <div style={{
+            background: c.terracottaSoft, borderRadius: 14, padding: "12px 14px", marginBottom: 16,
+            display: "flex", alignItems: "flex-start", gap: 10,
+          }}>
+            <span style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
+            <div style={{ flex: 1 }}>
+              <p style={{ margin: 0, fontSize: 12.5, color: c.text, lineHeight: 1.5 }}>
+                Une sauvegarde a échoué — le stockage de votre appareil est peut-être plein. Essayez de supprimer
+                d'anciennes photos dans vos exercices, ou libérez de l'espace sur votre téléphone.
+              </p>
+            </div>
+            <button onClick={() => setStorageError(false)} aria-label="Fermer cet avertissement" style={{
+              background: "none", border: "none", color: c.textSoft, fontSize: 16, cursor: "pointer",
+              padding: 0, flexShrink: 0, lineHeight: 1,
+            }}>×</button>
+          </div>
+        )}
+
         {screen !== "home" && screen !== "crisis" && (() => {
           const BACK_MAP = {
             "checkin-state": { label: "Retour à l'accueil", onClick: goBackHome },
             "checkin-state-explore": { label: "Modifier mon état", onClick: () => goTo("checkin-state") },
             "checkin-intensity": { label: "Modifier mon état", onClick: () => goTo("checkin-state") },
-            "checkin-sensations": { label: "Modifier l'intensité", onClick: goBack },
+            "checkin-corps": { label: "Modifier l'intensité", onClick: () => goTo("checkin-intensity") },
+            "checkin-sensations": { label: "Modifier les zones du corps", onClick: () => goTo("checkin-corps") },
             "checkin-protection": { label: "Retour", onClick: goBack },
             "checkin-protection-confirm": { label: "Modifier ma réponse", onClick: () => goTo("checkin-protection") },
             "aide-danger": { label: "Retour", onClick: goBack },
@@ -1565,6 +1644,7 @@ export default function App() {
             "psychoed": { label: "Retour à l'accueil", onClick: goBackHome },
             "psychoed-fiche": { label: "Retour", onClick: goBack },
             "repere-immediat": { label: "Retour à l'accueil", onClick: goBackHome },
+            "confidentialite": { label: "Retour", onClick: goBack },
             "safety": { label: "Retour", onClick: goBack },
             "nervous-system": { label: "Retour à l'accueil", onClick: goBackHome },
             "ce-qui-maide": { label: "Retour à l'accueil", onClick: goBackHome },
@@ -1596,13 +1676,24 @@ export default function App() {
                   ← {backInfo.label}
                 </button>
               ) : <span />}
-              <button onClick={goBackHome} style={{
-                background: "none", border: "none", color: c.textSoft, fontFamily: fontBody,
-                fontSize: 13, fontWeight: 600, cursor: "pointer", padding: 0,
-                display: "flex", alignItems: "center", gap: 6, flexShrink: 0,
-              }}>
-                <span style={{ fontSize: 15 }}>🏠</span> Accueil
-              </button>
+              <div style={{ display: "flex", alignItems: "center", gap: 16, flexShrink: 0 }}>
+                {domaineActuel && screen !== domaineActuel && (
+                  <button onClick={() => goTo(domaineActuel)} style={{
+                    background: "none", border: "none", color: c.textSoft, fontFamily: fontBody,
+                    fontSize: 13, fontWeight: 600, cursor: "pointer", padding: 0,
+                    display: "flex", alignItems: "center", gap: 6,
+                  }}>
+                    <span style={{ fontSize: 15 }}>{DOMAINES[domaineActuel].icon}</span> {DOMAINES[domaineActuel].label}
+                  </button>
+                )}
+                <button onClick={goBackHome} style={{
+                  background: "none", border: "none", color: c.textSoft, fontFamily: fontBody,
+                  fontSize: 13, fontWeight: 600, cursor: "pointer", padding: 0,
+                  display: "flex", alignItems: "center", gap: 6,
+                }}>
+                  <span style={{ fontSize: 15 }}>🏠</span> Accueil
+                </button>
+              </div>
             </div>
           );
         })()}
@@ -1622,7 +1713,12 @@ export default function App() {
 
         {screen === "checkin-intensity" && (
           <CheckinIntensity c={c} onBack={() => goTo("checkin-state")} value={intensity}
-            onSubmit={(v) => { setIntensity(v); if (v !== null && v >= 9) { goTo("crisis"); } else { goTo("checkin-sensations"); } }} />
+            onSubmit={(v) => { setIntensity(v); if (v !== null && v >= 9) { goTo("crisis"); } else { goTo("checkin-corps"); } }} />
+        )}
+
+        {screen === "checkin-corps" && (
+          <CheckinCorps c={c} onBack={goBack} zones={bodyZones} setZones={setBodyZones}
+            onNext={() => goTo("checkin-sensations")} />
         )}
 
         {screen === "checkin-sensations" && (
@@ -1637,7 +1733,7 @@ export default function App() {
               if (["fight", "flight", "freeze", "fawn"].includes(f)) {
                 goTo("checkin-protection-confirm");
               } else {
-                addEntry({ type: "check-in", intensite: intensity, sensations, etat: nsState, etatExploration, ffff: f });
+                addEntry({ type: "check-in", intensite: intensity, sensations, zonesCorps: bodyZones, etat: nsState, etatExploration, ffff: f });
                 goTo("checkin-done");
               }
             }} />
@@ -1648,7 +1744,7 @@ export default function App() {
             onConfirm={(reponse) => {
               const ffffFinal = reponse === "non" ? null : ffffState;
               setFfffState(ffffFinal);
-              addEntry({ type: "check-in", intensite: intensity, sensations, etat: nsState, etatExploration, ffff: ffffFinal, ffffConfirmation: reponse });
+              addEntry({ type: "check-in", intensite: intensity, sensations, zonesCorps: bodyZones, etat: nsState, etatExploration, ffff: ffffFinal, ffffConfirmation: reponse });
               goTo("checkin-done");
             }} />
         )}
@@ -1897,8 +1993,11 @@ export default function App() {
           <Settings c={c} theme={theme} toggleTheme={toggleTheme} onBack={goBackHome} onWipe={wipeAllData}
             personalInfo={personalInfo} onChangePersonalInfo={updatePersonalInfo} onSavePersonalInfo={persistPersonalInfo}
             signalEtapes={signalEtapes} onChangeSignalEtapes={updateSignalEtapes}
-            onExporterSauvegarde={exporterSauvegarde} onImporterSauvegarde={importerSauvegarde} />
+            onExporterSauvegarde={exporterSauvegarde} onImporterSauvegarde={importerSauvegarde}
+            onGoConfidentialite={() => goTo("confidentialite")} />
         )}
+
+        {screen === "confidentialite" && <PolitiqueConfidentialite c={c} />}
 
         {screen === "mon-espace" && <MonEspaceHub c={c} goTo={goTo} />}
 
@@ -2343,6 +2442,81 @@ function CheckinIntensity({ c, onBack, onSubmit, value }) {
           Je ne sais pas l'évaluer
         </Btn>
       </div>
+    </div>
+  );
+}
+
+const ZONES_CORPS = [
+  { id: "tete", label: "Tête" },
+  { id: "gorge", label: "Gorge" },
+  { id: "poitrine", label: "Poitrine" },
+  { id: "ventre", label: "Ventre" },
+  { id: "bras_g", label: "Bras gauche" },
+  { id: "bras_d", label: "Bras droit" },
+  { id: "mains", label: "Mains" },
+  { id: "jambes", label: "Jambes" },
+  { id: "pieds", label: "Pieds" },
+];
+const INTENSITE_OPACITES = [0, 0.3, 0.6, 1];
+
+function CheckinCorps({ c, onBack, onNext, zones, setZones }) {
+  const cycle = (id) => setZones((prev) => ({ ...prev, [id]: ((prev[id] || 0) + 1) % 4 }));
+  const opac = (id) => INTENSITE_OPACITES[zones[id] || 0];
+  const nbZonesMarquees = Object.values(zones).filter((v) => v > 0).length;
+
+  return (
+    <div>
+      <ScreenTitle c={c}>Où le ressentez-vous dans le corps ?</ScreenTitle>
+      <p style={{ color: c.textSoft, fontSize: 14.5, lineHeight: 1.6, marginBottom: 6 }}>
+        Touchez une ou plusieurs zones. Vous pouvez toucher plusieurs fois la même zone si la sensation y est
+        plus forte. Entièrement facultatif — vous pouvez passer cette étape.
+      </p>
+      <svg viewBox="0 0 200 380" style={{ width: "100%", maxWidth: 260, display: "block", margin: "18px auto" }}>
+        {/* Tête */}
+        <circle cx={100} cy={34} r={26} fill={`rgba(196,137,106,${opac("tete")})`} stroke={c.border} strokeWidth={1.5}
+          onClick={() => cycle("tete")} style={{ cursor: "pointer" }} />
+        {/* Gorge */}
+        <rect x={88} y={58} width={24} height={16} rx={6} fill={`rgba(196,137,106,${opac("gorge")})`} stroke={c.border} strokeWidth={1.5}
+          onClick={() => cycle("gorge")} style={{ cursor: "pointer" }} />
+        {/* Poitrine */}
+        <rect x={62} y={74} width={76} height={54} rx={18} fill={`rgba(196,137,106,${opac("poitrine")})`} stroke={c.border} strokeWidth={1.5}
+          onClick={() => cycle("poitrine")} style={{ cursor: "pointer" }} />
+        {/* Ventre */}
+        <rect x={66} y={128} width={68} height={46} rx={16} fill={`rgba(196,137,106,${opac("ventre")})`} stroke={c.border} strokeWidth={1.5}
+          onClick={() => cycle("ventre")} style={{ cursor: "pointer" }} />
+        {/* Bras gauche (à l'écran, à gauche) */}
+        <rect x={30} y={80} width={24} height={110} rx={12} fill={`rgba(196,137,106,${opac("bras_g")})`} stroke={c.border} strokeWidth={1.5}
+          onClick={() => cycle("bras_g")} style={{ cursor: "pointer" }} />
+        {/* Bras droit */}
+        <rect x={146} y={80} width={24} height={110} rx={12} fill={`rgba(196,137,106,${opac("bras_d")})`} stroke={c.border} strokeWidth={1.5}
+          onClick={() => cycle("bras_d")} style={{ cursor: "pointer" }} />
+        {/* Mains */}
+        <circle cx={42} cy={200} r={13} fill={`rgba(196,137,106,${opac("mains")})`} stroke={c.border} strokeWidth={1.5}
+          onClick={() => cycle("mains")} style={{ cursor: "pointer" }} />
+        <circle cx={158} cy={200} r={13} fill={`rgba(196,137,106,${opac("mains")})`} stroke={c.border} strokeWidth={1.5}
+          onClick={() => cycle("mains")} style={{ cursor: "pointer" }} />
+        {/* Jambes */}
+        <rect x={64} y={176} width={30} height={150} rx={14} fill={`rgba(196,137,106,${opac("jambes")})`} stroke={c.border} strokeWidth={1.5}
+          onClick={() => cycle("jambes")} style={{ cursor: "pointer" }} />
+        <rect x={106} y={176} width={30} height={150} rx={14} fill={`rgba(196,137,106,${opac("jambes")})`} stroke={c.border} strokeWidth={1.5}
+          onClick={() => cycle("jambes")} style={{ cursor: "pointer" }} />
+        {/* Pieds */}
+        <ellipse cx={79} cy={340} rx={20} ry={11} fill={`rgba(196,137,106,${opac("pieds")})`} stroke={c.border} strokeWidth={1.5}
+          onClick={() => cycle("pieds")} style={{ cursor: "pointer" }} />
+        <ellipse cx={121} cy={340} rx={20} ry={11} fill={`rgba(196,137,106,${opac("pieds")})`} stroke={c.border} strokeWidth={1.5}
+          onClick={() => cycle("pieds")} style={{ cursor: "pointer" }} />
+      </svg>
+
+      {nbZonesMarquees > 0 && (
+        <button onClick={() => setZones({})} style={{
+          display: "block", margin: "0 auto 20px", background: "none", border: "none",
+          color: c.textSoft, fontSize: 12.5, textDecoration: "underline", cursor: "pointer", fontFamily: fontBody,
+        }}>
+          Réinitialiser
+        </button>
+      )}
+
+      <Btn c={c} variant="primary" onClick={onNext}>Continuer <span>→</span></Btn>
     </div>
   );
 }
@@ -3673,7 +3847,7 @@ function BreathingBall({ c }) {
   );
 }
 
-const EXERCICES_AVEC_NOTE = ["lieu-ressource", "cercle-des-ressources", "figure-soutenante", "paysage-appuis", "le-contenant", "ecrire-un-haiku", "mes-figures-ressources", "vider-mon-sac", "mes-sources-de-bien-etre", "revenir-au-corps", "des-nuages-passent", "alignement", "stylo-therapeute"];
+const EXERCICES_AVEC_NOTE = ["lieu-ressource", "cercle-des-ressources", "figure-soutenante", "paysage-appuis", "le-contenant", "ecrire-un-haiku", "mes-figures-ressources", "vider-mon-sac", "mes-sources-de-bien-etre", "revenir-au-corps", "des-nuages-passent", "alignement", "stylo-therapeute", "lettre-a-mon-emotion"];
 
 function jouerSignalDiscret(ctxRef) {
   try {
@@ -5793,6 +5967,14 @@ function JournalEntryDetail({ c, entry, onDelete, onBack }) {
                 <div style={{ fontSize: 14, color: c.text }}>{entry.intensite}/10</div>
               </div>
             )}
+            {entry.zonesCorps && Object.values(entry.zonesCorps).some((v) => v > 0) && (
+              <div>
+                <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 3 }}>Zones ressenties dans le corps</div>
+                <div style={{ fontSize: 14, color: c.text }}>
+                  {ZONES_CORPS.filter((z) => (entry.zonesCorps[z.id] || 0) > 0).map((z) => z.label).join(", ")}
+                </div>
+              </div>
+            )}
             {entry.ffff && FFFF_INFO.find((f) => f.id === entry.ffff) && (
               <div>
                 <div style={{ fontSize: 11.5, color: c.textSoft, marginBottom: 3 }}>Réponse de protection reconnue</div>
@@ -5988,7 +6170,40 @@ function RdvExportPreview({ c, onBack, periode, entries, question, onCreate, onC
   );
 }
 
-function Settings({ c, theme, toggleTheme, onBack, onWipe, personalInfo, onChangePersonalInfo, onSavePersonalInfo, signalEtapes, onChangeSignalEtapes, onExporterSauvegarde, onImporterSauvegarde }) {
+function PolitiqueConfidentialite({ c }) {
+  const section = (titre, texte) => (
+    <div style={{ marginBottom: 18 }}>
+      <p style={{ margin: "0 0 6px", fontSize: 14, color: c.text, fontWeight: 700 }}>{titre}</p>
+      <p style={{ margin: 0, fontSize: 13, color: c.textSoft, lineHeight: 1.65 }}>{texte}</p>
+    </div>
+  );
+  return (
+    <div>
+      <ScreenTitle c={c}>Politique de confidentialité</ScreenTitle>
+      <p style={{ color: c.textSoft, fontSize: 12.5, marginBottom: 22 }}>Dernière mise à jour : {new Date().toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}</p>
+
+      {section("Vos données restent sur votre appareil",
+        "Tout ce que vous saisissez dans cette application — repères de sécurité, journal de suivi, notes, photos, exercices personnalisés — est enregistré uniquement sur votre téléphone ou votre ordinateur, dans la mémoire de votre navigateur. Rien n'est envoyé à un serveur, ni consulté par qui que ce soit, y compris par la personne qui a créé cette application.")}
+
+      {section("Aucun compte, aucun suivi",
+        "Cette application ne demande ni compte, ni adresse e-mail, ni connexion. Elle ne contient aucun outil de mesure d'audience, aucun traceur publicitaire, et ne partage aucune donnée avec des tiers.")}
+
+      {section("Informations personnelles facultatives",
+        "Le prénom, le nom et la date de naissance que vous pouvez renseigner sont entièrement facultatifs, servent uniquement à personnaliser l'affichage et vos documents exportés, et restent stockés localement comme le reste.")}
+
+      {section("Vous gardez le contrôle",
+        "Vous pouvez à tout moment exporter une sauvegarde de vos données (Réglages → Sauvegarder mes données), ou tout supprimer définitivement (Réglages → Supprimer toutes mes données). Désinstaller l'application ou vider les données de votre navigateur efface également tout ce qui a été enregistré.")}
+
+      {section("Limites de l'application",
+        "Cette application propose des outils de psychoéducation et de stabilisation émotionnelle. Elle ne constitue ni un diagnostic, ni un traitement, ni un substitut à un accompagnement par un professionnel de santé formé. En cas de danger ou de détresse importante, contactez un professionnel, une personne de confiance, ou les services d'urgence.")}
+
+      {section("Contact",
+        "Pour toute question sur cette politique ou sur l'application, vous pouvez écrire à contact@romanecarduner-psychologue.fr.")}
+    </div>
+  );
+}
+
+function Settings({ c, theme, toggleTheme, onBack, onWipe, personalInfo, onChangePersonalInfo, onSavePersonalInfo, signalEtapes, onChangeSignalEtapes, onExporterSauvegarde, onImporterSauvegarde, onGoConfidentialite }) {
   const [etatImport, setEtatImport] = useState(null); // null | "encours" | "ok" | "erreur"
   const [confirm, setConfirm] = useState(false);
   const [showColors, setShowColors] = useState(false);
@@ -6147,6 +6362,12 @@ function Settings({ c, theme, toggleTheme, onBack, onWipe, personalInfo, onChang
             contact@romanecarduner-psychologue.fr
           </a>
         </p>
+        <button onClick={onGoConfidentialite} style={{
+          background: "none", border: "none", color: c.textSoft, fontSize: 12.5, textDecoration: "underline",
+          cursor: "pointer", padding: 0, marginBottom: 10, display: "block", fontFamily: fontBody,
+        }}>
+          Politique de confidentialité
+        </button>
         <p style={{ margin: 0, fontSize: 11, color: c.textSoft, opacity: 0.8 }}>{MENTION_PROPRIETE}</p>
       </Card>
 
