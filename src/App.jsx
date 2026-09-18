@@ -876,6 +876,12 @@ const EXERCISES = [
       "Vous pouvez aussi repérer ce que vous préférez éviter de vous demander : aller bien tout le temps, ne plus jamais réagir fortement, tout comprendre, pardonner, minimiser, ou faire seul·e ce qui mériterait un accompagnement.",
     ],
     precaution: null, sensible: [] },
+
+  { id: "nuage-pensees-interactif", titre: "Nuage de pensées", type: "nuage-pensees", etats: ["tolerance", "hyperactivation"], besoins: ["mental"], protection: [], canaux: ["cognitif"], duree: "2min", materiel: null,
+    tags: ["langage"],
+    objectif: "Observer ses pensées avec un peu de recul, sans chercher à les combattre ni à leur obéir.",
+    etapes: ["Écrivez une à cinq pensées qui occupent votre esprit.", "Observez-les comme des nuages qui passent.", "Reformulez-les avec « Mon esprit me dit que… »."],
+    precaution: null, sensible: ["ecrire"] },
 ];
 
 /* ---------------------------------------------------------------
@@ -3927,6 +3933,124 @@ function BoutonEcouter({ c, texte }) {
   );
 }
 
+const COULEURS_NUAGE = ["sage", "blue", "terracotta", "ocre", "violet"];
+
+function NuagePensees({ c, onTerminer }) {
+  const [etape, setEtape] = useState("ajout"); // ajout | nuages | reformulation | synthese
+  const [pensees, setPensees] = useState([]);
+  const [texte, setTexte] = useState("");
+
+  const ajouter = () => {
+    if (!texte.trim() || pensees.length >= 5) return;
+    setPensees([...pensees, texte.trim()]);
+    setTexte("");
+  };
+  const retirer = (i) => setPensees(pensees.filter((_, idx) => idx !== i));
+
+  if (etape === "ajout") {
+    return (
+      <Card c={c} style={{ marginBottom: 20 }}>
+        <p style={{ margin: "0 0 6px", fontSize: 16, fontWeight: 700, color: c.text }}>
+          Quelles pensées occupent votre esprit en ce moment ?
+        </p>
+        <p style={{ margin: "0 0 16px", fontSize: 13, color: c.textSoft, lineHeight: 1.6 }}>
+          Écrivez une à cinq pensées. Il n'est pas nécessaire qu'elles soient rationnelles, utiles ou positives.
+        </p>
+        <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+          <input type="text" value={texte} onChange={(e) => setTexte(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") ajouter(); }}
+            placeholder="Ex. : Je ne vais pas y arriver" aria-label="Nouvelle pensée"
+            style={{ flex: 1, borderRadius: 12, border: `1px solid ${c.border}`, background: c.card, color: c.text, padding: 10, fontFamily: fontBody, fontSize: 14 }} />
+          <Btn c={c} variant="secondary" onClick={ajouter} disabled={!texte.trim() || pensees.length >= 5}
+            style={{ width: "auto", padding: "10px 18px", opacity: (!texte.trim() || pensees.length >= 5) ? 0.5 : 1 }}>
+            Ajouter
+          </Btn>
+        </div>
+        <p style={{ fontSize: 12, color: c.textSoft, marginBottom: 14 }}>{pensees.length} pensée{pensees.length > 1 ? "s" : ""} sur 5</p>
+        {pensees.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
+            {pensees.map((p, i) => (
+              <span key={i} style={{
+                display: "inline-flex", alignItems: "center", gap: 6, background: c[COULEURS_NUAGE[i % COULEURS_NUAGE.length] + "Soft"],
+                borderRadius: 999, padding: "6px 12px", fontSize: 12.5, color: c.text,
+              }}>
+                {p}
+                <button onClick={() => retirer(i)} aria-label={`Retirer la pensée : ${p}`} style={{ background: "none", border: "none", color: c.textSoft, cursor: "pointer", fontSize: 13, padding: 0, lineHeight: 1 }}>×</button>
+              </span>
+            ))}
+          </div>
+        )}
+        <Btn c={c} variant="primary" onClick={() => setEtape("nuages")} disabled={pensees.length === 0}
+          style={{ opacity: pensees.length === 0 ? 0.5 : 1 }}>
+          Observer mes pensées <span>→</span>
+        </Btn>
+      </Card>
+    );
+  }
+
+  if (etape === "nuages") {
+    return (
+      <div>
+        <style>{`
+          @keyframes flottera { 0%,100% { transform: translate(0,0); } 50% { transform: translate(8px,-14px); } }
+          @keyframes flotterb { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-10px,-10px); } }
+          @keyframes flotterc { 0%,100% { transform: translate(0,0); } 50% { transform: translate(6px,-18px); } }
+        `}</style>
+        <p style={{ textAlign: "center", fontSize: 13.5, color: c.textSoft, lineHeight: 1.6, marginBottom: 22 }}>
+          Regardez ces pensées comme des nuages qui passent, sans chercher à les retenir ni à les chasser.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 24 }}>
+          {pensees.map((p, i) => (
+            <div key={i} style={{
+              alignSelf: i % 2 === 0 ? "flex-start" : "flex-end",
+              background: c[COULEURS_NUAGE[i % COULEURS_NUAGE.length] + "Soft"],
+              borderRadius: "50% 50% 45% 20% / 60% 60% 40% 40%",
+              padding: "16px 22px", maxWidth: "78%", fontSize: 13.5, color: c.text,
+              animation: `flotter${["a", "b", "c"][i % 3]} ${4 + i}s ease-in-out infinite`,
+            }}>
+              {p}
+            </div>
+          ))}
+        </div>
+        <Btn c={c} variant="primary" onClick={() => setEtape("reformulation")}>Continuer <span>→</span></Btn>
+      </div>
+    );
+  }
+
+  if (etape === "reformulation") {
+    return (
+      <Card c={c} style={{ marginBottom: 20 }}>
+        <p style={{ margin: "0 0 16px", fontSize: 14, color: c.text, lineHeight: 1.6 }}>
+          Une pensée est un événement produit par votre esprit, pas nécessairement un fait. Vous pouvez essayer
+          de la reformuler ainsi :
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
+          {pensees.map((p, i) => (
+            <div key={i} style={{ background: c.bgAlt, borderRadius: 12, padding: "12px 14px", fontSize: 13.5, color: c.text }}>
+              Mon esprit me dit que « {p} ».
+            </div>
+          ))}
+        </div>
+        <Btn c={c} variant="primary" onClick={() => setEtape("synthese")}>Continuer <span>→</span></Btn>
+      </Card>
+    );
+  }
+
+  return (
+    <Card c={c} style={{ marginBottom: 20 }}>
+      <p style={{ margin: "0 0 16px", fontSize: 14, color: c.text, lineHeight: 1.7 }}>
+        Vous n'avez pas besoin de faire disparaître ces pensées : simplement les reconnaître comme des pensées,
+        et non comme des vérités, peut déjà changer la place qu'elles prennent.
+      </p>
+      <p style={{ margin: "0 0 20px", fontSize: 12.5, color: c.textSoft, lineHeight: 1.6 }}>
+        Vous pouvez réutiliser cette reformulation à tout moment, pour n'importe quelle pensée qui revient : il
+        suffit d'ajouter « Mon esprit me dit que » devant.
+      </p>
+      <Btn c={c} variant="primary" onClick={onTerminer}>Terminer l'exercice</Btn>
+    </Card>
+  );
+}
+
 function QuestionTroisChoix({ c, question, onTerminer, boucleSiOui }) {
   const [reponse, setReponse] = useState(null); // null | "oui" | "non" | "jsp"
 
@@ -4206,6 +4330,8 @@ function Exercise({ c, exercise, raison, creations, onAjouterCreation, onSupprim
           onTerminer={() => setStep("remarque")}
           onAutreExercice={onEssayerAutreChose}
         />
+      ) : exercise.type === "nuage-pensees" ? (
+        <NuagePensees c={c} onTerminer={() => setStep("remarque")} />
       ) : (
         <>
           <BoutonEcouter c={c} texte={voirTout ? etapesAffichees.join(". ") : etapesAffichees[etapeIndex]} />
@@ -4265,7 +4391,7 @@ function Exercise({ c, exercise, raison, creations, onAjouterCreation, onSupprim
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: peutNoter ? 20 : 0 }}>
-        {exercise.type !== "oui-non-interactif" && exercise.type !== "question-3choix" && (voirTout || derniereEtape || etapesAffichees.length <= 1) && (
+        {exercise.type !== "oui-non-interactif" && exercise.type !== "question-3choix" && exercise.type !== "nuage-pensees" && (voirTout || derniereEtape || etapesAffichees.length <= 1) && (
           <Btn c={c} variant="primary" onClick={() => setStep("remarque")}>J'ai terminé <span>✓</span></Btn>
         )}
         <Btn c={c} variant="secondary" onClick={onEssayerAutreChose}>Faire autrement</Btn>
